@@ -250,11 +250,10 @@ export default {
     //隐藏云台控制
     HideHolder(){
       console.log("隐藏云台控制")
-      // this.isShowHolder=false;
-      this.isShowHolderC=false;
-      // this.isShowResource=true;
-      this.resize();
-      this.$refs.holderControl.closedDialog();
+      // this.isShowHolderC=false;
+      // this.resize();
+      this.$refs.holderControl.cancleStatus();
+      // this.$refs.holderControl.closedDialog();
     },
     //展开/隐藏云台控制
     expendTogetherHolder(){

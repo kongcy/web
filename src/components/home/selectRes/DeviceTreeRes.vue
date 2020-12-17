@@ -1347,7 +1347,8 @@ export default {
     width:100%;
     height: calc(100% - 102px);
     box-sizing: border-box;
-    padding:0 0 0 16px;
+    padding:0;
+    padding:0 0 0 16px; 
 }
 .divSearchBox {
   width: 100%;

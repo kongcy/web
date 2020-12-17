@@ -685,7 +685,7 @@ export default {
         },
         //树行样式
         renderContent(h, { node, data, store }) {
-            //console.log(data.nodeStatus, data.alarm, '------------')
+            console.log(data.nodeStatus, data.alarm, data,'------------')
             let icon = data.nodeStatus
             let alarm = data.alarm ? "alarm" : ''
             //wxx 2020.11.25
@@ -696,10 +696,24 @@ export default {
                     <span>{node.label}{count}</span>
                 </span>);
             }else{
-                  return (<span class={"custom-tree-node " + icon + " " + alarm} >
+                  //12.17 涉及到通道排序，暂时还原，等通道排序弄好再加
+                return (<span class={"custom-tree-node " + icon + " " + alarm} >
                     <span class="node-icon"></span>
                     <span>{node.label}</span>
                 </span>);
+                // if(data.deviceType=='GBNVREncoder'){
+                //     return (<span class={"custom-tree-node " + icon + " " + alarm} >
+                //         <span class="node-icon"></span>
+                //         <span>{node.label}</span>
+                //     </span>);
+                // }else{
+                //      return (<span class={"custom-tree-node " + icon + " " + alarm} >
+                //         <span class="node-icon-holder"></span> 
+                //         <span class="node-icon"></span>
+                //         <span>{node.label}</span>
+                //     </span>);
+                // }
+                 
             }
                 
         },
@@ -888,6 +902,7 @@ export default {
     width:414px;
     height: calc(100% - 124px);
     /* overflow: hidden; */
+   /* padding: 0;*/
     padding: 0 0 0 16px;
     box-sizing: border-box;
 }

@@ -238,10 +238,11 @@ export default {
     },
     closedDialog() {
       this.resetV();
+      this.cancleStatus();
+     },
+    cancleStatus(){
       //取消订阅
       !this.isNVRChannel &&this.apiSDK.cancelSubscribeYTStatus(this.resourceId, this.resourceCh);
-      // this.$children[0].$refs.dialog.style.left = '0px'
-      // this.$children[0].$refs.dialog.style.top = '0px'
     },
     resetV(){
       this.title='当前操作的设备名称';
@@ -911,6 +912,9 @@ export default {
 
 <style>
 /* tree的样式 */
+.el-tree-node__content>.el-tree-node__expand-icon{
+  margin-left:16px;
+}
 .holderControl span.el-tree-node__label {
   color: #0f5794;
 }

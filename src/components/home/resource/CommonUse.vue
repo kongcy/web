@@ -509,10 +509,24 @@ export default {
                     <span>{node.label}{count}</span>
                 </span>);
             }else{
+                //12.17 涉及到通道排序，暂时还原，等通道排序弄好再加
                  return (<span class={"custom-tree-node " + icon + " " + alarm}  title={'最近:'+data.time+' 频率:'+data.num+'次'}>
                     <span class="node-icon"></span>
                     <span>{node.label}</span>
                 </span>);
+                //  if(data.deviceType=='GBNVREncoder'){
+                //     return (<span class={"custom-tree-node " + icon + " " + alarm}  title={'最近:'+data.time+' 频率:'+data.num+'次'}>
+                //         <span class="node-icon"></span>
+                //         <span>{node.label}</span>
+                //     </span>);
+                // }else{
+                //     return (<span class={"custom-tree-node " + icon + " " + alarm}  title={'最近:'+data.time+' 频率:'+data.num+'次'}>
+                //       <span class="node-icon-holder"></span> 
+                //         <span class="node-icon"></span>
+                //         <span>{node.label}</span>
+                //     </span>);
+                // }
+
                 //   return (<span class={"custom-tree-node " + icon + " " + alarm}  title={'最近:'+data.time+' 频率:'+data.num+'次'}>
                 //     <span class="node-icon"></span>
                 //   <el-tooltip effect="dark" content={'最近:'+data.time+' 频率:'+data.num+'次'} placement="bottom-start">
@@ -712,8 +726,9 @@ export default {
 .treeWrap{
     width:414px;
     height: calc(100% - 164px);
+    /*   padding: 0;*/
     /* overflow: hidden; */
-    padding: 0 0 0 16px;
+    /* padding: 0 0 0 16px; */
     box-sizing: border-box;
 }
 .divSearchBox {
