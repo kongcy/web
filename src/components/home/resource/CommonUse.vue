@@ -202,7 +202,6 @@ export default {
                 //设备组织
                     self.clearTree();
                     self.treeData = Fun._initCommonUseTreeData(obj);
-                    console.log(self.treeData)
                    // 默认展开一级节点
                     setTimeout(() => {
                         self.treeData.forEach(item => {
@@ -212,27 +211,7 @@ export default {
 
 
                     self.$nextTick(() => {
-                        console.log(  self.treeData[0])
                         self.changeStatus()
-                        // let currentScreen=JSON.parse(sessionStorage.getItem('currentScreen'));
-                        // if(currentScreen.length>0){
-                        //     self.hasPlayD=true;
-                        //     currentScreen.forEach(item=>{
-                        //             self.treeData[0].children&&self.treeData[0].children.filter(val=>item.resId==val.id).map(cs=>{
-                        //                 let icon_='';
-                        //                 if(cs.nodeStatus.indexOf("device_")>-1){
-                        //                 cs.nodeStatus="device_playing"
-                        //                 }else if(cs.nodeStatus.indexOf("NVR_")>-1){
-                        //                 cs.nodeStatus="NVR_playing"
-                        //                 }else if(cs.nodeStatus.indexOf("channel_")>-1){
-                        //                 cs.nodeStatus="channel_playing"
-                        //                 }
-                        //             })
-                        //     })
-                        // }else{
-                        //     self.hasPlayD=false;
-                        // }
-                                   
                     })
             }
               
@@ -242,33 +221,41 @@ export default {
         changeStatus(){
             let self=this;
             let currentScreen=JSON.parse(sessionStorage.getItem('currentScreen'));
-                        if(currentScreen.length>0){
-                            self.hasPlayD=true;
-                            currentScreen.forEach(item=>{
-                                    self.treeData[0].children&&self.treeData[0].children.filter(val=>item.resId==val.id).map(cs=>{
-                                        let icon_='';
-                                        if(cs.nodeStatus.indexOf("device_")>-1){
-                                        cs.nodeStatus="device_playing"
-                                        }else if(cs.nodeStatus.indexOf("NVR_")>-1){
-                                        cs.nodeStatus="NVR_playing"
-                                        }else if(cs.nodeStatus.indexOf("channel_")>-1){
-                                        cs.nodeStatus="channel_playing"
-                                        }
-                                    })
-                            })
-                        }else{
-                            self.hasPlayD=false;
-                             self.treeData[0].children.forEach(item=>{
-                                 let icon_='';
-                                        if(item.nodeStatus.indexOf("device_")>-1){
-                                            if(item.nodeStatus=='device_playing'||item.nodeStatus=='device_playWaiting')item.nodeStatus="device_online"
-                                        }else if(item.nodeStatus.indexOf("NVR_")>-1){
-                                             if(item.nodeStatus=='NVR_playing'||item.nodeStatus=='NVR_playWaiting')item.nodeStatus="NVR_online"
-                                        }else if(item.nodeStatus.indexOf("channel_")>-1){
-                                            if(item.nodeStatus=='channel_playing'||item.nodeStatus=='channel_playWaiting')item.nodeStatus="channel_online"
-                                        }
-                             })
+            console.log(currentScreen);
+            if(currentScreen.length>0){
+                self.hasPlayD=true;
+                self.treeData[0].children.forEach(item=>{
+                    var n=currentScreen.findIndex(val=>item.id==val.resId);
+                    if(n>-1){
+                        if(item.nodeStatus.indexOf("device_")>-1){
+                        item.nodeStatus="device_playing"
+                        }else if(item.nodeStatus.indexOf("NVR_")>-1){
+                        item.nodeStatus="NVR_playing"
+                        }else if(item.nodeStatus.indexOf("channel_")>-1){
+                        item.nodeStatus="channel_playing"
                         }
+                    }else{
+                        if(item.nodeStatus.indexOf("device_")>-1){
+                            if(item.nodeStatus=='device_playing'||item.nodeStatus=='device_playWaiting')item.nodeStatus="device_online"
+                        }else if(item.nodeStatus.indexOf("NVR_")>-1){
+                                if(item.nodeStatus=='NVR_playing'||item.nodeStatus=='NVR_playWaiting')item.nodeStatus="NVR_online"
+                        }else if(item.nodeStatus.indexOf("channel_")>-1){
+                            if(item.nodeStatus=='channel_playing'||item.nodeStatus=='channel_playWaiting')item.nodeStatus="channel_online"
+                        }
+                    }
+                })
+            }else{
+                self.hasPlayD=false;
+                self.treeData[0].children.forEach(item=>{
+                    if(item.nodeStatus.indexOf("device_")>-1){
+                        if(item.nodeStatus=='device_playing'||item.nodeStatus=='device_playWaiting')item.nodeStatus="device_online"
+                    }else if(item.nodeStatus.indexOf("NVR_")>-1){
+                            if(item.nodeStatus=='NVR_playing'||item.nodeStatus=='NVR_playWaiting')item.nodeStatus="NVR_online"
+                    }else if(item.nodeStatus.indexOf("channel_")>-1){
+                        if(item.nodeStatus=='channel_playing'||item.nodeStatus=='channel_playWaiting')item.nodeStatus="channel_online"
+                    }
+                })
+            }
         },
         //整理节点数据
          setCommonUse(obj){

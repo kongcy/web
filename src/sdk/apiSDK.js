@@ -15557,18 +15557,18 @@ var apiSDK = {
     },
 
     // ======================  免插登录 新加SDK   1214   ==========================================================
-    // 免插登录
+    // 免插登录 接口未部署暂时注释
     noPluginLogin(account, callback){
-        strategeSDK6.noPluginLogin( account , obj => {
-            callback(obj);
-        });
+        // strategeSDK6.noPluginLogin( account , obj => {
+        //     callback(obj);
+        // });
     },
 
     // 免插退出
     noPluginLoginOut(account, callback){
-        strategeSDK6.noPluginLoginOut( account , obj => {
-            callback(obj);
-        });
+        // strategeSDK6.noPluginLoginOut( account , obj => {
+        //     callback(obj);
+        // });
     },
     // ======================  视频诊断 新加SDK   1216   ==========================================================
     // 视频诊断列表

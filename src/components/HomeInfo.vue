@@ -483,7 +483,8 @@ export default {
 }
 /deep/ #hometabs > .el-tabs__content{
   height:100%;
-  background:url(../../static/main/screen/bg.png) no-repeat center;
+  /* background:url(../../static/main/screen/bg.png) no-repeat center; */
+  background:url(../../static/common/bg.png) no-repeat center;
 }
 #divContainer {
   font-family: "Avenir", Helvetica, Arial, sans-serif;

@@ -664,6 +664,13 @@ export default {
     color: #FFF;
     background: url(../../../../static/common/btn-danger.png) no-repeat center;
 }
+/deep/.isStop.el-button--danger:hover{
+    background: transparent;
+    border-color: #E05656;
+    color: #E05656;
+}/deep/.isStop.el-button--danger:hover .icon-stop{
+    background:url(../../../../static/stratege/icon-stopPlay.png) no-repeat center;
+}
 /deep/ .el-button--danger{
     background: transparent;
     border-color: #E05656;

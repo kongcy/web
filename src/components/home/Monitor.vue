@@ -439,33 +439,33 @@ div > div#divImageContent_Monitor > div#divImageShow_Monitor {
 
 .toLeft.toLeft_R{
   left: 0px;
-  top: 0px;
+  top: 16px;
   background: url(../../../static/common/toRight.png) no-repeat center;
 }
 .toLeft.toLeft_R:hover{
   left: 0px;
-  top: 0px;
+  top: 16px;
   background: url(../../../static/common/toRight_hover.png) no-repeat center;
 }
 .toLeft.toLeft_R:active{
   left: 0px;
-  top: 0px;
+  top: 16px;
   background: url(../../../static/common/toRight_active.png) no-repeat center;
 }
 
 .toRight.toRight_L{
   right: 0px;
-  top: 0;
+  top: 16px;
   background: url(../../../static/common/toLeft.png) no-repeat center;
 }
 .toRight.toRight_L:hover{
   right: 0px;
-  top: 0;
+  top: 16px;
   background: url(../../../static/common/toLeft_hover.png) no-repeat center;
 }
 .toRight.toRight_L:active{
   right: 0px;
-  top: 0;
+  top: 16px;
   background: url(../../../static/common/toLeft_active.png) no-repeat center;
 }
 </style>

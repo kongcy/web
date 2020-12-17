@@ -17,9 +17,7 @@
         "dataURL5": "https://172.16.3.188:8444/DispatcherBusinessWeb",
         "businessURL5": "wss://172.16.3.188:8899/websocket",
         "electronBlackboardUrl": "http://11.55.10.173:8018",
-        "mapURL": "http://172.16.100.54/GISDataWeb/",
-        "diagnoseUrl": "https://172.16.3.111:8443/StatusMonitorWeb",
-        "pluginLoginUrl": "http://172.16.11.211:8999/user"
+        "mapURL": "http://172.16.100.54/GISDataWeb/"
         
     },
 

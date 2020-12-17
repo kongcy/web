@@ -37,7 +37,6 @@ const setConfigInstance = () => {
         electronBlackboardUrl : res.data.api.electronBlackboardUrl,
         pluginVersion : res.data.pluginVersion,
         platformVersion: res.data.platformVersion,   // 0-标准音视频平台 1-互联互通平台
-        diagnoseUrl: res.data.api.diagnoseUrl
       });
   })
 }

@@ -495,6 +495,8 @@ var playerSDK = {
         }else{
             webglPlayer.cancelFullScreenShow()
         }
+          // 2020.12.15添加
+          webglPlayer.allFull=isFull;
     },
 
     /**

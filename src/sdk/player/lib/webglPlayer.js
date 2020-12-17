@@ -141,6 +141,7 @@ function Screen(){
 }
 
 var decoderPlayer = {
+	allFull                        :false,//全部插件全屏2020.12.15
 	_screens                       : null,
 	_containerDiv                  : null,
 	_maxScreenCount                : 36,
@@ -476,24 +477,28 @@ var decoderPlayer = {
 	//监听全屏/退出事件
 	_applyExitFullScreenEvent : function(callback){
 		document.addEventListener("fullscreenchange", function(e){
-			if(document.fullscreenElement == null|| e.target != document.fullscreenElement)
+			if(document.fullscreenElement == null|| e.target != document.fullscreenElement){
+				decoderPlayer.allFull=false;
 				callback(false, e);
-			else callback(true, e);
+			}else callback(true, e);
 		});
 		document.addEventListener("msfullscreenchange", function(e){
-			if(document.msFullscreenElement == null|| e.target != document.fullscreenElement)
+			if(document.msFullscreenElement == null|| e.target != document.fullscreenElement){
+				decoderPlayer.allFull=false;
 				callback(false, e);
-			else callback(true, e);
+			}else callback(true, e);
 		});
 		document.addEventListener("mozfullscreenchange", function(e){
-			if(document.mozFullScreenElement == null|| e.target != document.fullscreenElement)
+			if(document.mozFullScreenElement == null|| e.target != document.fullscreenElement){
+				decoderPlayer.allFull=false;
 				callback(false, e);
-			else callback(true, e);
+			}else callback(true, e);
 		});
 		document.addEventListener("webkitfullscreenchange", function(e){
-			if(document.webkitFullscreenElement == null|| e.target != document.fullscreenElement)
+			if(document.webkitFullscreenElement == null|| e.target != document.fullscreenElement){
+				decoderPlayer.allFull=false;
 				callback(false, e);
-			else callback(true, e);
+			}else callback(true, e);
 		});
 	},
     /*UI区域刷新接口***********************************************************************/
@@ -627,10 +632,13 @@ var decoderPlayer = {
 			jsOperate9 += " id=\"" + decoderPlayer._btnOpenMeeting + "\"";
 			jsOperate9 += " title=\"开启会议\" src=\"" + decoderPlayer._imgOpenMeeting +  "\"";
 
-			var innerHTML =
+			var innerHTML='';
+			//全部全屏时底部功能按钮显示2020.12.15
+			if(decoderPlayer.allFull){
+				innerHTML =
 					"<table style=\"height:100%;\">" +
 					"	<tr style=\"height:25px;\" valign=\"bottom\">" +
-					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate1 + "></img></td>" +
+					// "		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate1 + "></img></td>" +
 					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate2 + "></img></td>" +
 					// "		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate7 + "></img></td>" +
 					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate3 + "></img></td>" +
@@ -638,11 +646,29 @@ var decoderPlayer = {
 					"		<td style=\"width:100%\"></td>" +
 					// "		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate6 + "></img><div class=\"pictureQuality\" style=\"display:none\"></div></td>" +
 					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate9 + "></img></td>" +
+					// "		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate4 + "></img></td>" +
+					// "		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate5 + "></img></td>" +
+					"		<td><img style=\"width:20px; height:20px; padding: 0px 5px 0px 5px; cursor: pointer;\"" + jsOperate8 + "></img></td>" +
+					"	</tr>" +
+					"</table>";
+			}else{
+			innerHTML =
+					"<table style=\"height:100%;\">" +
+					"	<tr style=\"height:25px;\" valign=\"bottom\">" +
+					// "		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate1 + "></img></td>" +
+					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate2 + "></img></td>" +
+					// "		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate7 + "></img></td>" +
+					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate3 + "></img></td>" +
+					 "		<td><div style=\"width:120px; margin-left: 5px;\" class=\"volume-progress\"></div></td>" +
+					"		<td style=\"width:100%\"></td>" +
+					// "		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate6 + "></img><div class=\"pictureQuality\" style=\"display:none\"></div></td>" +
+					"		<td><img style=\"width:20px; height:20px; padding: 0px 5px 0px 5px; cursor: pointer;\"" + jsOperate9 + "></img></td>" +
 					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate4 + "></img></td>" +
 					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate5 + "></img></td>" +
 					"		<td><img style=\"width:20px; height:20px; padding: 0px 5px 0px 5px; cursor: pointer;\"" + jsOperate8 + "></img></td>" +
 					"	</tr>" +
 					"</table>";
+			}
 			operateDiv.innerHTML = innerHTML;
 
 			
@@ -1415,6 +1441,7 @@ var decoderPlayer = {
 				}
 			}
 			//刷新childDiv显示
+			decoderPlayer.allFull=false;
 			decoderPlayer._refreshUI();
 			//执行
 			if(decoderPlayer._fullScreenChangedCB != null && businessScreens.length > 0)

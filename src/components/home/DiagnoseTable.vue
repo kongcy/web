@@ -106,7 +106,7 @@
          </el-table>
          <div class="footer-pagination">
              <div>
-                 <span>显示第<span class="num"> {{(pageNumber-1)*pageSize+1}} </span>到第<span class="num"> {{pageNumber*pageSize>total?total:pageNumber*pageSize}} </span>条记录，总共<span class="num"> {{total}} </span>条记录</span>
+                 <span>显示第<span class="num"> {{total>0?(pageNumber-1)*pageSize+1:0}} </span>到第<span class="num"> {{pageNumber*pageSize>total?total:pageNumber*pageSize}} </span>条记录，总共<span class="num"> {{total}} </span>条记录</span>
                  <span>
                      每页显示
                        <el-select v-model="count" placeholder="请选择">
@@ -231,10 +231,10 @@ export default {
                 start: this.srartTime ? this.srartTime : null,
                 end: this.endTime ? this.endTime : null,
                 assetName: this.nameSearch,
-                diagType: 2,
-                typeId: '431',
+                // diagType: 2,
+                // typeId: '431',
                 diagResult: this.diagnoseValue=='全部'?'':this.diagnoseValue,
-                faultType: this.warningValue=='全部'?'':this.warningValue,
+                diagType: this.warningValue=='全部'?2:this.warningValue,
                 page: this.pageNumber,
                 pageNum: this.pageSize
             }
@@ -264,7 +264,7 @@ export default {
     height:100%;
     /* padding: 8px 8px 0 8px; */
     box-sizing: border-box;
-    background: url(../../../static/main/screen/imgShow_bg.png) no-repeat;
+    background: url(../../../static/main/screen/diagnose_bg.png) no-repeat;
     background-size: 100% 100%;
     position: relative;
 }
@@ -372,38 +372,44 @@ export default {
 }
 .diagnose-table .el-table th{
     font-size: 16px;
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
-    background: #324d78;                                    
+    border-right: 1px solid rgba(136, 157, 179, 0.2);
+    /* background: #324d78; */
 }.diagnose-table .el-table td, .diagnose-table .el-table th.is-leaf{
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgba(136, 157, 179, 0.2);
 }
 .diagnose-table .el-table--border th, .diagnose-table .el-table__fixed-right-patch {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgba(136, 157, 179, 0.2);
 }
 .diagnose-table .el-table--border td, .diagnose-table .el-table--border th, .diagnose-table .el-table__body-wrapper .el-table--border.is-scrolling-left~.el-table__fixed {
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    border-right: 1px solid rgba(136, 157, 179, 0.2);
 }
 .diagnose-table .el-table--enable-row-hover .el-table__body tr:hover>td{
     background-color: transparent;
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-right: 1px solid rgba(136, 157, 179, 0.2);
+    border-bottom: 1px solid rgba(136, 157, 179, 0.2);
+}
+.diagnose-table .el-table--border th.gutter:last-of-type{
+    border-bottom: 1px solid rgba(136, 157, 179, 0.2);
+    border-right: 0;
 }
 .diagnose-table tbody tr:nth-of-type(odd) {
-    background-color: rgba(255, 255, 255, 0.05);
+    /* #334d73 */
+    background-color: #324d77;
 }
 .diagnose-table tbody tr:nth-of-type(even) {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #3e5c86;
 }
 .diagnose-table tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.2) !important;
+    background-color: #2f4977 !important;
 }
 .diagnose-table .el-icon-tickets{
     cursor: pointer;
     font-size: 16px;
+    color: #409EFF;
 }
 .diagnose-table .el-icon-tickets:hover,
 .diagnose-table .el-icon-tickets:focus{
-    color: #409EFF;
+    color: #ffffff;
 }
 .footer-pagination{
     position: absolute;
@@ -427,6 +433,10 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.diagnose-table .el-table__header-wrapper {
+    background: url(../../../static/main/screen/table-header.png) no-repeat center center;
+    background-size: 100% 100%;
 }
 /* 修改滚动条样式 */
 div::-webkit-scrollbar{
