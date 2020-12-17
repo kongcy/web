@@ -1,0 +1,124 @@
+html,body{
+  height: 100%;
+}
+.map_container {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0px; 
+	padding: 0px;
+  position: relative;
+  height: 100%;
+}
+.map_container .left_menu{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  border: 1px solid #98d3fc;
+  z-index: 1;
+  background-color: #dbf0fe;
+  box-sizing: border-box;
+}
+.map_container .left_menu .bottom{
+  position: absolute;
+  bottom: 0;
+}
+.map_container .left_menu .btn{
+  display: block;
+  cursor: pointer;
+  box-sizing: border-box;
+  outline: 0;
+  margin: 0 auto;
+  border: 0;
+  height: 40px;
+  width: 40px;
+}
+.map_container .left_menu .alarm_btn{
+  background: url(../../static/map/alarm.png) center no-repeat;
+}
+.map_container .left_menu .alarm_btn:hover{
+  background: url(../../static/map/alarm_hover.png) center no-repeat;
+}
+.resource_widget{
+  position: fixed;
+  width: 300px;
+  top: 47px;
+  right: 5px;
+  background-color: #fff;
+    border: 1px solid #ddd;
+}
+.resource_widget .el-collapse-item__header{
+  height: 38px;
+    background-color: #e9f3fa;
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+    padding-left: 8px;
+}
+.resource_widget .el-collapse-item__content{
+  padding-bottom: 0;
+}
+.resource_widget .directory_level{
+  background-color: #e9f3fa;
+  border-top: 1px solid #ddd;
+  padding: 8px;
+}
+.resource_widget .directory_level .title{
+  display: inline;
+    font-weight: bold;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+.resource_widget .organization_name{
+  padding: 6px 8px;
+    background-color: #e9f3fa;
+    font-weight: bold;
+    border-bottom: 1px solid #cae3f4;
+}
+.resource_widget .resource_oprate{
+    width: 100%;
+    background-color: #e9f3fa;
+    padding: 5px 10px 3px;
+}
+.resource_widget .el-tabs__header{
+  background-color: #e9f3fa;
+  margin-bottom: 0px !important;
+}
+.resource_widget .el-tree-node.is-current.is-focusable > .el-tree-node__content{
+  background: #b1e0ff;
+}
+#cesiumContainer .cesium-viewer-toolbar {
+  left: 5px;
+  right: auto;
+}
+.alarm_message{
+  align-items: normal;
+}
+/* .alarm_message .el-icon-warning {
+  font-size: 0;
+  background: url(../../static/map/alarm_red.png) no-repeat;
+  width: 30px;
+  height: 24px;
+} */
+.alarm_message .el-notification__content .el-form-item {
+  margin-bottom: 0px;
+}
+.alarm_message .el-notification__content .el-form-item__label{
+  width: 70px;
+  line-height: 25px;
+  font-weight:bold
+}
+.alarm_message .el-notification__content .el-form-item__content{
+  margin-left: 70px;
+  line-height: 25px;
+}
+/* .alarm_message .el-message__content .value.EHigh{
+  color: #f56c6c;
+}
+.alarm_message .el-message__content .value.ENormal{
+  color: #e6a23c
+}
+.alarm_message .el-message__content .value.ELow{
+  color: #67c23a
+} */

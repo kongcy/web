@@ -1,0 +1,42 @@
+*{margin: 0; padding: 0;}
+html,body{height:100%;}
+.clearfix:after{clear:both;display: table;content: ''}
+.wrapper{
+	height: 100%;
+}
+.wrapper .header{
+	height: 72px;
+	flex-shrink: 0;
+}
+.wrapper .main{
+	display: block;
+    flex: 1;
+    flex-basis: auto;
+    overflow: hidden;
+}
+.wrapper .footer{
+	height: 5px;
+	background-color: #0f5794;
+	flex-shrink: 0;
+}
+.marqueeNotify{
+  position: fixed;
+  left: 0px;
+  width: 100%;
+  z-index: 999;
+  background-color: #081840;
+  padding: 10px 0;
+}
+.marqueeNotify .el-icon-close{
+    display: none;
+    color: #fff;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    margin-top: -17px;
+    font-size: 34px;
+    cursor: pointer;
+}
+.marqueeNotify:hover .el-icon-close{
+  display: block;
+}

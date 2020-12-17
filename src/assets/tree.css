@@ -1,0 +1,279 @@
+.custom-tree-node {
+  font-size: 14px;
+  padding-right: 8px;
+}
+.custom-tree-node span {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+.custom-tree-node .node-icon{
+  margin-right: 5px;
+  vertical-align: bottom;
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+}
+.custom-tree-node.company .node-icon{
+  background: url("../../static/resource_tree/company.png");
+}
+.custom-tree-node.department .node-icon{
+  background: url("../../static/resource_tree/department.png");
+}
+.custom-tree-node.department.alarm .node-icon{
+background: url("../../static/map/dept_alarm.png");
+}
+.custom-tree-node.person_online .node-icon{
+  background: url("../../static/resource_tree/person_online.png");
+}
+.custom-tree-node.person_offline .node-icon{
+  background: url("../../static/resource_tree/person_offline.png");
+}
+.custom-tree-node.person_playing .node-icon{
+  background: url("../../static/resource_tree/person_playing.png");
+}
+.custom-tree-node.person_calling .node-icon{
+  background: url("../../static/resource_tree/person_calling.png");
+}
+.custom-tree-node.person_playWaiting .node-icon,
+.custom-tree-node.person_callWaiting .node-icon,
+.custom-tree-node.person_meetWaiting .node-icon,
+.custom-tree-node.person_speakWaiting .node-icon,
+.custom-tree-node.person_specialtyWaiting .node-icon{
+  background: url("../../static/resource_tree/person_wait.png");
+}
+.custom-tree-node.person_fault .node-icon{
+  background: url("../../static/resource_tree/person_fault.png");
+}
+.custom-tree-node.person_speaking .node-icon{
+  background: url("../../static/resource_tree/person_speaking.png");
+}
+.custom-tree-node.person_specialtying .node-icon{
+  background: url("../../static/resource_tree/person_specialtying.png");
+}
+.custom-tree-node.device_offline span,
+.custom-tree-node.NVR_offline span,
+.custom-tree-node.channel_offline span{
+  color:#A6A6A6;
+}
+.custom-tree-node.device_online .node-icon{
+  background: url("../../static/resource_tree/device_online.png");
+}
+.custom-tree-node.device_offline .node-icon{
+  background: url("../../static/resource_tree/device_offline.png");
+}
+.custom-tree-node.device_playing .node-icon{
+  background: url("../../static/resource_tree/device_playing.png");
+}
+.custom-tree-node.device_speaking .node-icon{
+  background: url("../../static/resource_tree/device_speaking.png");
+}
+.custom-tree-node.device_online.alarm .node-icon{
+background: url("../../static/map/device_online_alarm.png");
+}
+.custom-tree-node.device_offline.alarm .node-icon{
+background: url("../../static/map/device_offline_alarm.png");
+}
+.custom-tree-node.device_playWaiting .node-icon,
+.custom-tree-node.device_callWaiting .node-icon,
+.custom-tree-node.device_meetWaiting .node-icon,
+.custom-tree-node.device_speakWaiting .node-icon{
+  background: url("../../static/resource_tree/device_wait.png");
+}
+
+/* NVR样式 */
+.custom-tree-node.NVR_online .node-icon{
+  background: url("../../static/resource_tree/NVR_online.png");
+}
+.custom-tree-node.NVR_offline .node-icon{
+  background: url("../../static/resource_tree/NVR_offline.png");
+}
+.custom-tree-node.NVR_playing .node-icon{
+  background: url("../../static/resource_tree/NVR_playing.png");
+}
+.custom-tree-node.NVR_playWaiting .node-icon{
+  background: url("../../static/resource_tree/device_wait.png");
+}
+
+.custom-tree-node.channel_online .node-icon{
+  background: url("../../static/resource_tree/ico_aisle_online.png");
+}
+.custom-tree-node.channel_offline .node-icon{
+  background: url("../../static/resource_tree/ico_aisle_offline.png");
+}
+.custom-tree-node.channel_playing .node-icon{
+  background: url("../../static/resource_tree/ico_aisle_play.png");
+}
+.custom-tree-node.channel_playWaiting .node-icon{
+  background: url("../../static/resource_tree/device_wait.png");
+}
+
+.custom-tree-node.filelist_online .node-icon{
+  background: url("../../static/resource_tree/filelist_online.png");
+}
+.custom-tree-node.filelist_offline .node-icon{
+  background: url("../../static/resource_tree/filelist_offline.png");
+}
+.custom-tree-node.filelist_playWaiting .node-icon{
+  background: url("../../static/resource_tree/filelist_wait.png");
+}
+.custom-tree-node.filelist_playing .node-icon{
+  background: url("../../static/resource_tree/filelist_playing.png");
+}
+
+.custom-tree-node.playroom_online .node-icon{
+  background: url("../../static/resource_tree/playroom_online.png");
+}
+.custom-tree-node.playroom_offline .node-icon{
+  background: url("../../static/resource_tree/playroom_offline.png");
+}
+.custom-tree-node.playroom_playWaiting .node-icon{
+  /*background: url("../../static/resource_tree/record_wait.png");*/
+}
+.custom-tree-node.playroom_playing .node-icon{
+  background: url("../../static/resource_tree/playroom_playing.png");
+}
+.custom-tree-node.virtual_online .node-icon {
+  background: url("../../static/resource_tree/virtual_online.png");
+}
+.custom-tree-node.virtual_offline .node-icon {
+  background: url("../../static/resource_tree/virtual_offline.png");
+}
+.custom-tree-node.virtual_playing .node-icon,
+.custom-tree-node.virtual_speaking .node-icon {
+  background: url("../../static/resource_tree/virtual_playing.png");
+}
+
+.custom-tree-node.hwMeeting_playWaiting .node-icon,
+.custom-tree-node.hwMeeting_callWaiting .node-icon{
+  background: url("../../static/resource_tree/hwMeeting_wait.png");
+}
+.custom-tree-node.hwMeeting_playing .node-icon{
+  background: url("../../static/resource_tree/hwMeeting_playing.png");
+}
+.custom-tree-node.hwMeeting_calling .node-icon{
+  background: url("../../static/resource_tree/hwMeeting_calling.png");
+}
+.custom-tree-node.hwMeeting_online .node-icon {
+  background: url("../../static/resource_tree/hwMeeting_online.png");
+}
+.custom-tree-node.hwMeeting_offline .node-icon {
+  background: url("../../static/resource_tree/hwMeeting_offline.png");
+}
+.custom-tree-node.ip_online .node-icon{
+background: url("../../static/resource_tree/ip_online.png");
+}
+.custom-tree-node.ip_offline .node-icon{
+background: url("../../static/resource_tree/ip_offline.png");
+}
+.custom-tree-node.ip_playing .node-icon{
+background: url("../../static/resource_tree/ip_playing.png");
+}
+.custom-tree-node.ip_playWaiting .node-icon
+.custom-tree-node.ip_callWaiting .node-icon
+.custom-tree-node.ip_speakWaiting .node-icon{
+background: url("../../static/resource_tree/ip_wait.png");
+}
+.custom-tree-node.ip_calling .node-icon{
+background: url("../../static/resource_tree/ip_calling.png");
+}
+.custom-tree-node.ip_speaking .node-icon{
+background: url("../../static/resource_tree/ip_speaking.png");
+}
+
+
+.custom-tree-node.h323_online .node-icon{
+background: url("../../static/resource_tree/h323_online.png");
+}
+.custom-tree-node.h323_offline .node-icon{
+background: url("../../static/resource_tree/h323_offline.png");
+}
+.custom-tree-node.h323_playing .node-icon{
+background: url("../../static/resource_tree/h323_playing.png");
+}
+.custom-tree-node.h323_playWaiting .node-icon
+.custom-tree-node.h323_callWaiting .node-icon
+.custom-tree-node.h323_speakWaiting .node-icon
+{
+background: url("../../static/resource_tree/h323_wait.png");
+}
+.custom-tree-node.h323_calling .node-icon{
+background: url("../../static/resource_tree/h323_calling.png");
+}
+
+.custom-tree-node.h323_speaking .node-icon{
+background: url("../../static/resource_tree/h323_speaking.png");
+}
+
+
+
+
+.custom-tree-node.pstn_online .node-icon{
+background: url("../../static/resource_tree/pstn_online.png");
+}
+.custom-tree-node.pstn_offline .node-icon{
+background: url("../../static/resource_tree/pstn_offline.png");
+}
+.custom-tree-node.pstn_playing .node-icon{
+background: url("../../static/resource_tree/pstn_playing.png");
+}
+.custom-tree-node.pstn_playWaiting .node-icon
+.custom-tree-node.pstn_callWaiting .node-icon
+.custom-tree-node.pstn_speakWaiting .node-icon
+{
+background: url("../../static/resource_tree/pstn_wait.png");
+}
+.custom-tree-node.pstn_calling .node-icon{
+background: url("../../static/resource_tree/pstn_calling.png");
+}
+
+.custom-tree-node.pstn_speaking .node-icon{
+background: url("../../static/resource_tree/pstn_speaking.png");
+}
+
+.open-audio,
+.close-audio,
+.open-video,
+.close-video,
+.open-microphone,
+.close-microphone,
+.set,
+.whiteboard{
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  margin: 0 2px;
+  vertical-align: -4px;
+  cursor: pointer;
+}
+.set-hide{
+  display:none;
+}
+.open-audio{
+  background: url(../../static/scene/ico_tree_closetone.png) no-repeat center top;
+}
+.close-audio{
+  background: url(../../static/scene/ico_tree_opentone.png) no-repeat center top;
+}
+.open-video{
+  background: url(../../static/scene/ico_tree_closevideo.png) no-repeat center top;
+}
+.close-video{
+  background: url(../../static/scene/ico_tree_openvideo.png) no-repeat center top;
+}
+.open-microphone{
+  background: url(../../static/scene/ico_tree_closewheat.png) no-repeat center top;
+}
+.close-microphone{
+  background: url(../../static/scene/ico_tree_closewheat.png) no-repeat center top;
+}
+.set{
+  background: url(../../static/scene/ico_tree_setting.png) no-repeat center top;
+}
+.whiteboard{
+background: url(../../static/scene/ico_whiteboard.png) no-repeat center top;
+}
+

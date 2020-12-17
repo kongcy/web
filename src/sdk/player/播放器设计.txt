@@ -1,0 +1,185 @@
+#使用说明################################################################################
+只需引入lib\webglPlayer.js文件
+然后使用下面接口
+
+
+#接口条目################################################################################
+
+//初始化
+webglPlayer.init(containerId, containerWidth, containerHeight)
+参数说明：
+containerId：div的id
+
+
+//分屏
+webglPlayer.splitScreen(splitType)
+参数说明：
+splitType：参照文末枚举
+
+
+//开启播放
+webglPlayer.startShow(screenIndex, resourceType);
+参数说明：
+resourceType：0:人员,1:设备,2.文件频道，3.录像
+
+
+//停止播放
+webglPlayer.stopShow(screenIndex)
+
+
+//停止所有
+webglPlayer.stopAllShow()
+
+
+//刷新屏数据
+webglPlayer.refreshDataByIndex(screenIndex, data, width, height)
+参数说明：
+data：Uint8Array格式
+
+
+//改变按钮图标
+webglPlayer.changeButton(screenIndex, btnKey);
+参数说明：
+btnKey：参照文末枚举
+
+
+//暂停播放
+webglPlayer.suspendShow(screenIndex);
+
+
+//暂停后恢复
+webglPlayer.cancelSuspendShow(screenIndex);
+
+
+//窗口大小改变
+webglPlayer.resize(containerWidth, containerHeight)
+
+
+//设置全屏
+webglPlayer.fullScreenShow(screenIndex)
+
+
+//取消全屏
+webglPlayer.cancelFullScreenShow(screenIndex)
+
+
+//设置字幕
+webglPlayer.setOSD(screenIndex, osdIndex, osdInfo, fontFamily, fontColor, isBold, isItalic, offsetX, offsetY, basePoint, fontSize, fontWidth, fontHeight)
+
+
+//取消单屏字幕
+webglPlayer.cancelOSD(screenIndex:int, osdIndexs:[])
+参数说明：
+osdIndex：不传时，删除该屏所有osd；否则删除数组里的osd
+
+
+//取消所有屏字幕
+webglPlayer.cancelAllOSD()
+
+
+//设置单屏声音值
+webglPlayer.setVolume(screenIndex, vol)
+
+
+//获取单屏声音值
+webglPlayer.getVolume(screenIndex)
+
+
+//关单屏声音
+webglPlayer.soundOffShow(screenIndex)
+
+
+//开单屏声音
+webglPlayer.soundOnShow(screenIndex)
+
+
+//启用/禁用所有声音
+webglPlayer.isDisabledAllVolume(isDisabled:bool)
+
+
+//设置回放进度条的起止时间
+webglPlayer.initTimeProgeress(screenIndex, startTime, endTime)
+参数说明：
+startTime/endTime：毫秒值
+
+
+#回调函数########################################################################################
+
+//切换分屏回调
+webglPlayer.setAfterSplitScreenCallback()
+回调体里返回参数：(param:JSON)
+参数说明：
+param：{screenIndex: 0, type: 1}
+type：1-暂停  2-恢复  3-切换分辨率
+
+
+//全屏/退出的回调
+webglPlayer.setFullScreenChangedCallback()
+回调体里返回参数：(param:JSON,isFull:bool)
+参数说明：
+param：{screenIndex: 0, type: 1}
+type：1-暂停  2-恢复  3-切换分辨率
+
+
+//操作栏按钮回调
+webglPlayer.setPlayerBtnEventCallback()
+回调体里返回参数：(screenIndex:int, btnKey:string, value:string)
+参数说明：
+btnKey：参照文末枚举
+value：拖动/点击声音条时为音量值，快进/快退/恢复时为播放速度值，拖动/点击进度条时为时间戳，其他按钮此值为空
+
+
+//选中屏幕回调
+webglPlayer.setAfterSelectedScreenCallback()
+回调体里返回参数：(screenIndex:int, isSelected:bool, isPlay:bool)
+
+
+//画质参数变化回调
+webglPlayer.setAfterPicQualityChangedCallback()
+回调体里返回参数：(screenIndex:int, type:int, val:int)
+参数说明：
+type：1-清晰度 2-亮度 3-颜色
+
+
+######################################################################################
+
+//分屏模式枚举
+1; 	    // 1 分屏
+12; 	// 2 分屏
+4; 	    // 4 分屏
+100; 	// 6 分屏
+9; 	    // 9 分屏
+15;	    // 12 分屏
+16;	    // 16 分屏
+24;	    // 24 分屏
+25;	    // 25 分屏
+32;	    // 32 分屏
+36;	    // 36 分屏
+6; 	    // 1+5 分屏
+8; 	    // 1+7 分屏
+102;	// 1+9 分屏
+103;	// 1+11 分屏
+110;	// 2+8 分屏
+2;		// 画中画
+
+
+//按钮key
+'Pause',            //暂停播放
+'Play',             //暂停后恢复
+'Nor_StopPlay',     //停止播放
+'Nor_VolOff',       //声音关
+'Nor_VolOn',        //声音开
+'Volume_Progress'   //音量调节
+'Nor_PTZ',          //云台控制
+'Nor_FullScreen',   //全屏
+'Nor_PictureQuality',//画质调节
+'Pic_Capture',      //图像抓拍
+'Nor_Record',       //开启录像
+'Choose_Record',    //停止录像
+//录像回放下的按钮key
+'Record_Pause',     //回放暂停
+'Record_Play',      //暂停后恢复
+'Record_Slow',      //慢放
+'Record_Fast',      //快放
+'Record_Renew',     //恢复速度
+'Record_Frame',     //单帧播放

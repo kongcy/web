@@ -1,0 +1,154 @@
+.custom-dialog{
+    text-align: left;
+    background: none!important;
+    /*background-color: rgba(0,0,0,.5);*/
+}
+
+.custom-dialog .el-dialog__header{
+    height: 40px;
+    background-color: #0f5794;
+    padding: 0;
+    text-align: left;
+    position: relative;
+    background: url(../../static/stratege/head-bg.png);
+    background-size: 100% 100%;
+}
+.custom-dialog .el-dialog__header::after{
+    position: absolute;
+    top:0;
+    left:0;
+    content:'';
+    width: 104px;
+    height: 4px;
+    background: url(../../static/main/screen/title_bg.png);
+    background-size: 104px 4px; 
+}
+.custom-dialog .title-bg{
+    position: absolute;
+    top:0;
+    left:0;
+    width: 104px;
+    height: 4px;
+    background: url(../../static/main/screen/title_bg.png);
+    background-size: 104px 4px;
+  }
+.custom-dialog .el-dialog__body{
+    padding: 15px 20px 20px;
+    color: #fff;
+}
+.custom-dialog .el-dialog__title{
+    line-height: 43px;
+    color: #fff;
+    margin-left: 15px;
+}
+.custom-dialog .el-dialog__headerbtn{
+    top: 12px;
+    right: 10px;
+}
+.custom-dialog .el-dialog__headerbtn .el-dialog__close{
+    color: #fff;
+}
+.custom-dialog .add-btn{
+    width: 18px;
+    height: 18px;
+    margin-left: 15px;
+    border-radius: 0;
+    background:url(../../static/common/add.png) no-repeat center;
+    vertical-align: middle;
+}
+.custom-dialog .add-btn:hover{
+    background:url(../../static/common/add_hover.png) no-repeat center;
+}
+.custom-dialog .add-btn:active{
+    background:url(../../static/common/add_avtive.png) no-repeat center;
+}
+.custom-dialog .remove-btn{
+    width: 18px;
+    height: 18px;
+    margin-left: 15px;
+    border-radius: 0;
+    background:url(../../static/common/minusSign.png) no-repeat center;
+    margin-top: 2px;
+}
+.custom-dialog .remove-btn:hover{
+    background:url(../../static/common/minusSign_hover.png) no-repeat center;
+}
+.custom-dialog .remove-btn:active{
+    background:url(../../static/common/minusSign_avtive.png) no-repeat center;
+}
+
+.custom-dialog .update-btn, .custom-dialog .delete-btn{
+    width: 14px;
+    height: 14px;
+    border-radius: 0;
+    background:url(../../static/common/delete.png) no-repeat center;
+}
+.custom-dialog .update-btn{
+    background:url(../../static/common/update.png) no-repeat center;
+}
+
+.custom-dialog  .el-card__body  .el-tree-node__content{
+    position: relative;
+}
+.custom-dialog .el-tree-node__content .delete-btn{
+    position: absolute;
+    right: 21px;
+    top: 6px;
+}
+.custom-dialog .el-card{
+    box-shadow: none;
+    border: solid 1px #c2dff3;
+    border-radius: 0;
+}
+.custom-dialog .el-card__header{
+    background-color: #e9f3fa;
+    border-color: #c2dff3;
+    padding: 10px 20px;
+    height: 40px;
+}
+.custom-dialog .el-button--text{
+    color: #128bf1;
+    padding: 2px 0;
+}
+.custom-dialog .el-card__body{
+    /* height: calc(100% - 40px); */
+    height: 280px;
+    padding: 0;
+    overflow: auto;
+}
+.custom-dialog .el-card__body::-webkit-scrollbar{
+
+}
+.custom-dialog .el-card__body::-webkit-scrollbar-thumb{
+
+}
+.custom-dialog .el-card__body::-webkit-scrollbar-track{
+
+}
+
+.custom-dialog .el-tabs{
+	box-shadow: none;
+    border: 1px solid #c2dff3;
+}
+.custom-dialog .el-tabs__header{
+    background-color: #e9f3fa;
+    padding: 0 20px;
+    margin-bottom: 5px;
+}
+.custom-dialog .el-tabs__nav-wrap::after{
+    height: 1px;
+}
+.custom-dialog .table-header-bg th{
+    background-color: #f0f0f0;
+}
+
+.custom-dialog form .el-form-item:last-child {
+    margin-bottom: 10px;
+}
+.el-tabs.no-border{
+    border: none;
+}
+.el-tabs.no-border .el-tabs__header{
+    background-color: transparent;
+    padding: 0;
+}
