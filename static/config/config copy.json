@@ -8,16 +8,18 @@
 
     "api": {
         "_description1": "------------- api 相关配置",
-
         "_description2": "------------- openVone6.0",
-        "dataURL": "https://11.55.10.170/ApiGatewayService",
-        "businessURL": "wss://11.55.10.170/websocket_api",
+        "dataURL": "http://11.55.10.170:31084/DataApiService",
+        "businessURL": "ws://11.55.10.171:31087/websocket_api",
+        "strategeURL": "http://10.79.108.159:7070/monitor",
         "fileUploadURL": "http://11.55.10.170:30900",
         "_description3": "------------- openVone5.0",
         "dataURL5": "https://172.16.3.188:8444/DispatcherBusinessWeb",
         "businessURL5": "wss://172.16.3.188:8899/websocket",
         "electronBlackboardUrl": "http://11.55.10.173:8018",
-        "mapURL": "http://172.16.100.54/GISDataWeb/"
+        "mapURL": "http://172.16.100.54/GISDataWeb/",
+        "diagnoseUrl": "https://172.16.3.111:8443/StatusMonitorWeb",
+        "pluginLoginUrl": "http://10.79.108.39:8999/user"
         
     },
 

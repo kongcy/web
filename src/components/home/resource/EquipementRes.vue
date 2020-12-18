@@ -144,14 +144,14 @@ export default {
   position: relative;
   float: left;
   padding: 0px;
-  width: 414px;
+  width: 412px;
   height: 100%;
-   background: url(../../../../static/main/screen/resource_bg.png) no-repeat top;
+   background: url(../../../../static/main/screen/resource_bg.png) no-repeat 0 -1px;
   background-size: 100% 100%;
 }
 
 .el-tabs{
-  width: 414px;
+  width: 412px;
   float: left;
   height: 100%;
 }
@@ -179,8 +179,8 @@ export default {
   color:#fff;
 }
 .el-tabs.divSelectItemTab /deep/ .el-tabs__header>.el-tabs__nav-wrap>.el-tabs__nav-scroll>.el-tabs__nav>.el-tabs__active-bar{
-  height: 2px;
-} */
+  height: 3px;
+} 
 /deep/ .el-icon-arrow-left:before,
 /deep/ .el-icon-arrow-right:before {
     color: #D7E7FF;

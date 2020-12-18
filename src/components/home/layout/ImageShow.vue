@@ -1,5 +1,5 @@
 <template>
-    <div class="imageContentBox" :style="{padding:paddingV}">
+    <div class="imageContentBox">
         <!-- <div id="imageShowContainer" style="width:100%;height:100%"></div> -->
         <div class="imageDiv" :id="id" style="width:100%;height:100%"></div>
         <div class="cornerBox">
@@ -40,15 +40,15 @@ export default {
           DbClickTime:null,
           isFullScreen:false,
           id:"imageShowContainer",
-          activetabName:'',
-          paddingV:'8px 8px 0 8px'
+          activetabName:''
+        //  paddingV:'8px 8px 0 8px'
       }
     },
     mounted(){
         this.activetabName=xtxk.cache.get('activeName');
        
         if(this.activetabName=="Meeting"){
-            this.paddingV="8px 8px 0 8px"
+           // this.paddingV="8px 8px 0 8px"
         }
          //事件
         window.onSessionEvent = this.onSessionEvent;
@@ -249,7 +249,7 @@ export default {
             });
 
             this.apiSDK.setInformSplitScreenByLocalCallback(function (obj) {
-                console.log("收到分屏(软解)");
+                console.log( "收到分屏(软解)", obj );
                 if (obj) {
                   that.apiSDK.splitWidowForPlugin(parseInt(obj.splitType))
                   if(that.$parent.$refs.imageBottomNav){
@@ -660,7 +660,7 @@ export default {
     .imageContentBox{
         width:100%;
         height:100%;
-        padding: 8px 8px 0 8px;
+     /**  padding: 8px 8px 0 8px; */ 
         box-sizing: border-box;
         background: url(../../../../static/main/screen/imgShow_bg.png) no-repeat;
         background-size: 100% 100%;

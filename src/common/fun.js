@@ -380,12 +380,11 @@ export default {
         return zNodes;
     },
 
-      //刷新常用资源树数据
-      _refreshCommonUseData: function(treeObj, list) {
+    //刷新常用节点树数据 2020.12.16
+    _refreshCommonUseData: function(treeObj, list) {
         var onlines = [];
         var treeDataArr = this.transformTreeToArray(treeObj.data);
         console.log(treeDataArr)
-        console.log('刷新常用资源树数据----------',list)
         for (var i = 0, l = list.length; i < l; i++) {
             var item = list[i];
             var preStatus = null,
@@ -432,7 +431,6 @@ export default {
         }
         return onlines;
     },
-
   
     //初始化常用资源树数据
     _initCommonTreeData: function(list) {
@@ -778,11 +776,54 @@ export default {
         } else {
             apiSDK.stopPlayDevice(receiverID, receiverCh, 1, receiverName);
             //刷新图标
-            treeNode.nodeStatus = "device_playWaiting";
+            // treeNode.nodeStatus = "device_playWaiting";
+            // if(treeNode.nodeStatus.indexOf("device_")>-1){
+                if(treeNode.nodeStatus=='device_playing'||treeNode.nodeStatus=='device_playWaiting')treeNode.nodeStatus="device_online"
+            //}
         }
         // if (treeNode.nodeStatus == "device_playing") apiSDK.stopPlayDevice(receiverID, receiverCh, 1, receiverName);
         // else apiSDK.cancelBusiness(receiverID, resourceType, "Play");
         
+    },
+
+    // 批量停止点播设备 20201218
+    stopPlayDevices: function($vue, treeNodes) {
+        if ($vue.$store.getters.getMediaService != Enum.enumMediaService.Success) {
+            this.commonNotify($vue, 'register');
+            return;
+        }
+        let resInfos = [];
+        let channelsDevice = [];
+        var startPlayNode=[];
+        var list={}
+        treeNodes.forEach(item => {
+                // nvr多通道批量点播
+                if (item.resourceType == 'channel') {
+                    let obj = channelsDevice.find(it => it.deviceId === item.pid);
+                    if (obj) {
+                        let channel = obj.channels.find(i => i === item.id)
+                        if (!channel) {
+                            obj.channels.push(item.id);
+                        }
+                    } else {
+                        channelsDevice.push({deviceId: item.pid, channels: [item.id]})
+                    }
+                   
+                } else if (item.children && item.children.length) {
+                    let channels = item.children && item.children.filter(item =>item.id).map(item=>item.id)
+                    channelsDevice.push({deviceId: item.id, channels: channels})
+                } else {
+                    var receiverID = item.id;;
+                    var receiverCh = item.resCh || 0;
+                    var receiverName = item.name;
+                    $vue.apiSDK.stopPlayDevice(receiverID, receiverCh, 1, receiverName);
+                }
+        })
+        //resInfos.length && $vue.apiSDK.publishStartPlayRes(resInfos);
+        // nvr多通道批量点播
+        channelsDevice.length && channelsDevice.forEach(item => {
+            $vue.apiSDK.stopPlayNVRDevice(item.deviceId, item.channels.join(','));
+        })
     },
 
     //批量点播 1126 同步云调度 1125 多通道数据判断条件修改---------

@@ -12,7 +12,7 @@
             <el-row :gutter="5" style="margin:0px">
                 <el-col :span="24" >
                     <div class="search" >
-                        <el-input v-model="input_device" placeholder="请输入关键字查询" @keyup.enter.native="handleSearchByKey">
+                        <el-input v-model="input_device" placeholder="请输入关键字" @keyup.enter.native="handleSearchByKey">
                             <i slot="suffix" class="el-input__icon el-icon-search" @click="handleSearchByKey"></i>
                         </el-input>
                     </div>
@@ -42,9 +42,10 @@
                     已选中<span class="treeSelectedNum">{{selectedStratege}}</span>
                 </div>
                 <div class="treeOperate-btn">
-                    <el-button type="primary" size="small" @click="startPlays()"><i class="icon-start"></i><span>点播</span></el-button>
-                    <!-- :class="{'isStop':selectedStratege!=''}" -->
-                    <el-button type="danger" style="margin-left:9px" size="small" :class="{'isStop': isStop }"  @click="stopAll()"><i class="icon-stop"></i><span>停止</span></el-button>
+                  
+                    <el-button type="text"  style="width: 47px;" ></el-button>
+                    <el-button type="primary" size="small" @click="startPlays()" style="margin-left:5px"><i class="icon-start"></i><span>点播</span></el-button>
+                    <el-button type="danger" size="small" :class="{'isStop':selectedStratege!=''}" @click="stopAll()"><i class="icon-stop"></i><span>停止</span></el-button>
                 </div>
             </div>
         </div>
@@ -504,10 +505,10 @@ export default {
 }
 .treeWrap{
     width:414px;
-    height: calc(100% - 160px);
+    height: calc(100% - 163px);
     padding: 0 5px;
     box-sizing: border-box;
-    padding-left: 16px;
+    /* padding-left: 16px; */
 }
 .divSearchBox {
   width: 100%;
@@ -552,7 +553,7 @@ export default {
 
 .treeOperate{
     height: 100%;
-    line-height: 55px;
+    line-height: 41px;
     box-sizing: border-box;
 }
 
@@ -608,9 +609,9 @@ export default {
 
 .treefoot{
     width: 100%;
-    height: 58px;
+    height: 59px;
     background: url(../../../../static/main/screen/resource_bottom_bg.png) no-repeat top;
-    background-size: 100% 58px;
+    background-size: 100% 60px;
     color:#D3DCF0;
 }
 .icon-clear{
@@ -618,7 +619,7 @@ export default {
     width:14px;
     height: 14px;
     vertical-align: middle;
-    background: url(../../../../static/common/reset.png) no-repeat center;
+    /* background: url(../../../../static/common/reset.png) no-repeat center; */
 }
 .treefoot /deep/ .el-button--text{
   color:#D3DCF0;
@@ -768,24 +769,34 @@ export default {
     background: none;
 }
 .el-scrollbar.hiddenXScroll /deep/ .el-scrollbar__wrap{
-    height: calc(100% + 17px);
+       margin-right: -20px!important;
+    height: calc(100% + 20px);
 }
 /deep/ .el-tree{
     margin-bottom: 20px;
 }
 
 .treeOperate-l{
-    width: 182px;
+    width: 135px;
     text-align: left;
-    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+.treeOperate{
+    padding: 8px 12px;
+    box-sizing: border-box;
+}
+.treeOperate-btn{
+    width: 245px;
+    vertical-align: middle;
 }
 .treeOperate-l,.treeOperate-btn{
     display: inline-block;
     height: 41px;
-    line-height: 41px;
-}
-.treeOperate-btn{
-    width: 191px;
+    line-height: 38px;
+    font-size: 12px;
 }
 .treeSelectedNum{
   color:#599AFF;  

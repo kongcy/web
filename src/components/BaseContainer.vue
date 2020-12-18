@@ -130,8 +130,8 @@ export default {
               self.leaveDialog = null;
               // self.apiSDK.publishLeave();
               const USER = xtxk.cache.get("USER");
-              if(this.apiSDK.playType == 1){
-                this.apiSDK.noPluginLoginOut(USER.userName)
+              if(self.apiSDK.playType == 1){
+                self.apiSDK.noPluginLoginOut(USER.userName)
               }
               self.$router.push("Login");
             }, 200);

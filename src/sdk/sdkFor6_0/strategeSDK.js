@@ -162,11 +162,17 @@ export var strategeSDK6 = {
         strategeSDK6._doPost(url, JSON.stringify(data), callback);
     },
     // ======================  免插登录 新加SDK   1214 ==========================================================
-    // =================================   接口调试部署后可删除  =============================================    
+    // =================================   接口 免插登入、登出  =============================================    
+       //设置免插登录URL前缀 
+    setNoPluginURLPrefix: function(prefix) {
+        if (prefix != null && typeof(prefix) != "undefined") {
+            strategeSDK6._noPluginURLPrefix = prefix; // 'http://172.16.7.149:8999/user'
+        }
+    },
     _plugindoGet: function(url, data, callback) {
         var configObj = {
             method: "GET",
-            url: 'http://172.16.11.211:8999/user' + url,
+            url: strategeSDK6._noPluginURLPrefix  + url,
             async: strategeSDK6._isAsync,
             data: data,
             dataType: strategeSDK6._dataType,
@@ -290,6 +296,12 @@ export var strategeSDK6 = {
         strategeSDK6._doPost(url,JSON.stringify(obj), callback);
     },
     
+        // =================================   视频诊断 新加SDK   1216  =============================================
+    getDiagnoseList: function(data, callback) {
+            var url = "/diag/diag_share";
+            strategeSDK6._doPost(url,JSON.stringify(data), callback);
+     },
+     
     newOpenMeeting(data, callback){
         var mapObj = new Map();
         mapObj.set("resourceSipId", data.resId);
@@ -304,7 +316,7 @@ export var strategeSDK6 = {
         var obj = {
              "ydm": data.ydm,
         //     "yhid": "tycjpt.tlm",
-             "yhid": data.userName + '.' + data.ydm,
+             "yhid": data.userName,
         //    "yhkl": "202004@tycjpt",
              "yhkl": data.passWord,
             // "yhkl":'whxtxk@201906',

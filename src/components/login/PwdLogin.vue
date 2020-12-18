@@ -2,10 +2,18 @@
   <div style="padding: 50px 40px 0px;">
         <el-form :model="form" status-icon :rules="rules" ref="login" label-width="100px" @keyup.enter.native="login">
             <el-form-item  prop="username">
-                <el-input placeholder="请输入账号名称" class="accounts" v-model="form.username" autofocus="autofocus">
+                <el-input placeholder="请输入账号名称" class="accounts" v-model="form.username" autofocus="autofocus" :class="unificationLogin ? 'unificationLoginInput': ''">
                         <i slot="prefix" class="el-input__icon el-icon-users"></i>
                 </el-input>
                 <!-- <el-input class="accounts" v-model="form.username" autofocus="autofocus"></el-input> -->
+                <el-select v-if="unificationLogin" v-model="selectAreaModel" placeholder="请选择" size='mini' class="selectArea">
+                    <el-option
+                    v-for="item in selectAreaData"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                    </el-option>
+                </el-select>
             </el-form-item>
              
             <el-form-item  prop="password">
@@ -26,8 +34,8 @@
             </el-row> -->
 
             <el-row>
-                <el-col :span="8"><el-checkbox v-model="remberMe">记住密码</el-checkbox></el-col>
-                <el-col :span="10"><el-checkbox v-model="unificationLogin">统一认证</el-checkbox></el-col>
+                <el-col :span="7"><el-checkbox v-model="unificationLogin">统一认证</el-checkbox></el-col>
+                <el-col :span="11"><el-checkbox v-model="remberMe">记住密码</el-checkbox></el-col>               
                 <el-col :span="6"  style="text-align: right;" ><div style="cursor: pointer; font-size: 14px;color:#fff;" @click="download"><i class="el-icon-download" ></i>组件下载</div></el-col>
             </el-row>
             <center>
@@ -80,7 +88,13 @@ export default {
             remberMe: false,
             unificationLogin: false,
             verifyCode: 'aaaa',
-            loginLoading: false
+            loginLoading: false,
+            selectAreaData: [
+                { label: '塔里木', value: 'tlm' },
+                { label: '塔西南', value: 'txn' },
+                { label: '乙方单位', value: 'ptr' },
+            ],
+            selectAreaModel: ''
         }
     },
     mounted() {
@@ -90,6 +104,8 @@ export default {
     methods: {
         estimateLogin(){
             if( this.unificationLogin ){
+                console.log('ssss', this.selectAreaModel);
+                xtxk.cache.set('ydm',  this.selectAreaModel );
                 // 判断是否统一登录
                 this.unifyRegister();
             } else {
@@ -100,8 +116,8 @@ export default {
         unifyRegister(){
             let tilimu = this.apiSDK.config.talimu;
             let data = {
-                ydm: tilimu.ydm,
-                userName: this.form.username,
+                ydm: xtxk.cache.get('ydm'),
+                userName: this.form.username + '.' + xtxk.cache.get('ydm'),
                 passWord: decodeURIComponent(this.form.password),
                 ip: tilimu.ip
             };
@@ -127,7 +143,7 @@ export default {
                 if (valid) {
                     this.remberMeChange(this.remberMe)
                     this.loginLoading = true;
-                    this.apiSDK.loginWithAccount(this.form.username, this.form.password, this.form.verifyCode, (res) => {
+                    this.apiSDK.loginWithAccount(this.form.username, this.form.password, 'aaaa', (res) => {
                         this.loginLoading = false
                         if(res && res.Ret == 0){
                             //store
@@ -219,8 +235,10 @@ export default {
         // 免插登录
         noPluginLogin(account){
             this.apiSDK.noPluginLogin(account,(res)=>{
-                this.apiSDK.playType = res.code
-                // console.log('免插登录==========', res )
+                console.log('免插登录==========', res )
+                if( res && res.code ) {
+                  this.apiSDK.playType = res.code
+                };
             })
         },
     }
@@ -284,5 +302,14 @@ input:-webkit-autofill:active{
 }
 /deep/ .el-checkbox__inner{
     background: transparent;
+}
+.unificationLoginInput {
+    width: calc(100% - 150px);
+}
+.selectArea {
+    float: right;
+}
+/deep/ .selectArea input {
+    width: 150px;
 }
 </style>

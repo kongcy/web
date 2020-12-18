@@ -870,7 +870,8 @@ export default {
     width:414px;
     height: calc(100% - 158px);
     /* overflow: hidden; */
-    padding: 0 0 0 16px;
+    padding: 0;
+    /* padding: 0 0 0 16px; */
     box-sizing: border-box;
 }
 .divSearchBox {

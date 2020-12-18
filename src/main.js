@@ -34,11 +34,17 @@ const setConfigInstance = () => {
         dataURL       : res.data.api.dataURL,
         businessURL   : res.data.api.businessURL,
         strategeURL   : res.data.api.strategeURL,
+        noPluginServerURL: res.data.api.noPluginServerURL,
         electronBlackboardUrl : res.data.api.electronBlackboardUrl,
         pluginVersion : res.data.pluginVersion,
         platformVersion: res.data.platformVersion,   // 0-标准音视频平台 1-互联互通平台
         diagnoseUrl: res.data.api.diagnoseUrl,
-        talimu: res.data.talimu
+        talimu: res.data.talimu,
+         ffmepgServer: res.data.ffmepgServer.serverUrl,
+        decodeResolution:res.data.ffmepgServer.decodeResolution,
+        playerType:0,
+        mediaServerIp:'127.0.0.1', 
+        mediaServerPort:'4443'
       });
   })
 }

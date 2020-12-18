@@ -77,7 +77,8 @@ export default {
       isShowHolder:true,
       isShowHolderC:false,
       isShowResource:true,
-      
+
+      isAllFull:false,
     }
   },
   mounted() {
@@ -130,9 +131,15 @@ export default {
         self.$refs.resourcecontainer.initTree();
       }
     });
-
+  
     // 事件
     window.addEventListener("resize", this.resize);
+
+    //所有全屏 回调
+    this.apiSDK.fullAllScreenCallback(isFull => {
+      this.isAllFull = isFull
+      this.resize();
+    })
   },
   methods: {
     // 分时防抖函数
@@ -149,10 +156,19 @@ export default {
     resize() {
       let self = this;
       self.initLayout();
-      self.apiSDK.changeSizeForPlugin(
-        self.imageShowWidth,
-        self.imageShowHeight
-      );
+      if(this.isAllFull){
+        let containerWidth=document.body.clientWidth;
+        let containerHeight=document.body.clientHeight;
+        self.apiSDK.changeSizeForPlugin(
+          containerWidth,
+          containerHeight
+        );
+      }else{
+        self.apiSDK.changeSizeForPlugin(
+          self.imageShowWidth,
+          self.imageShowHeight
+        );
+      }
       // self.debounce(function() {
       //   self.initLayout();
       //   self.apiSDK.onChangeSizeForPlugin(self.imageShowWidth, self.imageShowHeight);
@@ -231,8 +247,8 @@ export default {
       }
       //图像显示区域
       this.imageShowStyle ="width:" + imageShowWidth + "px" + ";height:" + imageShowHeight + "px";
-      this.imageShowWidth = imageShowWidth-16;
-      this.imageShowHeight = imageShowHeight-8;
+      this.imageShowWidth = imageShowWidth;
+      this.imageShowHeight = imageShowHeight;
     },
     //展开/隐藏资源
     expendResource(){
@@ -248,12 +264,17 @@ export default {
       this.resize();
     },
     //隐藏云台控制
-    HideHolder(){
-      console.log("隐藏云台控制")
+    HideHolder(data){
+      console.log("隐藏云台控制",data)
       // this.isShowHolderC=false;
       // this.resize();
-      this.$refs.holderControl.cancleStatus();
-      // this.$refs.holderControl.closedDialog();
+      if(data){
+        let HolderResourceId= this.$refs.holderControl.resourceId
+        let n=data.findIndex(item=>item.id==HolderResourceId);
+        if(n>-1)
+        this.$refs.holderControl.closedDialog();
+      }
+     
     },
     //展开/隐藏云台控制
     expendTogetherHolder(){
@@ -374,7 +395,7 @@ div > div#divImageContent_Monitor > div#divImageShow_Monitor {
 }
 #divResourceArea_Monitor {
   float: left;
-  padding: 10px 0 0 0;
+  padding: 0;
   box-sizing: border-box;
   margin: 0px;
   height: 100% !important;
@@ -396,75 +417,76 @@ div > div#divImageContent_Monitor > div#divImageShow_Monitor {
 }
 .toLeft{
   left: -35px;
-    top: 16px;
+    top: 6px;
   /* background: url(../../../static/common/toLeft.png) no-repeat center; */
   background: url(../../../static/common/left-btn.png) no-repeat center;
 }
 .toLeft:hover{
   left: -35px;
-    top: 16px;
+  top: 6px;
   /* background: url(../../../static/common/toLeft_hover.png) no-repeat center; */
   background: url(../../../static/common/left-btn-hover.png) no-repeat center;
 }
 .toLeft:active{
   left: -35px;
-  top: 16px;
+  top: 6px;
   /* background: url(../../../static/common/toLeft_active.png) no-repeat center; */
   background: url(../../../static/common/left-btn-click.png) no-repeat center;
 }
 .toRight{
   right: -398px;
-  top: 16px;
+  top: 6px;
   background: url(../../../static/common/right-btn.png) no-repeat center;
 }
 .toRight:hover{
   right: -398px;
-  top: 16px;
+  top: 6px;
   background: url(../../../static/common/right-btn-hover.png) no-repeat center;
 }
 .toRight:active{
   right: -398px;
-  top: 16px;
+  top: 6px;
   background: url(../../../static/common/right-btn-active.png) no-repeat center;
 }
 .divHolderControl{
   float:right;
-  padding:10px 0 0 0;
+  padding:0;
   box-sizing: border-box;
   background: url(../../../static/holderControl/bg.png) no-repeat center;
   background-size: 100% 100%;
+  border-top: 1px solid #5C6D86;
 }
 
 
 .toLeft.toLeft_R{
   left: 0px;
-  top: 16px;
+  top: 6px;
   background: url(../../../static/common/toRight.png) no-repeat center;
 }
 .toLeft.toLeft_R:hover{
   left: 0px;
-  top: 16px;
+  top: 6px;
   background: url(../../../static/common/toRight_hover.png) no-repeat center;
 }
 .toLeft.toLeft_R:active{
   left: 0px;
-  top: 16px;
+  top: 6px;
   background: url(../../../static/common/toRight_active.png) no-repeat center;
 }
 
 .toRight.toRight_L{
   right: 0px;
-  top: 16px;
+  top:6px;
   background: url(../../../static/common/toLeft.png) no-repeat center;
 }
 .toRight.toRight_L:hover{
   right: 0px;
-  top: 16px;
+  top: 6px;
   background: url(../../../static/common/toLeft_hover.png) no-repeat center;
 }
 .toRight.toRight_L:active{
   right: 0px;
-  top: 16px;
+  top: 6px;
   background: url(../../../static/common/toLeft_active.png) no-repeat center;
 }
 </style>

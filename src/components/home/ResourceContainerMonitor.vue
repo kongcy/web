@@ -3,9 +3,9 @@
       
     <!-- 资源显示区域 -->
     <div class="tabWrap" style="height:100%">
-        <el-tabs v-model="activeName" class="tabWrap_tabs" @tab-click="tabClickHandler">
+        <el-tabs v-model="activeName" class="tabWrap_tabs" :before-leave="changeActiveName">
         <!-- <el-tabs v-model="activeName" class="tabWrap_tabs"> -->
-            <el-tab-pane v-for="(item, index) in editableTabs" :label="item.title" :name="item.name" :key="item.name" style="height:100%">
+            <el-tab-pane v-for="(item, index) in editableTabs" :label="item.title" :name="item.name" :key="item.name" style="height:100%;width:412px;">
                 <component :is="item.content" :ref="item.ref" :treeId="item.treeId" v-on="$listeners"></component>
             </el-tab-pane>
         </el-tabs>
@@ -162,12 +162,6 @@ export default {
     },
     //菜单单击
     tabClickHandler(tab){
-      this.activeName=tab.name;
-      if(this.activeName != 'SearchStratege'){
-        this.$refs.searchStratege[0].stopAll()
-      }else{
-        this.$refs.equipementRes[0].$refs.deviceTree[0].stopAll();
-      }
     },
     // // 去重
     // reduce(array) {
@@ -314,8 +308,36 @@ export default {
     //弹出 视频巡查管理页面
     showStartege(){ 
       this.$refs.searchStratege[0].$refs.rightMenu.$refs.strategeInfoDialog.showDialog()
-    }
-  },
+    },
+    //切换标签 之前的钩子 若返回 false 或者返回 Promise 且被 reject，则阻止切换
+     changeActiveName(activeName, oldActiveName){
+       return true
+      // let msg = ''
+      // if(oldActiveName == 'SearchStratege'){
+      //   msg = '切换界面会导致巡查停止，是否继续'
+      // }else if(oldActiveName == 'EquipementRes'){
+      //   msg = '切换界面会导致点播停止，是否继续'
+      // }
+      // return new Promise((resolve,reject) => {
+      //   this.$confirm(msg, '提示', {
+      //       confirmButtonText: '确定',
+      //       cancelButtonText: '取消',
+      //       type: 'info'
+      //     }).then(() => {
+      //       resolve();
+      //       this.activeName = activeName;
+      //       if(oldActiveName == 'SearchStratege'){
+      //         this.$refs.searchStratege[0].stopAll()
+      //       }else if(oldActiveName == 'EquipementRes'){
+      //         this.$refs.equipementRes[0].$refs.deviceTree[0].stopAll();
+      //       }
+      //     }).catch(() => {      
+      //       reject();  
+      //     });
+      // })
+    },
+  }
+
 };
 </script>
 <style>
@@ -335,13 +357,13 @@ export default {
 }
 .title-bg{
   position: absolute;
-  top:-10px;
+  top:0px;
   left:0;
-  width: 124px;
-  height: 10px;
+  width: 125px;
+  height: 4px;
   z-index: 300;
-  background: url(../../../static/main/screen/title_bg_10.png) no-repeat center;
-  background-size: 124px 10px;
+  background: url(../../../static/main/screen/title_bg_4.png) no-repeat center;
+  background-size: 125px 4px;
 }
 #divTimeBox {
   width: 100%;
@@ -498,6 +520,7 @@ export default {
   width: 412px;
   float: left;
   height: 100%;
+  border-top: 1px solid #5C6D86;
 }
 .video-voice,
 .video-command,

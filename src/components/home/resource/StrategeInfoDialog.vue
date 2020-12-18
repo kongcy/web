@@ -32,9 +32,9 @@
                     <div class="r-main">
                         <div class="form-div" style="margin-bottom:20px">
                             <div class="control-item">
-                                <span class="lable-stratege label-strategeName">策略名称</span>
+                                <span class="lable-stratege label-strategeName">方案名称</span>
                                 <div class="control-div">
-                                    <el-input v-model="strategeName" placeholder="请输入策略名称" ></el-input>
+                                    <el-input v-model="strategeName" placeholder="请输入方案名称" ></el-input>
                                 </div>
                             </div>
                             <div class="control-item">
@@ -169,13 +169,13 @@
                     <div class="r-main">
                         <div class="form-div" style="margin-bottom:20px">
                             <div class="control-item">
-                                <span class="lable-stratege label-strategeName">策略名称</span>
+                                <span class="lable-stratege label-strategeName">方案名称</span>
                                 <div class="control-div">
-                                    <el-input v-model="strategeName" placeholder="请输入策略名称" ></el-input>
+                                    <el-input v-model="strategeName" placeholder="请输入方案名称" ></el-input>
                                 </div>
                             </div>
                             <div class="control-item">
-                                <span class="lable-stratege label-strategeType">策略类型</span>
+                                <span class="lable-stratege label-strategeType">方案类型</span>
                                 <div class="control-div strategeInfo-type">
                                     <el-select v-model="strategeType" placeholder="请选择活动区域" :popper-append-to-body="false" disabled>
                                         <el-option label="巡查方案" value="0">
@@ -296,14 +296,14 @@
             <!-- 内层弹出框---选择新建策略类型 -->
             <el-dialog
             width="460px"
-            title="选择新建策略类型"
+            title="选择新建方案类型"
             class="inner-dialog"
             :visible.sync="innerVisible"
             append-to-body
             @closed="closedInnerDialog"
             >
                 <div class="box-inner">
-                    <p>请选择新建策略的类型：</p>
+                    <p>请选择新建方案的类型：</p>
                     <div class="radio-div">
                         <el-radio v-model="radioStrategeType" label="0">巡查方案</el-radio>
                       <!--  <el-radio v-model="radioStrategeType" label="1">计划视频巡查</el-radio> -->
@@ -697,7 +697,7 @@ export default {
                 groupDeviceDtoList.push(lt)
             })
             if(strategyName == ''){
-                this.showremind('warning','请输入策略名称');
+                this.showremind('warning','请输入方案名称');
                 return
             }else if(this.NormalLoop.length <= 0){
                 this.showremind('warning','请选择巡查窗口');
@@ -755,7 +755,7 @@ export default {
                 groupDeviceDtoList.push(lt)
             })
             if(strategyName == ''){
-                this.showremind('warning','请输入策略名称');
+                this.showremind('warning','请输入方案名称');
                 return
             }else if(this.NormalLoop.length <= 0){
                 this.showremind('warning','请选择巡查窗口');

@@ -63,14 +63,21 @@ export default {
     methods: {
         // 统一登录
         unifyRegister(){
-            console.log('统一登录', this.apiSDK.config.ydm);
-             let tilimu = this.apiSDK.config.talimu;
+            let tilimu = this.apiSDK.config.talimu;
+            let userName = xtxk.cache.get('AutomaticPlayUsername').userName;
+            let ydm;
+            let array = userName.split('.');
+            if( array ) {
+               ydm = array[1];
+               this.form.username = array[0];
+            };
             let data = {
-                ydm: tilimu.ydm,
-                userName: xtxk.cache.get('AutomaticPlayUsername').userName,
+                ydm: ydm,
+                userName: userName,
                 passWord: decodeURIComponent(xtxk.cache.get('AutomaticPlayPassword').passWord),
                 ip: '10.79.201.179'
             };
+
             let that = this;
             this.apiSDK.userLogin(data, obj => {
                 if( obj.code == 1 && obj.data ) {
@@ -93,7 +100,10 @@ export default {
             let isNoPlayNumber = '';
             for( let i = 0; i < vars.length; i++ ){
                 let pair = vars[i].split('=');
-                if( pair[0] === 'userName' ){ xtxk.cache.set('AutomaticPlayUsername', { userName: pair[1]}) }
+                if( pair[0] === 'userName' ){ 
+                    // this.form.username = JSON.parse(JSON.stringify(  userName.slice('.')[0] ));
+                    xtxk.cache.set('AutomaticPlayUsername', { userName: pair[1] }) 
+                }
                 else if( pair[0] === 'passWord' ){ xtxk.cache.set('AutomaticPlayPassword', { passWord: pair[1]}) }
                 else if( pair[0] === 'isAutoPlay' ){  xtxk.cache.set('isAutoPlay', pair[1] ) }
             }
@@ -102,13 +112,12 @@ export default {
             let that = this;
             setTimeout(()=> {
               that.unifyRegister();
-            },0)
-
+            },0);
         },
         // 登录
         login() {
             console.log('登录');
-            this.apiSDK.loginWithAccount(xtxk.cache.get('AutomaticPlayUsername').userName, xtxk.cache.get('AutomaticPlayPassword').passWord, 'aaaa', (res) => {
+            this.apiSDK.loginWithAccount(this.form.username, xtxk.cache.get('AutomaticPlayPassword').passWord, 'aaaa', (res) => {
                 if(res && res.Ret == 0){
                     //store
                     this.$store.commit("updateUserinfo", {token:res.token, userID:res.data.userID, userName:res.data.userName});

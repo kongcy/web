@@ -1,6 +1,8 @@
 import WebglScreen from './webglScreen'
+import JsmpegScreen from './jsmepgScreen'
 import videoJs from '../video/videoSDK'
 import hlsVideoJs from '../hlsVideo/hlsVideoSDK'
+import {UUID} from '../utils/commfun'
 // 静态图片引用
 // 屏幕选中图片
 import img_selected from '../img/img_selected.png'
@@ -141,9 +143,10 @@ function Screen(){
 }
 
 var decoderPlayer = {
+	allFull                        :false,//全部插件全屏2020.12.15
 	_screens                       : null,
 	_containerDiv                  : null,
-	_maxScreenCount                : 36,
+	_maxScreenCount                : 9,//36,
     _defaultSplitType              : SPLIT_TYPE_FOUR,
 	_currentSplitType              : null,
 	_currentSplitCount			   : 0,
@@ -151,7 +154,9 @@ var decoderPlayer = {
 	_containerHeight               : 0,
 	_space                         : 0,
 	_childScreenBorder             : 1,
-	_refreshDataType			   : 1, //1,webgl方式   2，2d方式
+	_refreshDataType			   : 1, // 1,webgl方式   2，2d方式
+	_playerType				       : 0, // 播放器类型 半免0/全免1
+	_mediaServer 				   : null, // 流媒体服务
 	//操作回调
 	_suspendOperateCB              : null,
 	_cancelSuspendOperateCB        : null,
@@ -476,24 +481,28 @@ var decoderPlayer = {
 	//监听全屏/退出事件
 	_applyExitFullScreenEvent : function(callback){
 		document.addEventListener("fullscreenchange", function(e){
-			if(document.fullscreenElement == null|| e.target != document.fullscreenElement)
+			if(document.fullscreenElement == null){
+				decoderPlayer.allFull=false;
 				callback(false, e);
-			else callback(true, e);
+			}else callback(true, e);
 		});
 		document.addEventListener("msfullscreenchange", function(e){
-			if(document.msFullscreenElement == null|| e.target != document.fullscreenElement)
+			if(document.msFullscreenElement == null){
+				decoderPlayer.allFull=false;
 				callback(false, e);
-			else callback(true, e);
+			}else callback(true, e);
 		});
 		document.addEventListener("mozfullscreenchange", function(e){
-			if(document.mozFullScreenElement == null|| e.target != document.fullscreenElement)
+			if(document.mozFullScreenElement == null){
+				decoderPlayer.allFull=false;
 				callback(false, e);
-			else callback(true, e);
+			}else callback(true, e);
 		});
 		document.addEventListener("webkitfullscreenchange", function(e){
-			if(document.webkitFullscreenElement == null|| e.target != document.fullscreenElement)
+			if(document.webkitFullscreenElement == null){
+				decoderPlayer.allFull=false;
 				callback(false, e);
-			else callback(true, e);
+			}else callback(true, e);
 		});
 	},
     /*UI区域刷新接口***********************************************************************/
@@ -626,8 +635,10 @@ var decoderPlayer = {
 
 			jsOperate9 += " id=\"" + decoderPlayer._btnOpenMeeting + "\"";
 			jsOperate9 += " title=\"开启会议\" src=\"" + decoderPlayer._imgOpenMeeting +  "\"";
-
-			var innerHTML =
+			var innerHTML='';
+			//全部全屏时底部功能按钮显示2020.12.15
+			if(decoderPlayer.allFull){
+				innerHTML =
 					"<table style=\"height:100%;\">" +
 					"	<tr style=\"height:25px;\" valign=\"bottom\">" +
 					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate1 + "></img></td>" +
@@ -638,11 +649,29 @@ var decoderPlayer = {
 					"		<td style=\"width:100%\"></td>" +
 					// "		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate6 + "></img><div class=\"pictureQuality\" style=\"display:none\"></div></td>" +
 					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate9 + "></img></td>" +
+					// "		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate4 + "></img></td>" +
+					// "		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate5 + "></img></td>" +
+					"		<td><img style=\"width:20px; height:20px; padding: 0px 5px 0px 5px; cursor: pointer;\"" + jsOperate8 + "></img></td>" +
+					"	</tr>" +
+					"</table>";
+			}else{
+			innerHTML =
+					"<table style=\"height:100%;\">" +
+					"	<tr style=\"height:25px;\" valign=\"bottom\">" +
+					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate1 + "></img></td>" +
+					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate2 + "></img></td>" +
+					// "		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate7 + "></img></td>" +
+					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate3 + "></img></td>" +
+					 "		<td><div style=\"width:120px; margin-left: 5px;\" class=\"volume-progress\"></div></td>" +
+					"		<td style=\"width:100%\"></td>" +
+					// "		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate6 + "></img><div class=\"pictureQuality\" style=\"display:none\"></div></td>" +
+					"		<td><img style=\"width:20px; height:20px; padding: 0px 5px 0px 5px; cursor: pointer;\"" + jsOperate9 + "></img></td>" +
 					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate4 + "></img></td>" +
 					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate5 + "></img></td>" +
 					"		<td><img style=\"width:20px; height:20px; padding: 0px 5px 0px 5px; cursor: pointer;\"" + jsOperate8 + "></img></td>" +
 					"	</tr>" +
 					"</table>";
+			}
 			operateDiv.innerHTML = innerHTML;
 
 			
@@ -1033,7 +1062,7 @@ var decoderPlayer = {
 					videoDiv.style.display = "none";
 				}
 			} else {
-				var canvasDiv = childDiv.children[3];
+				var canvasDiv = childDiv.getElementsByTagName('canvas')[0];
 				if(canvasDiv.style.display != "none"){
 					//销毁canvas
 					screenInfo.webglCanvas.destroy();
@@ -1065,11 +1094,11 @@ var decoderPlayer = {
 						screenInfo.video.setSize(childDiv.offsetWidth, childDiv.offsetHeight);
 				}
 			} else {
-				var canvasDiv = childDiv.children[3];
-				if(canvasDiv.style.display != "block"){
+				var canvasDiv = childDiv.getElementsByTagName('canvas')[0];
+				if(canvasDiv.style.display != "block"&&!screenInfo.webglCanvas){
 					canvasDiv.style.display = "block";
 					//创建canvas
-					var glScreen = new WebglScreen(canvasDiv, decoderPlayer._refreshDataType);
+					var glScreen =decoderPlayer._playerType?new JsmpegScreen(canvasDiv.id,decoderPlayer._mediaServer,decoderPlayer._decodeResolution): new WebglScreen(canvasDiv, decoderPlayer._refreshDataType);
 					screenInfo.webglCanvas = glScreen;
 					screenInfo.webglCanvas.setSize(childDiv.offsetWidth, childDiv.offsetHeight)
 				}
@@ -1221,12 +1250,12 @@ var decoderPlayer = {
                 decoderPlayer._screens[i].isSelected = false;
             }
         }
-        decoderPlayer._refreshUI();
-        //执行选中分屏回调
-        if(decoderPlayer._afterSelectedScreenCB != null){
+		decoderPlayer._refreshUI();
+		//执行选中分屏回调
+		if(decoderPlayer._afterSelectedScreenCB != null){
             let isPlay = decoderPlayer._screens[screenIndex].business != BUSINESS_NONE
-            decoderPlayer._afterSelectedScreenDropCB(screenIndex, isSelected, isPlay, dragData);
-        }
+			decoderPlayer._afterSelectedScreenDropCB(screenIndex, isSelected, isPlay, dragData);
+		}
     },
 	//执行暂停操作
 	_suspendOperate : function(screenIndex){
@@ -1270,8 +1299,9 @@ var decoderPlayer = {
     },
 	/*对外接口*********************************************************************/
     //初始化
-	init : function(divId, containerWidth, containerHeight, refreshDataType){
+	init : function(divId, containerWidth, containerHeight, refreshDataType,playerType){
 		console.log('webglPlayer--初始化');
+		decoderPlayer._playerType = playerType
 		// 清除已保存分屏信息
 		decoderPlayer._currentSplitType = null;
 		decoderPlayer._refreshDataType = refreshDataType;
@@ -1301,7 +1331,7 @@ var decoderPlayer = {
 			decoderPlayer._screens[i].business   = BUSINESS_NONE;//空闲状态
 			decoderPlayer._screens[i].isSuspended = false;           //是否已暂停
 			decoderPlayer._screens[i].soundOff    = true;           //声音是否已关闭
-            decoderPlayer._screens[i].isFull      = false;           //是否全屏显示
+			decoderPlayer._screens[i].isFull      = false;           //是否全屏显示
 
             //分屏父DIV
             var childDiv           = document.createElement("DIV");
@@ -1315,7 +1345,7 @@ var decoderPlayer = {
             childDiv.ondrop = (event) => {
                 let screenIndex = event.target.id.substr(decoderPlayer._childNormalIdName.length);
                 let data = event.dataTransfer.getData("item")
-                decoderPlayer._childSelectedDrop(screenIndex, JSON.parse(data));
+				decoderPlayer._childSelectedDrop(screenIndex, JSON.parse(data));	
             }
 			//childDiv.setAttribute("onmouseover", "decoderPlayer._chilidMouseOver(" + i + ", event);");
             //childDiv.setAttribute("onmouseout" , "decoderPlayer._childMouseOut(" + i + ", event);");
@@ -1415,11 +1445,25 @@ var decoderPlayer = {
 				}
 			}
 			//刷新childDiv显示
+			decoderPlayer.allFull=false;
 			decoderPlayer._refreshUI();
 			//执行
 			if(decoderPlayer._fullScreenChangedCB != null && businessScreens.length > 0)
 				decoderPlayer._fullScreenChangedCB(businessScreens, isFull);
+
+
+
         });
+	},
+	/**
+	 *  初始化jsmpeg流媒体服务
+	 */
+	initMediaServer(fs,dr){
+		if(!decoderPlayer._mediaServer){
+			decoderPlayer._mediaServer = new wsConnect(fs,UUID())
+			decoderPlayer._decodeResolution= dr
+			console.log('初始化jsmpeg流媒体服务！')
+		}
 	},
 	/**
 	 * [resize 窗口大小改变]
@@ -1545,26 +1589,50 @@ var decoderPlayer = {
 			var newSplitType = decoderPlayer._getNextSplitType(decoderPlayer._currentSplitType);
 			decoderPlayer.splitScreen(newSplitType);
 		}//end if
-		decoderPlayer._screens[screenIndex].isSelected = false;     //是否选中
+		const curScreen = decoderPlayer._screens[screenIndex];
+		curScreen.isSelected = false;     //是否选中
 		//decoderPlayer._screens[screenIndex].resID      = resID;     //资源ID
 		//decoderPlayer._screens[screenIndex].resName    = resName;   //资源名称
 		//decoderPlayer._screens[screenIndex].department = department;//所属部门
 		//decoderPlayer._screens[screenIndex].center     = center;    //所属中心
 		//decoderPlayer._screens[screenIndex].business   = business;  //显示设备点播
 		//设置点播的资源类型
-		decoderPlayer._screens[screenIndex].business = BUSINESS_PERSON_PLAY;//默认
-		if(resType == 0) decoderPlayer._screens[screenIndex].business = BUSINESS_PERSON_PLAY;
-		if(resType == 1) decoderPlayer._screens[screenIndex].business = BUSINESS_DEVICE_PLAY;
+		curScreen.business = BUSINESS_PERSON_PLAY;//默认
+		if(resType == 0) curScreen.business = BUSINESS_PERSON_PLAY;
+		if(resType == 1) curScreen.business = BUSINESS_DEVICE_PLAY;
 		//判断是点播还是回放
 		let newScreenType = 1;
 		if(resType == 3) newScreenType = 2;
-		decoderPlayer._screens[screenIndex].screenType	= newScreenType;
-		decoderPlayer._screens[screenIndex].isSuspended = false;    //是否已暂停
+		curScreen.screenType	= newScreenType;
+		curScreen.isSuspended = false;    //是否已暂停
 		//decoderPlayer._screens[screenIndex].soundOff    = soundOff; //声音是否已关闭
-		decoderPlayer._screens[screenIndex].isFull      = false;    //是否全屏显示
+		curScreen.isFull      = false;    //是否全屏显示
 
 		decoderPlayer._refreshUI();
-		
+
+		// // 全免直接调用点播
+		// if(decoderPlayer._playerType){
+		// 	curScreen.webglCanvas.startPlay();
+		// }
+	},
+	/**
+	 * jsmpeg播放器相关方法 点播、暂停、停止、声音调节
+	 * @param {点播信息} options 
+	 * pos 分屏号
+	 */
+	startPlayJsmpeg(options){
+		const curScreen = decoderPlayer._screens[options.pos];
+		if(curScreen){
+			curScreen.webglCanvas.startPlay(options);
+		}
+	},
+	// 暂停播放
+	puasePlayJsmpeg(pos){
+
+	},
+	// 停止播放
+	stopPlayJsmpeg(pos){
+
 	},
 	//resType:0:人员,1:设备,2.文件频道，3.录像
 	startShowByRTMP(screenIndex, resType, rtmpURL, urlType) {
@@ -1638,7 +1706,7 @@ var decoderPlayer = {
 				decoderPlayer._screens[screenIndex].isSuspended = false;    //是否已暂停
 				decoderPlayer._screens[screenIndex].soundOff    = true; //声音是否已关闭
 				decoderPlayer._screens[screenIndex].isFull      = false;    //是否全屏显示
-				decoderPlayer._screens[screenIndex].isRecording = false;    //是否开启录像
+				decoderPlayer._screens[screenIndex].isRecording = false;    //是否开启录像 
 				if (decoderPlayer._screens[screenIndex].isRTMP) {
 					decoderPlayer._screens[screenIndex].isRTMP = false;         //是否是rtmp
 					decoderPlayer._screens[screenIndex].video.destroy();
@@ -1652,7 +1720,12 @@ var decoderPlayer = {
 	// 根据屏幕下标判断改屏幕是否是rtmp
 	isRTMP: function(screenIndex) {
 		if(screenIndex == -1 || screenIndex >= decoderPlayer._maxScreenCount) return;
-		return decoderPlayer._screens[screenIndex].isRTMP
+		const screen = decoderPlayer._screens[screenIndex]
+		if(screen){
+			return screen.isRTMP
+		}else{
+			return false
+		}
 	},
 	//暂停显示
 	suspendShow : function(screenIndex){
@@ -1660,6 +1733,9 @@ var decoderPlayer = {
 		decoderPlayer._screens[screenIndex].isSuspended = true;    //是否已暂停
 		if (decoderPlayer._screens[screenIndex].isRTMP) {
 			decoderPlayer._screens[screenIndex].video.pause();
+		}
+		if(decoderPlayer._playerType){
+			decoderPlayer._screens[screenIndex].webglCanvas.pausePlay();
 		}
 		decoderPlayer._refreshUI();
 	},
@@ -1669,6 +1745,9 @@ var decoderPlayer = {
 		decoderPlayer._screens[screenIndex].isSuspended = false;    //是否已暂停
 		if (decoderPlayer._screens[screenIndex].isRTMP) {
 			decoderPlayer._screens[screenIndex].video.play();
+		}
+		if(decoderPlayer._playerType){
+			decoderPlayer._screens[screenIndex].webglCanvas.cancelPausePlay();
 		}
 		decoderPlayer._refreshUI();
 	},
@@ -1984,8 +2063,6 @@ var decoderPlayer = {
 		var screenInfo = decoderPlayer._screens[screenIndex];
 		return screenInfo.webglCanvas.getShoot();
 	},
-
-	
 	//倍速播放
 	playbackRate : function(screenIndex){
 		if(screenIndex == -1 || screenIndex >= decoderPlayer._maxScreenCount) return;
@@ -1994,6 +2071,12 @@ var decoderPlayer = {
 			decoderPlayer._screens[screenIndex].video.playbackRate();
 		}
 		decoderPlayer._refreshUI();
+	},
+	destroy(){
+		if(decoderPlayer._mediaServer){
+			decoderPlayer._mediaServer.destroy()
+			decoderPlayer._mediaServer = null
+		}
 	},
 	setSuspendOperateCallback          : function(callback){ decoderPlayer._suspendOperateCB          = callback; },
 	setCancelSuspendOperateCallback    : function(callback){ decoderPlayer._cancelSuspendOperateCB    = callback; },

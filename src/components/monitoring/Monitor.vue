@@ -128,6 +128,11 @@ export default {
     window.addEventListener("resize", this.resize);
 
 
+    //所有全屏 回调
+    this.apiSDK.fullAllScreenCallback(isFull => {
+      this.isAllFull = isFull
+      this.resize();
+    })
     // let beforeUnloadTime = 0,gapTime=0;
     // window.onunload = function(){
     //     gapTime = new Date().getTime() - beforeUnloadTime
@@ -161,10 +166,19 @@ export default {
     resize() {
       let self = this;
       self.initLayout();
-      self.apiSDK.changeSizeForPlugin(
-        self.imageShowWidth,
-        self.imageShowHeight
-      );
+      if(this.isAllFull){
+        let containerWidth=document.body.clientWidth;
+        let containerHeight=document.body.clientHeight;
+        self.apiSDK.changeSizeForPlugin(
+          containerWidth,
+          containerHeight
+        );
+      }else{
+        self.apiSDK.changeSizeForPlugin(
+          self.imageShowWidth,
+          self.imageShowHeight
+        );
+      }
       // self.debounce(function() {
       //   self.initLayout();
       //   self.apiSDK.onChangeSizeForPlugin(self.imageShowWidth, self.imageShowHeight);
@@ -185,13 +199,13 @@ export default {
       var mainHeight = screenHeight;
 
       //资源区域
-      var resourceAreaWidth = this.isShowResource?414+24:0;
+      var resourceAreaWidth = this.isShowResource?412:0;
       var resourceAreaHeight = mainHeight;
       //云台控制区域 11.23
-      var holderControlWidth=this.isShowHolderC?412+24:0;
+      var holderControlWidth=this.isShowHolderC?412:0;
       var holderControlHeight=mainHeight;
 
-      var paddingW=40;
+      var paddingW=0;
       var margigMiddle=this.isShowHolderC?40:20;
       //图像底部区域
       var imageFooterWidth   = mainWidth - resourceAreaWidth-holderControlWidth-paddingW;
@@ -244,34 +258,33 @@ export default {
       }
       //图像显示区域
       this.imageShowStyle ="width:" + imageShowWidth + "px" + ";height:" + imageShowHeight + "px";
-      this.imageShowWidth = imageShowWidth-16;
-      this.imageShowHeight = imageShowHeight-8-20-24;
+      this.imageShowWidth = imageShowWidth;
+      this.imageShowHeight = imageShowHeight;
     },
     //展开/隐藏资源
     expendResource(){
       this.isShowResource=!this.isShowResource;
-      this.isShowHolderC=!this.isShowHolderC;
       this.resize();
     },
      //展开云台控制
     expendHolder(){
       // this.isShowHolder=true;
       this.isShowHolderC=true;
-      this.isShowResource=false;
+      // this.isShowResource=false;
       this.resize();
     },
     //隐藏云台控制
     HideHolder(){
       // this.isShowHolder=false;
-      this.isShowHolderC=false;
-      this.isShowResource=true;
-      this.resize();
+      // this.isShowHolderC=false;
+      // this.isShowResource=true;
+      // this.resize();
       this.$refs.holderControl.closedDialog();
     },
     //展开/隐藏云台控制
     expendTogetherHolder(){
       this.isShowHolderC=!this.isShowHolderC;
-       this.isShowResource=!this.isShowResource;
+      //  this.isShowResource=!this.isShowResource;
       this.resize();
     },
   
@@ -320,7 +333,7 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
-  height: calc(100% + 30px);
+  /* height: calc(100% + 30px); */
 }
 #divHeader {
   padding: 0px;
@@ -344,7 +357,7 @@ export default {
 }
 #divImageContent_Monitor {
   float: right;
-  padding: 20px 20px 22px 20px;
+  padding: 0;
   box-sizing: border-box;
   margin:0px;
   height: 100%;
@@ -388,63 +401,94 @@ div > div#divImageContent_Monitor > div#divImageShow_Monitor {
 }
 #divResourceArea_Monitor {
   float: left;
-  
-  padding: 20px 0 24px 24px;
+  padding: 0;
   box-sizing: border-box;
   margin: 0px;
   height: 100% !important;
+  background: url(../../../static/main/screen/resource_bg.png) no-repeat top;
 }
 #divImageBottomNav_Monitor{
   position: absolute;
-  bottom:52px;
+  bottom:0;
   padding: 0px;
   margin: 0px;
 }
 .toLeft,.toRight{
   position:absolute;
-  top: calc(50% - 20px);
+  top: 0;
   width:20px;
-  height: 40px;
+  height: 28px;
   cursor: pointer;
+  z-index: 999;
 }
 .toLeft{
-  left:-20px;
-  background: url(../../../static/common/toLeft.png) no-repeat center;
+  left: -35px;
+  top: 6px;
+  background: url(../../../static/common/left-btn.png) no-repeat center;
 }
 .toLeft:hover{
-  left:-20px;
-  background: url(../../../static/common/toLeft_active.png) no-repeat center;
+  left: -35px;
+  top: 6px;
+  background: url(../../../static/common/left-btn-hover.png) no-repeat center;
+}
+.toLeft:active{
+  left: -35px;
+  top: 6px;
+  background: url(../../../static/common/left-btn-click.png) no-repeat center;
 }
 .toRight{
-  right:-20px;
-  background: url(../../../static/common/toRight.png) no-repeat center;
+  right: -398px;
+  top: 6px;
+  background: url(../../../static/common/right-btn.png) no-repeat center;
 }
 .toRight:hover{
-   right:-20px;
-  background: url(../../../static/common/toRight_active.png) no-repeat center;
+  right: -398px;
+  top: 6px;
+  background: url(../../../static/common/right-btn-hover.png) no-repeat center;
+}
+.toRight:active{
+  right: -398px;
+  top: 6px;
+  background: url(../../../static/common/right-btn-active.png) no-repeat center;
 }
 .divHolderControl{
   float:right;
-  padding:20px 24px 24px 0;
+  padding:0;
   box-sizing: border-box;
+  background: url(../../../static/holderControl/bg.png) no-repeat center;
+  background-size: 100% 100%;
+  border-top: 1px solid #5C6D86;
 }
 
-
 .toLeft.toLeft_R{
-  right:-20px;
+  left: 0px;
+  top: 6px;
   background: url(../../../static/common/toRight.png) no-repeat center;
 }
 .toLeft.toLeft_R:hover{
-  right:-20px;
+  left: 0px;
+  top: 6px;
+  background: url(../../../static/common/toRight_hover.png) no-repeat center;
+}
+.toLeft.toLeft_R:active{
+  left: 0px;
+  top: 6px;
   background: url(../../../static/common/toRight_active.png) no-repeat center;
 }
 
 .toRight.toRight_L{
-  right:-20px;
+  right: 0px;
+  top:6px;
   background: url(../../../static/common/toLeft.png) no-repeat center;
 }
 .toRight.toRight_L:hover{
-  right:-20px;
+  right: 0px;
+  top: 6px;
+  background: url(../../../static/common/toLeft_hover.png) no-repeat center;
+}
+.toRight.toRight_L:active{
+  right: 0px;
+  top: 6px;
   background: url(../../../static/common/toLeft_active.png) no-repeat center;
 }
 </style>

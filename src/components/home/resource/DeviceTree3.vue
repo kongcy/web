@@ -89,18 +89,19 @@
                     draggable
                     :allow-drop="allowDrop"
                     :allow-drag="allowDrag"
+                    :indent="26"
                 >
                 </el-tree>
         </el-scrollbar>
         <div class="treefoot">
             <!-- <div class="treeSelectedNum">已选中{{selectedNum}}个视频资源</div> -->
-            <div class="treeOperate">
+            <div class="treeOperate" :title="'已选中'+selectedNum+'个视频资源'">
                 <div class="treeOperate-l">
                     已选中<span class="treeSelectedNum">{{selectedNum}}</span>个视频资源
-                    <el-button type="text"  @click="clearAllNum"><i class="icon-clear"></i>清空</el-button>
                 </div>
                 <div class="treeOperate-btn">
-                    <el-button type="primary" size="small" @click="startPlays"><i class="icon-play"></i><span>点播</span></el-button>
+                    <el-button type="text"  @click="clearAllNum"><i class="icon-clear"></i>清空</el-button>
+                    <el-button type="primary" size="small" @click="startPlays" style="margin-left:5px"><i class="icon-play"></i><span>点播</span></el-button>
                     <el-button v-if="!hasPlayD" type="danger" size="small" @click="stopAll" plain class="nobg"><i class="icon-stopPlay"></i><span>停止</span></el-button>
                     <el-button v-else type="danger" size="small" @click="stopAll"><i class="icon-stopPlay_bg"></i><span>停止</span></el-button>
                 </div>
@@ -424,8 +425,30 @@ export default {
         },
         //全部停止
         stopAll(){
-            this.apiSDK.stopAll();  
-            this.$listeners.StopAllHideHolder();
+            var targetNodesP = [];
+            var targetNodesD = [];
+
+            var nodes = this.mergeResourceData();
+            for( var i=0;i<nodes.length;i++ ){
+                if( nodes[i].nodeStatus.indexOf("person_")>-1){
+                    if( nodes[i].nodeStatus != "person_online"){
+                        targetNodesP.push(nodes[i]);
+                    }
+                }
+                if(nodes[i].nodeStatus.indexOf("device_")>-1||nodes[i].nodeStatus.indexOf("channel_")>-1){
+                    if( nodes[i].nodeStatus != "device_online"&&nodes[i].nodeStatus != 'device_offline'&&nodes[i].nodeStatus != 'channel_online'&&nodes[i].nodeStatus != 'channel_offline'){
+                        targetNodesD.push(nodes[i]);
+                    }
+                }
+               
+            }
+            if( targetNodesP.length + targetNodesD.length == 0 ){
+                var content = '请至少选择一个在线播放的资源发起停止点播';
+                this.$message({message: content, type: 'warning'})
+                return;
+            }
+             Fun.stopPlayDevices(this,targetNodesP.concat(targetNodesD));
+            this.$listeners.StopAllHideHolder(targetNodesP.concat(targetNodesD));
         },
         handleChangeSerachWrap(){
             this.searchChange = !this.searchChange;
@@ -877,9 +900,9 @@ export default {
 <style scoped>
 .treeBox{
     height: 100%;
-    /* background: url(../../../../static/main/screen/resource_bg.png) no-repeat top; */
-    /* margin-top: -2px;
-    padding-top:2px; */
+    background: url(../../../../static/main/screen/resource_bg.png) no-repeat 0 -1px;
+    margin-top: 0px;
+    /* padding-top:2px; */
     background-size: 100% 100%;
 }
 .newSearchBtn{
@@ -899,11 +922,11 @@ export default {
     background: url(../../../../static/common/back_btn.png) no-repeat center center;
 }
 .treeWrap{
-    width:414px;
-    height: calc(100% - 124px);
+    width:412px;
+    height: calc(100% - 127px);
     /* overflow: hidden; */
-   /* padding: 0;*/
-    padding: 0 0 0 16px;
+   padding: 0 5px;
+    /* padding: 0 0 0 16px; */
     box-sizing: border-box;
 }
 .divSearchBox {
@@ -948,7 +971,7 @@ export default {
 }
 
 .treeOperate{
-    padding: 8px 17px;
+    padding: 8px 12px;
     box-sizing: border-box;
 }
 
@@ -1044,9 +1067,9 @@ export default {
 
 .treefoot{
     width: 100%;
-    height: 58px;
+    height: 59px;
     background: url(../../../../static/main/screen/resource_bottom_bg.png) no-repeat top;
-    background-size: 100% 58px;
+    background-size: 100% 60px;
     color:#D3DCF0;
     font-size: 12px;
 }
@@ -1062,7 +1085,7 @@ export default {
 .treefoot /deep/ .el-button--text{
   color: #599AFF;
   font-size: 14px;
-  margin-left:14px;
+  /* margin-left:14px; */
 }
 .treeSelectedNum{
   color:#599AFF;  
@@ -1101,7 +1124,7 @@ export default {
 
 /* 弹出框样式 */
 .popover{
-       width: 396px;
+    width: 396px;
     height: 400px;
     position: absolute;
     top: 41px;
@@ -1114,11 +1137,16 @@ export default {
     color: #fff;
 }
 .treeOperate-l{
-    width: 182px;
+    width: 135px;
     text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
 }
 .treeOperate-btn{
-    width: 191px;
+    width: 245px;
+    vertical-align: middle;
 }
 .treeOperate-l,.treeOperate-btn{
     display: inline-block;

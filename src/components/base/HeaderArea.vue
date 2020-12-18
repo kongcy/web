@@ -315,14 +315,15 @@ export default {
 	/* border-radius: 4px; */
 	/* border: 1px solid #fff; */
 	font-family: "寰蒋闆呴粦";
-	font-size: 12px;
-	margin-top:14px;
+	font-size: 18px;
+	margin-top:18px;
 	cursor: pointer;
 }
 .icon-userphoto{
 	display: inline-block;
 	width: 26px;
 	height: 26px;
+	margin: -4px 5px 0 0;
 	vertical-align: middle;
 	background: url(../../../static/main/head/logo_photo.png) no-repeat;
 }

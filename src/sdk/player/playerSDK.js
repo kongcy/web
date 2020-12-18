@@ -1,7 +1,10 @@
 import WebSocketSDK from './lib/businessSDK'
+import dbBusinessSDK from './lib/dbBusinessSDK'
 import {webglPlayer} from './lib/webglPlayer'
+import {loadJs, UUID} from './utils/commfun'
 
 var playerSDK = {
+    playerType: 0, // 0-半免 1-全免
     businessSDKC : null,
     businessSDKD : [],
     refreshDataType : 2, //1,webgl方式   2，2d方式
@@ -26,7 +29,7 @@ var playerSDK = {
      */
     initLayout(containerId, containerWidth, containerHeight, type, btnCB, businessCB, selectedCB, dropCB,playResultCB){
         //界面
-        webglPlayer.init(containerId, containerWidth, containerHeight, this.refreshDataType)
+        webglPlayer.init(containerId, containerWidth, containerHeight, this.refreshDataType,this.playerType)
 
         //切换分屏回调
         webglPlayer.setAfterSplitScreenCallback(businessScreens => {
@@ -72,14 +75,14 @@ var playerSDK = {
             }
         });
 
-        //全部屏幕全屏/退出的回调 2020.11.9
-        webglPlayer.setFullScreenOperateCallback(isFull=> {
-            if(isFull){
-                let containerWidth=window.screen.width;
-                let containerHeight=window.screen.height;
-                webglPlayer.resize(containerWidth, containerHeight)
-            }
-        })
+        // //全部屏幕全屏/退出的回调 2020.11.9
+        // webglPlayer.setFullScreenOperateCallback(isFull=> {
+        //     if(isFull){
+        //         let containerWidth=window.screen.width;
+        //         let containerHeight=window.screen.height;
+        //         webglPlayer.resize(containerWidth, containerHeight)
+        //     }
+        // })
 
         //操作栏按钮回调
         //value：拖动/点击声音条时为音量值，快进/快退/恢复时为播放速度值，拖动/点击进度条时为时间戳，其他按钮不传此值
@@ -87,28 +90,28 @@ var playerSDK = {
             if(btnCB) btnCB(screenIndex, btnKey, value);
         });
 
-        if(this.businessSDKC){
-            //业务接口回调
-            this.businessSDKC.setReceiveBusinessCallback((eventType, status_code, screenIndex) => {
-                if(eventType == 2) {//初始化
-                    this.playerStatus = 1;
-                    this._registerMXTC();
-                } else if(eventType == 3){//清屏
-                    webglPlayer.cancelOSD(screenIndex);
-                    webglPlayer.stopShow(screenIndex);
-                } else if(eventType == 1 && status_code == 2){//注销成功
-                    this.businessSDKC.closeSocket();
-                } else if(eventType == 1 && status_code == 1){//注册成功
-                    this.playerStatus = 2;
-                    this._executeCommand();
-                } else if(eventType == 0 && status_code == 1) { // 播放成功
-                    if(playResultCB) playResultCB(screenIndex)
-                }
+        // if(this.businessSDKC&&!this.playerType){
+        //     //业务接口回调
+        //     this.businessSDKC.setReceiveBusinessCallback((eventType, status_code, screenIndex) => {
+        //         if(eventType == 2) {//初始化
+        //             this.playerStatus = 1;
+        //             this._registerMXTC();
+        //         } else if(eventType == 3){//清屏
+        //             webglPlayer.cancelOSD(screenIndex);
+        //             webglPlayer.stopShow(screenIndex);
+        //         } else if(eventType == 1 && status_code == 2){//注销成功
+        //             this.businessSDKC.closeSocket();
+        //         } else if(eventType == 1 && status_code == 1){//注册成功
+        //             this.playerStatus = 2;
+        //             this._executeCommand();
+        //         } else if(eventType == 0 && status_code == 1) { // 播放成功
+        //             if(playResultCB) playResultCB(screenIndex)
+        //         }
     
-                if(businessCB)
-                    businessCB(eventType, status_code, screenIndex);
-            });
-        }
+        //         if(businessCB)
+        //             businessCB(eventType, status_code, screenIndex);
+        //     });
+        // }
 
         //选中屏幕回调
         webglPlayer.setAfterSelectedScreenCallback((screenIndex, isSelected, isPlay) => {
@@ -127,20 +130,24 @@ var playerSDK = {
             if(dropCB) dropCB(screenIndex, isSelected, isPlay, dragData);
         })
     },
-
-    initMedia(type,businessCB){
-         //socket
+    initMedia(type,businessCB,playerType,mediaServerConfig){
+         // 半免插件初始化 
+         this.playerType= playerType
+         const msIp = mediaServerConfig.mediaServerIp
+         const msPort=  mediaServerConfig.mediaServerPort
+         if(!this.playerType){
+              //socket 
          let protocol = window.location.protocol;
          let socketProtocol = protocol.indexOf('s') > -1 ? 'wss' : 'wss';
-         let url1 = socketProtocol + "://127.0.0.1:4443";
+         let busUrl = `${msIp}:${msPort}`
+         let url1 = `${socketProtocol}://${busUrl}`;
          this.businessSDKC = new WebSocketSDK(url1, () => {
              this.businessSDKC.initServer(type);
          });
  
          var socketCount = 9;
-         var port = 4444;
-         for(var i=0; i < socketCount; i++){
-             let url2 = socketProtocol + "://127.0.0.1:" + (port + i);
+         for(var i=1; i <= socketCount; i++){
+             let url2 = `${socketProtocol}://${msIp}:${Number(msPort) + i}`;
              let newSocket = new WebSocketSDK(url2, null, this.refreshDataType==1?true:false);
              newSocket.setReceiveMediaDataCallback(res => {
                  if(this.refreshDataType == 1){
@@ -152,10 +159,10 @@ var playerSDK = {
                  }
              });
              this.businessSDKD.push(newSocket);
-         }
+            }
          
-        //业务接口回调
-        this.businessSDKC.setReceiveBusinessCallback((eventType, status_code, screenIndex) => {
+         //业务接口回调
+         this.businessSDKC.setReceiveBusinessCallback((eventType, status_code, screenIndex) => {
             if(eventType == 2) {//初始化
 				this.playerStatus = 1;
 				this._registerMXTC();
@@ -175,10 +182,48 @@ var playerSDK = {
 
 			if(businessCB)
 				businessCB(eventType, status_code, screenIndex);
-        });
-
+            });
+         }else{
+            // 加载播放器脚本 
+            loadJs('playSDK', '/static/js/play/play.js', () => {
+                console.log('加载播放器脚本成功！')
+                webglPlayer.initMediaServer(mediaServerConfig.ffmepgServer ,mediaServerConfig.decodeResolution)
+            }) 
+            this.initXTPlayer(msIp,msPort,businessCB);
+         }
     },
-
+    initXTPlayer(msIp,msPort,businessCB){ 
+        // msIp = '127.0.0.1'
+        let socketProtocol = window.location.protocol.indexOf('s') > -1 ? 'wss' : 'ws';
+        const _wsURL = `${socketProtocol}://${msIp}:${msPort}`;
+        this.businessSDKC = new dbBusinessSDK(_wsURL, ()=>{
+            this.businessSDKC.initServer(0);
+        }); 
+          //业务接口回调
+          this.businessSDKC.setReceiveBusinessCallback((eventType, status_code, screenIndex,playInfo) => {
+            if(eventType == 2) {//初始化
+				this.playerStatus = 1;
+                this._registerMXTC();
+            } else if(eventType == 3){//清屏
+				webglPlayer.cancelOSD(screenIndex);
+                webglPlayer.stopShow(screenIndex);
+                webglPlayer.cancelOSDByJoin(screenIndex);
+			} else if(eventType == 1 && status_code == 2){//注销成功
+				this.businessSDKC.closeSocket();
+			} else if(eventType == 1 && status_code == 1){//注册成功
+				this.playerStatus = 2;
+				this._executeCommand();
+            }
+            // 全免插件播放回调
+            else if(eventType == 0 && status_code == 1&& playInfo){// 点播成功
+                webglPlayer.startPlayJsmpeg(playInfo)
+            } 
+            if(businessCB){
+                 businessCB(eventType, status_code, screenIndex);
+                }
+            });
+    },
+    // 废弃未用
     init(containerId, containerWidth, containerHeight, type, btnCB, businessCB, selectedCB, playResultCB){
         //界面
         webglPlayer.init(containerId, containerWidth, containerHeight, this.refreshDataType)
@@ -295,11 +340,11 @@ var playerSDK = {
             this.businessSDKC.closeSocket();
             this.businessSDKC=null;
         }
-
         this.businessSDKD.forEach(item => {
             item.closeSocket();
         })
-        
+
+        webglPlayer.destroy()
     },
 
     /**
@@ -495,8 +540,8 @@ var playerSDK = {
         }else{
             webglPlayer.cancelFullScreenShow()
         }
-          // 2020.12.15添加
-          webglPlayer.allFull=isFull;
+        // 2020.12.15添加
+        webglPlayer.allFull=isFull;
     },
 
     /**
@@ -659,6 +704,7 @@ var playerSDK = {
                 item.closeSocket();
             })
         }
+        webglPlayer.destroy()
         this._reset();
     },
     // 会议开始
@@ -762,7 +808,20 @@ var playerSDK = {
         }
         webglPlayer.cancelAllOSD();
         webglPlayer.stopAllShow();
-    }
+    },
+    //全屏 回调
+    fullAllScreenCallback(callback){
+        //全部屏幕全屏/退出的回调 2020.11.9
+        webglPlayer.setFullScreenOperateCallback(isFull=> {
+            // if(isFull){
+            //     let containerWidth=window.screen.width;
+            //     let containerHeight=window.screen.height;
+            //     // webglPlayer.resize(containerWidth, containerHeight)
+            // }
+            callback(isFull)
+        })
+
+    },
     
 };
 

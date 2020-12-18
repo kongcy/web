@@ -22,7 +22,6 @@ var apiSDK = {
         SDKVersion5: "version5",
         SDKVersion6: "version6"
     },
-    playType: 0,
 
     //初始化配置
     initConfig: function(config_) {
@@ -35,6 +34,8 @@ var apiSDK = {
             dataSDK6.setURLPrefix(this.config.dataURL);
             //查询策略 新加sdk 11.24
             strategeSDK6.setURLPrefix(this.config.strategeURL);
+             // 设置免插登录服务地址
+            strategeSDK6.setNoPluginURLPrefix(this.config.noPluginServerURL);
         }
     },
 
@@ -253,9 +254,7 @@ var apiSDK = {
             playerSDKNew.close();
             callback();
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
-            if(this.playType==1){
-                this.noPluginLoginOut(this.userName)
-            }
+            this.noPluginLoginOut(this.userName)
             // businessSDK6.publishUserStatus(1);    // 11.26 同步云调度 1124 用户状态上报从ws改成http
             dataSDK6.setUserStatus(this.userID, 'UserOffline')   // 11.26 同步云调度 1124 用户状态上报从ws改成http
             businessSDK6.leave();
@@ -6951,7 +6950,7 @@ var apiSDK = {
      *
      * var resp ={Ret:0/1}
      * */
-    setDefaultUserYTPoint: function(resourceID, resourceCh, pointID, isDefault, callback) {
+    setDefaultUserYTPoint: function(resourceID, resourceCh, pointID, isDefault,encoderSIPID, callback) {
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
             if (isDefault === true) {
                 dataSDK5.setDefaultPrepoint(this.userToken, resourceID, resourceCh, pointID, function(obj) {
@@ -6968,7 +6967,7 @@ var apiSDK = {
             }
 
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
-            dataSDK6.setDefaultUserYTPoint(resourceID, pointID, function(obj) {
+            dataSDK6.setDefaultUserYTPoint(resourceID, pointID, encoderSIPID, function(obj) {
                 var resp = { Ret: '' }
                 if (obj.responseCode == 1) {
                     resp.Ret = 0
@@ -8269,10 +8268,20 @@ var apiSDK = {
         );
     },
     initMedia:function(businessCB){
+        console.log('初始化媒体信息!')
         let type = 0;
         playerSDKNew.initMedia(type,function(eventType, status_code, screenIndex) {
             if (businessCB) businessCB(eventType, null, status_code, null, screenIndex);
-        })
+        },this.config.playerType,this.getMediaServerConfig())
+    },
+    // 免插件播放配置
+    getMediaServerConfig(){
+        return {
+            ffmepgServer:this.config.ffmepgServer,
+            mediaServerIp:this.config.mediaServerIp,
+            mediaServerPort:this.config.mediaServerPort,
+            decodeResolution : this.config.decodeResolution
+        }
     },
     //目前废弃 不使用
     initMXTC: function(parentID, width, height, btnCB, businessCB, selectedCB, playbackCB, playResultCB, dropCB) { //parentID,width, height
@@ -15553,22 +15562,65 @@ var apiSDK = {
 
     // ======================  免插登录 新加SDK   1214   ==========================================================
     // 免插登录
-    noPluginLogin(account, callback){
-        strategeSDK6.noPluginLogin( account , obj => {
-            callback(obj);
-        });
+    noPluginLogin(account,callback){
+        const noPluginLoginFlag = xtxk.cache.get('noPluginLoginFlag')
+        if(!noPluginLoginFlag){
+            const userName =account?account:this.userName; 
+            strategeSDK6.noPluginLogin( userName , obj => {
+                const data = obj.data
+                if(data&&data.status){ 
+                    this.config.playerType = 1
+                    // 媒体服务信息
+                    this.config.mediaServerIp = data.ip
+                    this.config.mediaServerPort =  data.port
+                    xtxk.cache.set('mediaServerInfo',{
+                        playerType:1,
+                        ip:this.config.mediaServerIp,
+                        port:this.config.mediaServerPort
+                    })
+                }
+                xtxk.cache.set('noPluginLoginFlag',true)
+                console.log(`获取媒体服务器信息:初始化${xtxk.cache.get('noPluginLoginFlag')}`)
+                console.log(`获取媒体服务器信息:播放器版本${this.config.playerType}`)
+                console.log(`获取媒体服务器信息:${this.config.mediaServerIp}:${this.config.mediaServerPort}`)
+                if(callback)callback();
+            });
+        }else{
+            const mediaServerInfo = xtxk.cache.get('mediaServerInfo')
+            if(mediaServerInfo){
+                this.config.playerType = 1
+                this.config.mediaServerIp = mediaServerInfo.ip
+                this.config.mediaServerPort =  mediaServerInfo.port
+            }
+            if(callback)callback();
+        }
     },
 
     // 免插退出
-    noPluginLoginOut(account, callback){
-        strategeSDK6.noPluginLoginOut( account , obj => {
+    noPluginLoginOut(account,callback){
+        const userName =account?account:this.userName;
+        strategeSDK6.noPluginLoginOut( userName , obj => {
+            xtxk.cache.set('noPluginLoginFlag',false)
+            console.log('用户退出免插登录!')
+            if(callback)callback();
+        });
+    },
+    // ======================  视频诊断 新加SDK   1216   ==========================================================
+    // 视频诊断列表
+    getDiagnoseList(data, callback){
+        strategeSDK6.getDiagnoseList( data , obj => {
             callback(obj);
         });
     },
-
+    //全屏 回调
+    fullAllScreenCallback(callback){
+        playerSDKNew.fullAllScreenCallback(isFull => {
+            callback(isFull)
+        })
+    },
     // 统一登录
     userLogin(data, callback){
-        strategeSDK6.userLogin(data, obj => {
+        strategeSDK6.userLogin( data , obj => {
             callback(obj);
         });
     }

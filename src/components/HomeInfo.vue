@@ -126,15 +126,14 @@ export default {
      //在其它页面刷新后再进入本页面时执行，此时socket已连接
     if (this.apiSDK.socketStatus != -1) {
       //媒体
-      
-          //初始化插件
+        //初始化插件
         if(self.apiSDK.config.version == self.apiSDK.enumSDKVersion.SDKVersion5){
             self.$store.commit("setMediaService", Enum.enumMediaService.Success);
         }else if(self.apiSDK.config.version == self.apiSDK.enumSDKVersion.SDKVersion6){
             self.$store.commit("setMediaService", Enum.enumMediaService.Unregister);
         }
-      //  this.apiSDK.initMXTC()
-       this.initMXTC();
+        // this.apiSDK.initMXTC()
+        this.initMXTC()
         this.initMedia()
     }
 
@@ -162,15 +161,19 @@ export default {
         }else if(this.apiSDK.config.version == this.apiSDK.enumSDKVersion.SDKVersion6){
             this.$store.commit("setMediaService", Enum.enumMediaService.Unregister);
         }
-        //媒体
-        this.initMXTC()
-        this.initMedia()
+          //首次 
+        //媒体 
+       this.apiSDK.noPluginLogin('',(res)=>{
+             this.initMXTC()
+             this.initMedia()
+        })
       }
     });
 
 
     // 事件
     window.addEventListener("resize", this.resize);
+
 
    
   },
@@ -315,7 +318,7 @@ export default {
           xtxk.cache.set('activeName',this.activeName);
         }
       }else{
-        // this.showremind("warning",'此模块开发中……')
+        this.showremind("warning",'此模块开发中……')
       }
     
     },
@@ -517,26 +520,31 @@ export default {
     border:none;
 }
 /* tab边框 */
+/deep/   .el-tabs--card>.el-tabs__header .el-tabs__item .el-icon-close{
+  font-size: 14px;
+}
 /deep/ .el-tabs--card>.el-tabs__header .el-tabs__nav{
   border:none;
 }
 /deep/  .el-tabs--card>.el-tabs__header .el-tabs__item{
    border:none;
    color:#fff;
-   width:140px;
+   width:158px;
    text-align: center;
 }
 /deep/  .el-tabs--card>.el-tabs__header .el-tabs__item>span:first-child{
-  display: inline-block;
-    width: 94px;
+    display: inline-block;
+    width:113px;
     overflow: hidden;
     text-overflow: ellipsis;
     vertical-align: middle;
+    font-size: 18px;
 }
 /deep/  #hometabs >.el-tabs__header>.el-tabs__nav-wrap>.el-tabs__nav-scroll>.el-tabs__nav>.el-tabs__item:hover{
   background:#2e476f;
   color:#fff;
 }
+
 /* tab选中 */
 /deep/  #hometabs >.el-tabs__header>.el-tabs__nav-wrap>.el-tabs__nav-scroll>.el-tabs__nav>.el-tabs__item.is-active{
   background:#09275b;
@@ -546,68 +554,68 @@ export default {
  /* 首页 */
 .tabicon_home{
   display: inline-block;
-  width:16px;
-  height: 16px;
+  width:20px;
+  height: 20px;
   vertical-align: middle;
   margin: -6px 8px 0 0;
   background:url(../../static/home/home_title.png) no-repeat center;
-  background-size: 100% 100%;
-  background-size: 16px;
+  /* background-size: 100% 100%;
+  background-size: 20px; */
   
 }
 /deep/ .el-tabs__item.is-active .tabicon_home,
 /deep/ .el-tabs__item:hover .tabicon_home{
   background:url(../../static/home/home_title_active.png) no-repeat center;
-   background-size: 100% 100%;
-  background-size: 18px;
+   /* background-size: 100% 100%;
+  background-size: 20px; */
 }
 
 /* 视频监控 */
 .tabicon_Monitor{
   display: inline-block;
-  width:16px;
-  height: 16px;
+  width:20px;
+  height: 20px;
   vertical-align: middle;
   margin: -4px 5px 0 0;
   background:url(../../static/home/monitor_title.png) no-repeat center;
-    background-size: 100% 100%;
-  background-size: 19px;
+    /* background-size: 100% 100%;
+  background-size: 19px; */
 }
 /deep/ .el-tabs__item.is-active .tabicon_Monitor,
 /deep/ .el-tabs__item:hover .tabicon_Monitor{
   background:url(../../static/home/monitor_title_active.png) no-repeat center;
-    background-size: 100% 100%;
-  background-size: 19px;
+    /* background-size: 100% 100%;
+  background-size: 19px; */
 }
 /* 视频会议 */
 .tabicon_Meeting,.tabicon_MeetingOutside{
   display: inline-block;
-  width:16px;
-  height: 16px;
+  width:20px;
+  height: 20px;
   vertical-align: middle;
   margin: -4px 5px 0 0;
   background:url(../../static/home/meeting_title.png) no-repeat center;
-    background-size: 100% 100%;
-  background-size: 19px;
+    /* background-size: 100% 100%;
+  background-size: 19px; */
 }
 /deep/ .el-tabs__item.is-active .tabicon_Meeting,
 /deep/ .el-tabs__item:hover .tabicon_Meeting,
 /deep/ .el-tabs__item.is-active .tabicon_MeetingOutside,
 /deep/ .el-tabs__item:hover .tabicon_MeetingOutside{
   background:url(../../static/home/meeting_title_active.png) no-repeat center;
-  background-size: 100% 100%;
-  background-size: 19px;
+  /* background-size: 100% 100%;
+  background-size: 19px; */
 }
 /* 视频诊断 */
 .tabicon_Meeting,.tabicon_VideoDiagnose{
   display: inline-block;
-  width:16px;
-  height: 16px;
+  width:20px;
+  height: 20px;
   vertical-align: middle;
   margin: -4px 5px 0 0;
   background:url(../../static/home/videoDiagnose_title.png) no-repeat center;
-  background-size: 100% 100%;
-  background-size: 19px;
+  /* background-size: 100% 100%;
+  background-size: 19px; */
 }
 /deep/ .el-tabs__item.is-active .tabicon_VideoDiagnose,
 /deep/ .el-tabs__item:hover .tabicon_VideoDiagnose{
@@ -618,8 +626,8 @@ export default {
 /* 视频分析 */
 .tabicon_Meeting,.tabicon_VideoAnalysis{
   display: inline-block;
-  width:16px;
-  height: 16px;
+  width:20px;
+  height: 20px;
   vertical-align: middle;
   margin: -4px 5px 0 0;
   background:url(../../static/home/videoAnalysis_title.png) no-repeat center;

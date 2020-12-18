@@ -80,10 +80,16 @@ export default {
         // 中油 统一登录
         unifyRegister(){
             let tilimu = this.apiSDK.config.talimu;
-            console.log('中油 统一登录',tilimu )
+            let userName = xtxk.cache.get('AutomaticPlayUsername').userName;
+            let ydm;
+            let array = userName.split('.');
+            if( array ) {
+               ydm = array[1];
+               this.form.username = array[0];
+            };
             let data = {
-                ydm: tilimu.ydm,
-                userName: xtxk.cache.get('AutomaticPlayUsername').userName,
+                ydm: ydm,
+                userName: userName,
                 passWord: decodeURIComponent(xtxk.cache.get('AutomaticPlayPassword').passWord),
                 ip: tilimu.ip
             };

@@ -157,7 +157,9 @@ export default {
       //停止设备
       stopPlayDevice(){
         Fun.stopPlayDevice(this.apiSDK, this.currentNode);
-        this.$listeners.StopAllHideHolder();
+        let currentNode=[];
+        currentNode.push(this.currentNode)
+        this.$listeners.StopAllHideHolder(currentNode);
       },
       //对讲设备
       startSpeakDevice(){
@@ -201,7 +203,7 @@ export default {
         // const top_ = event.clientY;
         // this.menuLoc = 'left: '+ left_ +'px; top: '+top_+'px';
          this.$nextTick(()=>{
-            const left_ =380;
+            const left_ =266;
             const top_ = event.clientY-26;
             let clientHeight = document.body.clientHeight;
             var h=clientHeight-top_;
@@ -603,7 +605,7 @@ export default {
   .treeRightMenu {
     position: fixed;
     display: none;
-    margin-left: -60px;
+    /* margin-left: -60px; */
     margin-top: 10px;
     background: url(../../../../static/main/screen/resouce_rightPop_bg.png) center top;
     background-size: 100% 100%;

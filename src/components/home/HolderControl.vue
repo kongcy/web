@@ -1,7 +1,7 @@
 <template>
   <div class="holder">
     <!-- 顶部标题 -->
-    <div class="holder-title">云台控制({{ title }})</div>
+    <div class="holder-title">云台控制</div>
     <!-- 云台控制内容 -->
     <div class="holder-content">
       <div class="direction">
@@ -82,6 +82,7 @@
         <el-button v-if="this.apiSDK.config.version === this.apiSDK.enumSDKVersion.SDKVersion5 && this.apiSDK.config.platformVersion == 1 && !isNVRChannel" class="heat heat01" disabled title="加热"></el-button>
         <el-button v-if="this.apiSDK.config.version === this.apiSDK.enumSDKVersion.SDKVersion5 && this.apiSDK.config.platformVersion == 1 && !isNVRChannel" class="_3d _3d01" disabled title="3d"></el-button>
       </div>
+      <div class="holder-who">{{ title }}</div>
       <!-- 预制点组 -->
      <div class="holder-PresetGroup">
          <!-- <el-scrollbar class="hiddenXScroll" style="height:100%"> -->
@@ -912,8 +913,22 @@ export default {
 
 <style>
 /* tree的样式 */
+
 .el-tree-node__content>.el-tree-node__expand-icon{
-  margin-left:16px;
+  margin:0 5px 0 16px;
+}
+.el-tree-node__content .el-checkbox__inner{
+  width:18px;
+  height: 18px;
+}
+.el-checkbox__input.is-indeterminate .el-checkbox__inner::before{
+  top: 7px;
+}
+.el-tree-node__content .el-checkbox__inner::after{
+    height: 9px;
+    left: 6px;
+    top: 1px;
+    width: 4px;
 }
 .holderControl span.el-tree-node__label {
   color: #0f5794;
@@ -1190,6 +1205,12 @@ export default {
 </style>
 
 <style scoped>
+/deep/ .el-tree {
+    position: relative;
+    cursor: default;
+    background: transparent;
+    color: #D3DCF0;
+}
 .el-scrollbar.hiddenXScroll /deep/ .el-scrollbar__wrap{
     overflow-x: hidden;
 }
@@ -1210,13 +1231,13 @@ export default {
 }
 .holder-title::after {
   position: absolute;
-  top: -10px;
+  top: -1px;
   left: 0;
   content: "";
   width: 124px;
-  height: 10px;
-  background: url(../../../static/main/screen/title_bg.png) no-repeat;
-  background-size: 124px 10px;
+  height: 4px;
+  background: url(../../../static/main/screen/title_bg_4.png) no-repeat;
+  background-size: 125px 4px;
 }
 .holder-content {
   width: 100%;
@@ -1242,9 +1263,9 @@ export default {
   margin: 0 10px 0 18px;
 }
 .holder-btn{
-  width: calc(100% - 70px);
+  width: calc(100% - 56px);
   height: 55px;
-  margin: 10px auto;
+  margin: 10px auto 5px;
   display: flex;
   justify-content: space-between;
 }
@@ -1680,7 +1701,7 @@ export default {
 }
 .holder-PresetGroup {
   width:372px;
-  height: calc(100% - 319px);
+  height: calc(100% - 340px);
   margin:0 auto;
   background: url(../../../static/holderControl/bg.png);
   background-size: 100% 100%;
@@ -1700,5 +1721,26 @@ export default {
   /* display: flex; */
   /* justify-content: space-around; */
 }
-
+.holder-who{
+  position: relative;
+  font-size: 16px;
+  color: #FFFFFF;
+  width: 372px;
+  height: 26px;
+  line-height: 22px;
+  margin: 0 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.holder-who::after {
+  position: absolute;
+  top: 22px;
+  left: 0;
+  content: "";
+  width: 195px;
+  height: 4px;
+  background: url(../../../static/main/screen/ytname-icon.png) no-repeat;
+  background-size: 195px 4px;
+}
 </style>
