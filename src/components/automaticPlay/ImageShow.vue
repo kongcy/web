@@ -51,6 +51,7 @@ export default {
 
     },
     mounted(){
+  
         // this.getUserAndPsw();
         //事件
         window.onSessionEvent = this.onSessionEvent;
@@ -176,6 +177,7 @@ export default {
             this.apiSDK.queryStrategyListById(strategeId, (res) => {
                 console.log('通过strategeId获取轮询信息', res);
                 that.strategeData = res;
+                that.$message('正在执行巡查方案: '+ res.strategyName );
                 // that.initSocket();
                 // that.hoverStartClick(res.data);
             });
@@ -762,12 +764,14 @@ export default {
         openMeeting(pos){
         //    let meetingNo = ''; // 拉人入会的会议号
         //    let xiaoYuNums = ''; // 被拉的小鱼号
-           this.apiSDK.newOpenMeeting(this.currentPlayScreens[pos]).then(obj => {
+           let data = {
+               resId: this.currentPlayScreens[pos].encoderSipID,
+               joinMember: xtxk.cache.get('yhsjhm'),
+           };
+           this.apiSDK.newOpenMeeting(data, obj => {
                console.log('点击会议返回', obj);
            });
         }
-
-    
     }
 }
 </script>

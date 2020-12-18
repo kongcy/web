@@ -75,7 +75,33 @@ export default {
                 else if( pair[0] === 'NVRDeviceId' ){ xtxk.cache.set('AutomaticPlayNVRDeviceId', { NVRDeviceId: pair[1]}) }
             }
             console.log('url获取的用户', this.form.username);
-            this.login('play');
+            this.unifyRegister();
+        },
+        // 中油 统一登录
+        unifyRegister(){
+            let tilimu = this.apiSDK.config.talimu;
+            console.log('中油 统一登录',tilimu )
+            let data = {
+                ydm: tilimu.ydm,
+                userName: xtxk.cache.get('AutomaticPlayUsername').userName,
+                passWord: decodeURIComponent(xtxk.cache.get('AutomaticPlayPassword').passWord),
+                ip: tilimu.ip
+            };
+            let that = this;
+            this.apiSDK.userLogin(data, obj => {
+                if( obj.code == 1 && obj.data ) {
+                    console.log('统一登录返回------', obj);
+                    // xtxk.cache.set('unifyRegister', obj);
+                    // 将手机号保存在本地
+                    xtxk.cache.set('yhsjhm',  obj.data.yhsjhm );
+                    xtxk.cache.set('yhidym',  obj.data.yhid );
+                    xtxk.cache.set('dwsx',  obj.data.dwsx );
+                    that.login('play');
+                } else {
+                    // console.log('统一登录失败------', obj);
+                    that.$message({message: '登录失败: ' + obj.msg, type: 'error'});
+                }
+            });
         },
         // 登录
         login(type) {

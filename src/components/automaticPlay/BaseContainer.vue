@@ -331,7 +331,7 @@ export default {
       if(this.apiSDK.playType == 1){
         this.apiSDK.noPluginLoginOut(USER.userName)
       }
-      that.$router.push('../Login2?' + url);
+      this.$router.push('../Login2?' + url);
     },
 
     //告警弹窗不自动关闭，必须手动关闭，关闭时调用设置   告警消息已读接口

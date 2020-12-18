@@ -83,6 +83,12 @@ export default {
   },
   mounted() {
     this.activetabName=xtxk.cache.get('activeName');
+    // 根据URL 传递的参数 自动点播最近的9条或者9条以内的记录 
+    console.log('根据URL 传递的参数 自动点播最近的9条或者9条以内的记录',xtxk.cache.get('isAutoPlay'));
+    if( xtxk.cache.get('isAutoPlay') == 1 ){
+        this.tabClickHandler(this.editableTabs[0]);
+        this.$refs.commonUse[0].isAutoPlay();
+    }
   },
   methods: {
     initTree: function() {
@@ -138,14 +144,14 @@ export default {
   position: relative;
   float: left;
   padding: 0px;
-  width: 412px;
+  width: 414px;
   height: 100%;
-   background: url(../../../../static/main/screen/resource_bg.png) no-repeat 0px -2px;
+   background: url(../../../../static/main/screen/resource_bg.png) no-repeat top;
   background-size: 100% 100%;
 }
 
 .el-tabs{
-  width: 412px;
+  width: 414px;
   float: left;
   height: 100%;
 }
@@ -173,7 +179,7 @@ export default {
   color:#fff;
 }
 .el-tabs.divSelectItemTab /deep/ .el-tabs__header>.el-tabs__nav-wrap>.el-tabs__nav-scroll>.el-tabs__nav>.el-tabs__active-bar{
-  height: 3px;
+  height: 2px;
 } */
 /deep/ .el-icon-arrow-left:before,
 /deep/ .el-icon-arrow-right:before {

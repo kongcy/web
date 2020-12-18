@@ -289,16 +289,36 @@ export var strategeSDK6 = {
         var url = "/ucfgHistoryConference/queryList";
         strategeSDK6._doPost(url,JSON.stringify(obj), callback);
     },
-    // =================================   视频诊断 新加SDK   1216  =============================================
-    getDiagnoseList: function(data, callback) {
-        var url = "/diag/diag_share";
-        strategeSDK6._doPost(url,JSON.stringify(data), callback);
-    },
     
     newOpenMeeting(data, callback){
         var mapObj = new Map();
-        var data = dataSDK6._getDataString(data);
-        var url = "/common/xiaoyu/getNvrIp";
+        mapObj.set("resourceSipId", data.resId);
+        mapObj.set("joinMember", data.joinMember);
+        var data = strategeSDK6._getDataString(mapObj);
+        var url = "/xiaoyu/startMeeting";
         strategeSDK6._doGet(url, data, callback);
+    },
+
+    // 统一登录
+    userLogin(data, callback){
+        var obj = {
+             "ydm": data.ydm,
+        //     "yhid": "tycjpt.tlm",
+             "yhid": data.userName + '.' + data.ydm,
+        //    "yhkl": "202004@tycjpt",
+             "yhkl": data.passWord,
+            // "yhkl":'whxtxk@201906',
+        //    "yhdllx": "C/S",
+            "yhdllx": "B/S",
+            "ip": data.ip,
+            "computer": "B/S",
+        //     "ywxtbm": "TLMYTYSXRHPT",
+            "ywxtbm": 'DMTJHPT',
+        //     "ywxtmc": "&#x6CB9;&#x7530;&#x591A;&#x5A92;&#x4F53;&#x8F6F;&#x4EF6;&#x534F;&#x540C;&#x4EA4;&#x4E92;&#x5E73;&#x53F0;"
+            "ywxtmc": '塔里木油田音视讯融合平台',
+        //    "ywxtmc": '油田多媒体软件协同交互平台'
+        }
+        var url = "/third/userLogin?mode=1";
+        strategeSDK6._doPost(url,JSON.stringify(obj), callback);
     }
-}
+}; 

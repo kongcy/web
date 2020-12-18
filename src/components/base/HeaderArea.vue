@@ -46,7 +46,7 @@
 			<!-- <div id="divHeaderRight_1" >欢迎您：{{curUser.userName}}</div>-->
 			<!-- <input type="button" id="btnExit" v-on:click="showHeaderMenu"/>  -->
 			
-			<div id="divHeaderRight_1" ref="divHeaderRight" :class="{Menuactived:actived}"  @click="showHeaderMenu">
+			<div id="divHeaderRight_1" ref="divHeaderRight" :title="userTitle" :class="{Menuactived:actived}"  @click="showHeaderMenu">
 				<i class="icon-userphoto"></i>
 				{{curUser.userName}}
 				<i class="el-icon-caret-bottom"></i>
@@ -82,6 +82,7 @@ export default {
 			isSendMessageDialog : 0,
 			actived:false,
 			badgeValue:null,
+			userTitle: '',
 		};
 	},
 	computed: {
@@ -91,6 +92,11 @@ export default {
 		}
 	},
 	mounted(){
+		if( xtxk.cache.get('yhsjhm') ) {
+		  this.userTitle =  xtxk.cache.get('yhidym') + ',' +  xtxk.cache.get('yhsjhm') + ',' + xtxk.cache.get('dwsx');
+		}
+
+		console.log('右上角悬停', this.userTitle);
 		var self = this;
 		this.curUser = xtxk.cache.get('USER');
 		this.actived=this.$store.getters.getStatus;

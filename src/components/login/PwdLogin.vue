@@ -26,11 +26,13 @@
             </el-row> -->
 
             <el-row>
-                <el-col :span="18"><el-checkbox v-model="remberMe">记住密码</el-checkbox></el-col>
+                <el-col :span="8"><el-checkbox v-model="remberMe">记住密码</el-checkbox></el-col>
+                <el-col :span="10"><el-checkbox v-model="unificationLogin">统一认证</el-checkbox></el-col>
                 <el-col :span="6"  style="text-align: right;" ><div style="cursor: pointer; font-size: 14px;color:#fff;" @click="download"><i class="el-icon-download" ></i>组件下载</div></el-col>
             </el-row>
             <center>
-                <el-button type="primary" :loading="loginLoading" @click="login" class="login-btn">登&nbsp;录</el-button>
+                <!-- @click="login" -->
+                <el-button type="primary" :loading="loginLoading" @click="estimateLogin"  class="login-btn">登&nbsp;录</el-button>
             </center>
         </el-form>
 
@@ -76,6 +78,7 @@ export default {
                 ]
             },
             remberMe: false,
+            unificationLogin: false,
             verifyCode: 'aaaa',
             loginLoading: false
         }
@@ -85,12 +88,45 @@ export default {
         this.getRemberMe();
     },
     methods: {
+        estimateLogin(){
+            if( this.unificationLogin ){
+                // 判断是否统一登录
+                this.unifyRegister();
+            } else {
+                this.login();
+            }
+        },
+        // 中油 统一登录
+        unifyRegister(){
+            let tilimu = this.apiSDK.config.talimu;
+            let data = {
+                ydm: tilimu.ydm,
+                userName: this.form.username,
+                passWord: decodeURIComponent(this.form.password),
+                ip: tilimu.ip
+            };
+            let that = this;
+            this.apiSDK.userLogin(data, obj => {
+                if( obj.code == 1 && obj.data ) {
+                    console.log('统一登录返回------', obj);
+                    // xtxk.cache.set('unifyRegister', obj);
+                    // 将手机号保存在本地
+                    xtxk.cache.set('yhsjhm',  obj.data.yhsjhm );
+                    xtxk.cache.set('yhidym',  obj.data.yhid );
+                    xtxk.cache.set('dwsx',  obj.data.dwsx );
+                    that.login();
+                } else {
+                    // console.log('统一登录失败------', obj);
+                    that.$message({message: '登录失败: ' + obj.msg, type: 'error'});
+                }
+            });
+        },
         // 登录
         login() {
             this.$refs.login.validate(valid => {
                 if (valid) {
                     this.remberMeChange(this.remberMe)
-                    this.loginLoading = true
+                    this.loginLoading = true;
                     this.apiSDK.loginWithAccount(this.form.username, this.form.password, this.form.verifyCode, (res) => {
                         this.loginLoading = false
                         if(res && res.Ret == 0){

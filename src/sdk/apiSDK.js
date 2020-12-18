@@ -9,8 +9,6 @@ import { playerSDK5 } from './sdkFor5_0/playSDK5';
 import { playerSDKNew } from './player/playerSDK';
 //查询策略 新加sdk 11.24
 import { strategeSDK6 } from './sdkFor6_0/strategeSDK.js';
-// 小鱼易联 的相关SDK
-import { xiaoyuSDK } from './sdkFor6_0/xiaoyuSDK.js';
 
 var apiSDK = {
     userID: "",
@@ -37,8 +35,6 @@ var apiSDK = {
             dataSDK6.setURLPrefix(this.config.dataURL);
             //查询策略 新加sdk 11.24
             strategeSDK6.setURLPrefix(this.config.strategeURL);
-            // 小鱼易联 新加的sdk
-            xiaoyuSDK.setURLPrefix(this.config.xiaoyuURL);
         }
     },
 
@@ -53,7 +49,6 @@ var apiSDK = {
             dataSDK6.setToken(userToken);
             //查询策略 新加sdk 11.24
             strategeSDK6.setToken(userToken);
-            xiaoyuSDK.setToken(userToken);
         }
     },
 
@@ -6956,7 +6951,7 @@ var apiSDK = {
      *
      * var resp ={Ret:0/1}
      * */
-    setDefaultUserYTPoint: function(resourceID, resourceCh, pointID, isDefault,encoderSIPID, callback) {
+    setDefaultUserYTPoint: function(resourceID, resourceCh, pointID, isDefault, callback) {
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
             if (isDefault === true) {
                 dataSDK5.setDefaultPrepoint(this.userToken, resourceID, resourceCh, pointID, function(obj) {
@@ -6973,7 +6968,7 @@ var apiSDK = {
             }
 
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
-            dataSDK6.setDefaultUserYTPoint(resourceID, pointID, encoderSIPID, function(obj) {
+            dataSDK6.setDefaultUserYTPoint(resourceID, pointID, function(obj) {
                 var resp = { Ret: '' }
                 if (obj.responseCode == 1) {
                     resp.Ret = 0
@@ -15557,26 +15552,26 @@ var apiSDK = {
     },
 
     // ======================  免插登录 新加SDK   1214   ==========================================================
-    // 免插登录 接口未部署暂时注释
+    // 免插登录
     noPluginLogin(account, callback){
-        // strategeSDK6.noPluginLogin( account , obj => {
-        //     callback(obj);
-        // });
+        strategeSDK6.noPluginLogin( account , obj => {
+            callback(obj);
+        });
     },
 
     // 免插退出
     noPluginLoginOut(account, callback){
-        // strategeSDK6.noPluginLoginOut( account , obj => {
-        //     callback(obj);
-        // });
-    },
-    // ======================  视频诊断 新加SDK   1216   ==========================================================
-    // 视频诊断列表
-    getDiagnoseList(data, callback){
-        strategeSDK6.getDiagnoseList( data , obj => {
+        strategeSDK6.noPluginLoginOut( account , obj => {
             callback(obj);
         });
     },
+
+    // 统一登录
+    userLogin(data, callback){
+        strategeSDK6.userLogin(data, obj => {
+            callback(obj);
+        });
+    }
 };
 
 export default apiSDK;

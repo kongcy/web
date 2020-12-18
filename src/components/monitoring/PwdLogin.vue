@@ -61,17 +61,49 @@ export default {
         // this.getRemberMe();
     },
     methods: {
+        // 统一登录
+        unifyRegister(){
+            console.log('统一登录', this.apiSDK.config.ydm);
+             let tilimu = this.apiSDK.config.talimu;
+            let data = {
+                ydm: tilimu.ydm,
+                userName: xtxk.cache.get('AutomaticPlayUsername').userName,
+                passWord: decodeURIComponent(xtxk.cache.get('AutomaticPlayPassword').passWord),
+                ip: '10.79.201.179'
+            };
+            let that = this;
+            this.apiSDK.userLogin(data, obj => {
+                if( obj.code == 1 && obj.data ) {
+                    console.log('统一登录返回------', obj);
+                    // xtxk.cache.set('unifyRegister', obj);
+                    xtxk.cache.set('yhsjhm',  obj.data.yhsjhm );
+                    xtxk.cache.set('yhidym',  obj.data.yhid );
+                    xtxk.cache.set('dwsx',  obj.data.dwsx );
+                    that.login();
+                } else {
+                    // console.log('统一登录失败------');
+                    that.$message({message: '登录失败: ' + obj.msg, type: 'error'});
+                }
+            });
+        },
         getUserAndPsw(){
             let url = window.location.href.split('?')[1];
             localStorage.setItem('url', url);
             let vars = url.split('&'); // 去掉问号, 问号为第一个字符
+            let isNoPlayNumber = '';
             for( let i = 0; i < vars.length; i++ ){
                 let pair = vars[i].split('=');
                 if( pair[0] === 'userName' ){ xtxk.cache.set('AutomaticPlayUsername', { userName: pair[1]}) }
                 else if( pair[0] === 'passWord' ){ xtxk.cache.set('AutomaticPlayPassword', { passWord: pair[1]}) }
+                else if( pair[0] === 'isAutoPlay' ){  xtxk.cache.set('isAutoPlay', pair[1] ) }
             }
             console.log('url获取的用户', this.form.username);
-            this.login();
+
+            let that = this;
+            setTimeout(()=> {
+              that.unifyRegister();
+            },0)
+
         },
         // 登录
         login() {

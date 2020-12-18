@@ -43,7 +43,8 @@
                 </div>
                 <div class="treeOperate-btn">
                     <el-button type="primary" size="small" @click="startPlays()"><i class="icon-start"></i><span>点播</span></el-button>
-                    <el-button type="danger" style="margin-left:9px" size="small" :class="{'isStop':selectedStratege!=''}" @click="stopAll()"><i class="icon-stop"></i><span>停止</span></el-button>
+                    <!-- :class="{'isStop':selectedStratege!=''}" -->
+                    <el-button type="danger" style="margin-left:9px" size="small" :class="{'isStop': isStop }"  @click="stopAll()"><i class="icon-stop"></i><span>停止</span></el-button>
                 </div>
             </div>
         </div>
@@ -64,6 +65,7 @@ export default {
     },
     data () {
         return {
+            isStop: false,
             props: {
                 label: 'name',
                 children: 'children',
@@ -234,6 +236,7 @@ export default {
         },
         //开始巡查
         startPlays(){
+            this.isStop = true;
             // =======================  先停止其他 ====================
             //停止定时器
             clearInterval(this.Timer);
@@ -336,6 +339,7 @@ export default {
         },
         //停止
         stopAll(){
+            this.isStop = false;
             //停止定时器
             clearInterval(this.Timer);
             //停止所有点播

@@ -14,7 +14,7 @@
             </el-row>
         </div>
         <!-- 视频监控树 -->
-        <el-scrollbar class="treeWrap hiddenXScroll" :style="{height:moreNum==1?'calc(100% - 164px)':'calc(100% - 124px)'}">
+        <el-scrollbar class="treeWrap hiddenXScroll" :style="{height:moreNum==1?'calc(100% - 160px)':'calc(100% - 120px)'}">
                 <el-tree
                     :props="props"
                     :data="treeData"
@@ -41,19 +41,15 @@
         <div class="treefoot">
             <!-- <div class="treeSelectedNum">已选中{{selectedNum}}个视频资源</div> -->
             <div class="treeOperate">
-                <div class="treeOperate-l">
-                    已选中<span class="treeSelectedNum">{{selectedNum}}</span>个视频资源
+                    已选中<span class="treeSelectedNum">{{selectedNum}}</span>个资源
                     <el-button type="text"  @click="clearAllNum"><i class="icon-clear"></i>清空</el-button>
-                </div>
-                <div class="treeOperate-btn">
-                    <el-button type="primary" size="small" @click="startPlays"><i class="icon-play"></i><span>点播</span></el-button>
-                    <el-button v-if="!hasPlayD" type="danger" size="small" @click="stopAll" plain class="nobg"><i class="icon-stopPlay"></i><span>停止</span></el-button>
-                    <el-button v-else type="danger" size="small" @click="stopAll"><i class="icon-stopPlay_bg"></i><span>停止</span></el-button>
-                </div>
+                    <el-button type="primary" size="small" @click="startPlays"><i class="icon-play el-icon--left"></i>点播</el-button>
+                    <el-button v-if="!hasPlayD" type="danger" size="small" @click="stopAll" plain class="nobg"><i class="icon-stopPlay el-icon--left"></i>停止</el-button>
+                    <el-button v-else type="danger" size="small" @click="stopAll"><i class="icon-stopPlay_bg el-icon--left"></i>停止</el-button>
             </div>
         </div>
         <!-- 右键菜单 -->
-        <tree-right-menu ref="rightMenu"  v-on="$listeners"/>
+        <tree-right-menu ref="rightMenu"/>
     </div>
 </template>
 
@@ -93,12 +89,16 @@ export default {
             searchChange:false,
             relationshipValue:0,
 
-            selectedNum:0
+            selectedNum:0,
+            automaticPlay: false
         };
     },
-   
     methods: {
-        
+        // 自动点播 前9条数据或者9条以内
+        isAutoPlay(){
+            this.automaticPlay = true;
+            this.$message({message: '正在点播您关注的常用资源...'})
+        },
         //1119云调度拖动点播
         nodeDragStart(node, ev) {
             ev.dataTransfer.setData("item", JSON.stringify(node.data));
@@ -202,16 +202,56 @@ export default {
                 //设备组织
                     self.clearTree();
                     self.treeData = Fun._initCommonUseTreeData(obj);
+                    console.log(self.treeData)
                    // 默认展开一级节点
                     setTimeout(() => {
                         self.treeData.forEach(item => {
                             self.expandedNodes.push(item.nodeId);
                         });
+                        setTimeout(()=> {
+                            debugger;
+                            if( self.automaticPlay ){
+                                 let node = {
+                                     checkedKeys: [],
+                                     checkedNodes: []
+                                 }
+                                self.treeData[0].children.forEach( ( item, index ) => {
+                                    if( index < 9 ){
+                                        node.checkedKeys.push(item.id);
+                                        node.checkedNodes.push(item);
+                                    };
+                                });
+                                self.$refs.main_device_tree.setCheckedKeys(node.checkedKeys);
+                                //self.handleNodeCheck({}, node);
+
+                                // self.$refs.main_device_tree.setCheckedKeys([self.treeData[0].id]);
+                                // self.startPlays();
+                            };
+                        }, 1000);
                     }, 1000);
 
-
                     self.$nextTick(() => {
+                        console.log(  self.treeData[0])
                         self.changeStatus()
+                        // let currentScreen=JSON.parse(sessionStorage.getItem('currentScreen'));
+                        // if(currentScreen.length>0){
+                        //     self.hasPlayD=true;
+                        //     currentScreen.forEach(item=>{
+                        //             self.treeData[0].children&&self.treeData[0].children.filter(val=>item.resId==val.id).map(cs=>{
+                        //                 let icon_='';
+                        //                 if(cs.nodeStatus.indexOf("device_")>-1){
+                        //                 cs.nodeStatus="device_playing"
+                        //                 }else if(cs.nodeStatus.indexOf("NVR_")>-1){
+                        //                 cs.nodeStatus="NVR_playing"
+                        //                 }else if(cs.nodeStatus.indexOf("channel_")>-1){
+                        //                 cs.nodeStatus="channel_playing"
+                        //                 }
+                        //             })
+                        //     })
+                        // }else{
+                        //     self.hasPlayD=false;
+                        // }
+                                   
                     })
             }
               
@@ -221,41 +261,33 @@ export default {
         changeStatus(){
             let self=this;
             let currentScreen=JSON.parse(sessionStorage.getItem('currentScreen'));
-            console.log(currentScreen);
-            if(currentScreen.length>0){
-                self.hasPlayD=true;
-                self.treeData[0].children.forEach(item=>{
-                    var n=currentScreen.findIndex(val=>item.id==val.resId);
-                    if(n>-1){
-                        if(item.nodeStatus.indexOf("device_")>-1){
-                        item.nodeStatus="device_playing"
-                        }else if(item.nodeStatus.indexOf("NVR_")>-1){
-                        item.nodeStatus="NVR_playing"
-                        }else if(item.nodeStatus.indexOf("channel_")>-1){
-                        item.nodeStatus="channel_playing"
+                        if(currentScreen.length>0){
+                            self.hasPlayD=true;
+                            currentScreen.forEach(item=>{
+                                    self.treeData[0].children&&self.treeData[0].children.filter(val=>item.resId==val.id).map(cs=>{
+                                        let icon_='';
+                                        if(cs.nodeStatus.indexOf("device_")>-1){
+                                        cs.nodeStatus="device_playing"
+                                        }else if(cs.nodeStatus.indexOf("NVR_")>-1){
+                                        cs.nodeStatus="NVR_playing"
+                                        }else if(cs.nodeStatus.indexOf("channel_")>-1){
+                                        cs.nodeStatus="channel_playing"
+                                        }
+                                    })
+                            })
+                        }else{
+                            self.hasPlayD=false;
+                             self.treeData[0].children.forEach(item=>{
+                                 let icon_='';
+                                        if(item.nodeStatus.indexOf("device_")>-1){
+                                            if(item.nodeStatus=='device_playing'||item.nodeStatus=='device_playWaiting')item.nodeStatus="device_online"
+                                        }else if(item.nodeStatus.indexOf("NVR_")>-1){
+                                             if(item.nodeStatus=='NVR_playing'||item.nodeStatus=='NVR_playWaiting')item.nodeStatus="NVR_online"
+                                        }else if(item.nodeStatus.indexOf("channel_")>-1){
+                                            if(item.nodeStatus=='channel_playing'||item.nodeStatus=='channel_playWaiting')item.nodeStatus="channel_online"
+                                        }
+                             })
                         }
-                    }else{
-                        if(item.nodeStatus.indexOf("device_")>-1){
-                            if(item.nodeStatus=='device_playing'||item.nodeStatus=='device_playWaiting')item.nodeStatus="device_online"
-                        }else if(item.nodeStatus.indexOf("NVR_")>-1){
-                                if(item.nodeStatus=='NVR_playing'||item.nodeStatus=='NVR_playWaiting')item.nodeStatus="NVR_online"
-                        }else if(item.nodeStatus.indexOf("channel_")>-1){
-                            if(item.nodeStatus=='channel_playing'||item.nodeStatus=='channel_playWaiting')item.nodeStatus="channel_online"
-                        }
-                    }
-                })
-            }else{
-                self.hasPlayD=false;
-                self.treeData[0].children.forEach(item=>{
-                    if(item.nodeStatus.indexOf("device_")>-1){
-                        if(item.nodeStatus=='device_playing'||item.nodeStatus=='device_playWaiting')item.nodeStatus="device_online"
-                    }else if(item.nodeStatus.indexOf("NVR_")>-1){
-                            if(item.nodeStatus=='NVR_playing'||item.nodeStatus=='NVR_playWaiting')item.nodeStatus="NVR_online"
-                    }else if(item.nodeStatus.indexOf("channel_")>-1){
-                        if(item.nodeStatus=='channel_playing'||item.nodeStatus=='channel_playWaiting')item.nodeStatus="channel_online"
-                    }
-                })
-            }
         },
         //整理节点数据
          setCommonUse(obj){
@@ -410,7 +442,6 @@ export default {
                 }else if(data.nodeStatus=="channel_offline"){
                     this.showremind("点播提示","设备不在线，不允许点播！")
                 }else if(data.nodeStatus=="channel_online"){
-                    console.log(data);
                     Fun.startPlayDevice(this, data, undefined, 'unicast');  //1126 同步云调度 1126 多通道修改------------
                 }else if(data.nodeStatus=="channel_playing"){
                     Fun.stopPlayDevice(this.apiSDK, data);
@@ -468,19 +499,20 @@ export default {
             let resInfos = [];
             let nvrDevice = [];
             node.checkedNodes.forEach(item => {
+                console.log('勾选数据-----', item);
                 // nvr多通道批量点播
                 if (item.resourceType == 'channel') {
-                    let obj = nvrDevice.find(it => it.nvrDeviceId === item.pid);
-                    if (obj) {
-                        let channel = obj.channels.find(i => i === item.id)
-                        if (!channel) {
-                            obj.channels.push(item.id);
-                            ++n;
-                        }
-                    } else {
+                    // let obj = nvrDevice.find(it => it.nvrDeviceId === item.pid);
+                    // if (obj) {
+                    //     let channel = obj.channels.find(i => i === item.id)
+                    //     if (!channel) {
+                    //         obj.channels.push(item.id);
+                    //         ++n;
+                    //     }
+                    // } else {
                         nvrDevice.push({nvrDeviceId: item.pid, channels: [item.id]});
                         ++n;
-                    }
+                    // }
                    
                 } else if (item.children && item.children.length) {
                     n+=item.children.length;
@@ -494,6 +526,7 @@ export default {
             })
             this.selectedNum=n;
             this.$parent.isTreeItemShow=false;
+            this.automaticPlay && this.startPlays();
         },
         //树行样式
         renderContent(h, { node, data, store }) {
@@ -509,24 +542,10 @@ export default {
                     <span>{node.label}{count}</span>
                 </span>);
             }else{
-                //12.17 涉及到通道排序，暂时还原，等通道排序弄好再加
                  return (<span class={"custom-tree-node " + icon + " " + alarm}  title={'最近:'+data.time+' 频率:'+data.num+'次'}>
                     <span class="node-icon"></span>
                     <span>{node.label}</span>
                 </span>);
-                //  if(data.deviceType=='GBNVREncoder'){
-                //     return (<span class={"custom-tree-node " + icon + " " + alarm}  title={'最近:'+data.time+' 频率:'+data.num+'次'}>
-                //         <span class="node-icon"></span>
-                //         <span>{node.label}</span>
-                //     </span>);
-                // }else{
-                //     return (<span class={"custom-tree-node " + icon + " " + alarm}  title={'最近:'+data.time+' 频率:'+data.num+'次'}>
-                //       <span class="node-icon-holder"></span> 
-                //         <span class="node-icon"></span>
-                //         <span>{node.label}</span>
-                //     </span>);
-                // }
-
                 //   return (<span class={"custom-tree-node " + icon + " " + alarm}  title={'最近:'+data.time+' 频率:'+data.num+'次'}>
                 //     <span class="node-icon"></span>
                 //   <el-tooltip effect="dark" content={'最近:'+data.time+' 频率:'+data.num+'次'} placement="bottom-start">
@@ -699,9 +718,9 @@ export default {
 }
 .treeBox{
     height: 100%;
-    /* background: url(../../../../static/main/screen/resource_bg.png) no-repeat top; */
-    /* margin-top: -2px;
-    padding-top:2px; */
+    background: url(../../../../static/main/screen/resource_bg.png) no-repeat top;
+    margin-top: -2px;
+    padding-top:2px;
     background-size: 100% 100%;
 }
 .newSearchBtn{
@@ -725,10 +744,9 @@ export default {
 }
 .treeWrap{
     width:414px;
-    height: calc(100% - 164px);
-    /*   padding: 0;*/
+    height: calc(100% - 160px);
     /* overflow: hidden; */
-    /* padding: 0 0 0 16px; */
+    padding: 0 0 0 16px;
     box-sizing: border-box;
 }
 .divSearchBox {
@@ -773,7 +791,7 @@ export default {
 }
 
 .treeOperate{
-    padding: 8px 17px;
+    padding: 9px 0;
 }
 
 /* ui tab样式11.16 */
@@ -793,7 +811,7 @@ export default {
   color:#fff;
 }
  .treeBox /deep/ .divSearchBox >.el-tabs>.el-tabs__header>.el-tabs__nav-wrap>.el-tabs__nav-scroll>.el-tabs__nav>.el-tabs__active-bar{
-  height: 3px;
+  height: 2px;
 }
 
 .tabtree-icon{
@@ -876,21 +894,20 @@ export default {
 }
 .icon-clear{
     display: inline-block;
-    width:14px;
-    height: 14px;
+    width:12px;
+    height: 12px;
     vertical-align: middle;
     background: url(../../../../static/common/reset.png) no-repeat center;
-    background-size: 14px;
+    background-size: 12px;
     margin-right:3px;
 }
 .treefoot /deep/ .el-button--text{
-  color: #599AFF;
-  font-size: 14px;
-  margin-left:14px;
+  color:#D3DCF0;
+  font-size: 12px;
+  margin-left:10px;
 }
 .treeSelectedNum{
-  color:#599AFF;  
-  font-size: 14px;
+  color:#1bd1eb;  
 }
 .icon-play{
     display: inline-block;
@@ -936,26 +953,5 @@ export default {
     background-size: 100% 400px;
     opacity: 0.9;
     color: #fff;
-}
-
-
-.treeOperate-l{
-    width: 182px;
-    text-align: left;
-}
-.treeOperate-btn{
-    width: 191px;
-}
-.treeOperate-l,.treeOperate-btn{
-    display: inline-block;
-    height: 41px;
-    line-height: 41px;
-}
-.icon-play+span,.icon-stopPlay+span,.icon-stopPlay_bg+span{
-    display: inline-block;
-    line-height: 22px;
-    height: 22px;
-    vertical-align: middle;
-    margin-left: 5px;
 }
 </style>

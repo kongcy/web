@@ -16,10 +16,13 @@
         </div>
       </div>
       
-      <div id="divResourceArea_Monitor" v-show="isShowResource" :style="resourceAreaStyle">
+      <!-- <div id="divResourceArea_Monitor" v-show="isShowResource" :style="resourceAreaStyle">
         <resource-container3 ref="resourcecontainer" />
+      </div> -->
+      <div id="divResourceArea_Monitor" v-show="isShowResource" :style="resourceAreaStyle">
+        <resource-container ref="resourcecontainer" @StopAllHideHolder="HideHolder"/>
       </div>
-     
+
     </div>
   </div>
 </template>
@@ -29,13 +32,13 @@ import ImageNav from "@/components/home/layout/ImageNav.vue";
 import ImageShow from "@/components/home/layout/ImageShow.vue";
 import ImageOperate from "@/components/home/layout/ImageOperate.vue";
 import ImageBottomNav from "@/components/home/layout/ImageBottomNav.vue";//wxx 2020.11.10
-import ResourceContainer from "@/components/home/ResourceContainer.vue";
-import ResourceContainer3 from "@/components/home/ResourceContainer3.vue";
+// import ResourceContainer from "@/components/home/ResourceContainer.vue";
+import ResourceContainer from "@/components/home/ResourceContainerMonitor.vue";
 import HolderControl from "@/components/home/HolderControl.vue";//云台控制组件
 import Fun from "@/common/fun";
 import Enum from "@/common/enum";
 import { clearInterval } from "timers";
-import { playerSDKNew } from '@/sdk/player/playerSDK'
+
 
 export default {
   name: "HomeContainer",
@@ -44,7 +47,6 @@ export default {
     ImageShow,
     ImageOperate,
     ImageBottomNav,
-    ResourceContainer3,
     ResourceContainer,
     HolderControl
   },
@@ -143,15 +145,8 @@ export default {
     window.onbeforeunload = function(){
         that.$message.closeAll();
     };
-    this.openMeeting();
   },
   methods: {
-    // 视频插件 点击开启会议回调
-    openMeeting(){
-      playerSDKNew.setPlayerBtnEventCallback((screenIndex, btnKey) => {
-         debugger;
-      });
-    },
     // 分时防抖函数
     debounce(event, time) {
       let timer = null;

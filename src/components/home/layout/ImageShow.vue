@@ -642,9 +642,13 @@ export default {
         },
         // 开启会议
         openMeeting(pos){
-        //    let meetingNo = ''; // 拉人入会的会议号
-        //    let xiaoYuNums = ''; // 被拉的小鱼号
-           this.apiSDK.newOpenMeeting(this.currentPlayScreens[pos]).then(obj => {
+            // let meetingNo = ''; // 拉人入会的会议号
+            // let xiaoYuNums = ''; // 被拉的小鱼号
+           let data = {
+               resId: this.currentPlayScreens[pos].encoderSipID,
+               joinMember: xtxk.cache.get('yhsjhm'),
+           };
+           this.apiSDK.newOpenMeeting(data, obj => {
                console.log('点击会议返回', obj);
            });
         }
