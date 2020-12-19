@@ -14,7 +14,7 @@
         "_description2": "------------- openVone6.0",
         "dataURL": "http://10.79.25.140:31084/DataApiService",
         "businessURL": "ws://10.79.25.141:31087/websocket_api",
-        "strategeURL": "http://10.79.108.159:7070/monitor",
+        "strategeURL": "http://10.79.25.136:7070/monitor",
         "fileUploadURL": "http://10.79.25.141:30900",
         "_description3": "------------- openVone5.0",
         "dataURL5": "https://172.16.3.188:8444/DispatcherBusinessWeb",

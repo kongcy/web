@@ -90,6 +90,7 @@ export default {
                 } else {
                     // console.log('统一登录失败------');
                     that.$message({message: '登录失败: ' + obj.msg, type: 'error'});
+                    that.$router.push('LoginFailure');
                 }
             });
         },
@@ -149,7 +150,7 @@ export default {
                     } else {
                         this.$message({message: '登录失败', type: 'error'});
                     }
-
+                    this.$router.push('LoginFailure');
                 }
             })
         },

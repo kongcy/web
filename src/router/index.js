@@ -13,7 +13,7 @@ import CallSimulator from '@/components/simulator/CallSimulator'
 import BaseContainerPlay from '@/components/automaticPlay/BaseContainer'
 import HomeContainerPlay from '@/components/automaticPlay/HomeContainer'
 import PwdLogin2 from '@/components/automaticPlay/PwdLogin'
-
+import LoginFailure from '@/components/login/loginFailure'
 
 import MonitoringLogin from '@/components/monitoring/PwdLogin'
 // import Monitor from '@/components/home/Monitor'
@@ -51,6 +51,11 @@ export default new Router({
         //     //     }
         //     // ]
         // },
+        {
+            path: '/LoginFailure',
+            name: 'LoginFailure',
+            component: LoginFailure
+        },
         {
             path: '/Play',
             name: 'Play',
