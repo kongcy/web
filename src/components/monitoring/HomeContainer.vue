@@ -332,7 +332,7 @@ export default {
   margin:0 0 0px!important;
 }
 /deep/ .el-tabs__content{
-  height:100%;
+  /* height:100%; */
   background:url(../../../static/main/screen/bg.png) no-repeat center;
 }
 #divContainer {

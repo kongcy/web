@@ -105,7 +105,7 @@ WebSocketSDK.prototype = {
 					clearInterval(_this._reConnectInterval);
 					_this._reConnectInterval = null;
 				}
-				_this._wsclient.close();//清除之前的
+				_this._wsclient && _this._wsclient.close();//清除之前的
 				_this._wsclient = null;
 				if("WebSocket" in window){
 					_this._wsclient = new WebSocket(_this._socketURL);

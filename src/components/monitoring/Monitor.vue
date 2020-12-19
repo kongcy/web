@@ -1,5 +1,5 @@
 <template>
-  <div id="divContainer_Monitor">
+  <div id="divContainer_Monitor" >
     <div id="divMain_Monitor" :style="mainStyle">
        <!-- 云台控制 -->
       <div class="divHolderControl"   v-show="isShowHolderC"  :style="holderControlStyle">

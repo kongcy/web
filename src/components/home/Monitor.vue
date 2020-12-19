@@ -88,7 +88,6 @@ export default {
 
     //在其它页面刷新后再进入本页面时执行，此时socket已连接
     if (this.apiSDK.socketStatus != -1) {
-      console.log('其它页面刷新后再进入本页面时执行---1111');
       //媒体
       self.$refs.imageShow.initMXTC(this.imageShowWidth, this.imageShowHeight,"MonitorContainer");
       //资源树
@@ -122,7 +121,6 @@ export default {
       } else if (obj.state == 1) {
         //首次
         //媒体
-         console.log('其它页面刷新后再进入本页面时执行---2222');
         self.$refs.imageShow.initMXTC(
           this.imageShowWidth,
           this.imageShowHeight

@@ -86,17 +86,17 @@ export default {
         //   tourl:'',
         //   introduce:"打造多互动协作空间，远程交流如当面",
         // },
-        {
-          title: '视频会议',
-          imgurl:"static/home/meeting.png",
-          titleurl:'static/home/meeting_title.png',
-          name:'MeetingOutside',
-          content: 'MeetingOutside',
-          ref: 'MeetingOutside',
-          closable: true,
-          tourl:'http://localhost:8080/',
-          introduce:"打造多互动协作空间，远程交流如当面",
-        },
+        // {
+        //   title: '视频会议',
+        //   imgurl:"static/home/meeting.png",
+        //   titleurl:'static/home/meeting_title.png',
+        //   name:'MeetingOutside',
+        //   content: 'MeetingOutside',
+        //   ref: 'MeetingOutside',
+        //   closable: true,
+        //   tourl:'http://localhost:8080/',
+        //   introduce:"打造多互动协作空间，远程交流如当面",
+        // },
         
          {
           title: '视频诊断',

@@ -84,7 +84,6 @@ export default {
   mounted() {
     this.activetabName=xtxk.cache.get('activeName');
     // 根据URL 传递的参数 自动点播最近的9条或者9条以内的记录 
-    console.log('根据URL 传递的参数 自动点播最近的9条或者9条以内的记录',xtxk.cache.get('isAutoPlay'));
     if( xtxk.cache.get('isAutoPlay') == 1 ){
         this.tabClickHandler(this.editableTabs[0]);
         this.$refs.commonUse[0].isAutoPlay();
