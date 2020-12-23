@@ -1,28 +1,34 @@
 <template>
-  <div id="divContainer_Monitor" >
+  <div id="divContainer_Monitor">
+     
+       
     <div id="divMain_Monitor" :style="mainStyle">
        <!-- 云台控制 -->
       <div class="divHolderControl"   v-show="isShowHolderC"  :style="holderControlStyle">
          <HolderControl ref="holderControl" />
       </div>
       <div id="divImageContent_Monitor" :style="imageContentStyle">
+       
+        <!-- <div id="divImageNav_Monitor" :style="imageNavStyle">
+          <image-nav ref="imageNav" />
+        </div> -->
         <div id="divImageShow_Monitor" :style="imageShowStyle">
           <div class="toLeft" :class="isShowResource?'':'toLeft_R'"  @click="expendResource"></div>
           <div class="toRight" :class="isShowHolderC?'':'toRight_L'" @click="expendTogetherHolder"></div>
           <image-show ref="imageShow" />
         </div>
+        <!-- <div id="divImageOperate_Monitor" :style="imageOperateStyle">
+          <image-operate />
+        </div> -->
         <div id="divImageBottomNav_Monitor" :style="imageFooterStyle">
            <image-bottom-nav ref="imageBottomNav" />
         </div>
       </div>
       
-      <!-- <div id="divResourceArea_Monitor" v-show="isShowResource" :style="resourceAreaStyle">
-        <resource-container3 ref="resourcecontainer" />
-      </div> -->
       <div id="divResourceArea_Monitor" v-show="isShowResource" :style="resourceAreaStyle">
-        <resource-container ref="resourcecontainer" @StopAllHideHolder="HideHolder"/>
+        <resource-container ref="resourcecontainer" @StopAllHideHolder="HideHolder" />
       </div>
-
+     
     </div>
   </div>
 </template>
@@ -38,8 +44,6 @@ import HolderControl from "@/components/home/HolderControl.vue";//云台控制�
 import Fun from "@/common/fun";
 import Enum from "@/common/enum";
 import { clearInterval } from "timers";
-
-
 export default {
   name: "HomeContainer",
   components: {
@@ -73,7 +77,8 @@ export default {
       isShowHolder:true,
       isShowHolderC:false,
       isShowResource:true,
-      
+
+      isAllFull:false,
     }
   },
   mounted() {
@@ -82,12 +87,14 @@ export default {
     this.initLayout();
 
     //在其它页面刷新后再进入本页面时执行，此时socket已连接
-    if (self.apiSDK.socketStatus != -1) {
+    if (this.apiSDK.socketStatus != -1) {
+      console.log('其它页面刷新后再进入本页面时执行---1111');
       //媒体
-      self.$refs.imageShow.initMXTC(self.imageShowWidth, self.imageShowHeight, "MonitorId");
+      self.$refs.imageShow.initMXTC(this.imageShowWidth, this.imageShowHeight,"MonitorContainer");
       //资源树
       self.$refs.resourcecontainer.initTree();
     }
+
     //socket状态
     this.apiSDK.setSocketReconnectCallback("main", obj => {
       if (obj.state == -1) {
@@ -115,41 +122,25 @@ export default {
       } else if (obj.state == 1) {
         //首次
         //媒体
+         console.log('其它页面刷新后再进入本页面时执行---2222');
         self.$refs.imageShow.initMXTC(
-          self.imageShowWidth,
-          self.imageShowHeight
+          this.imageShowWidth,
+          this.imageShowHeight
         );
         //资源树
         self.$refs.resourcecontainer.initTree();
       }
     });
-
+  
     // 事件
     window.addEventListener("resize", this.resize);
-
 
     //所有全屏 回调
     this.apiSDK.fullAllScreenCallback(isFull => {
       this.isAllFull = isFull
+      this.$refs.imageShow.isFullScreen = isFull;
       this.resize();
     })
-    // let beforeUnloadTime = 0,gapTime=0;
-    // window.onunload = function(){
-    //     gapTime = new Date().getTime() - beforeUnloadTime
-    //     if(gapTime<=5){
-    //         //停止定时器
-    //         clearInterval(this.Timer);
-    //         clearInterval(this.tokenTime);
-    //         // 退出
-    //         this.apiSDK.publishLeave(function(){});
-    //         // 关闭点播
-    //         this.apiSDK.stopAll();
-    //     }
-    // }
-    let that = this;
-    window.onbeforeunload = function(){
-        that.$message.closeAll();
-    };
   },
   methods: {
     // 分时防抖函数
@@ -195,8 +186,7 @@ export default {
       var footerWidth = screenWidth;
       var footerHeight =0;
       var mainWidth = screenWidth;
-      // var mainHeight = screenHeight - headerHeight - footerHeight;
-      var mainHeight = screenHeight;
+      var mainHeight = screenHeight - headerHeight - footerHeight;
 
       //资源区域
       var resourceAreaWidth = this.isShowResource?412:0;
@@ -264,6 +254,7 @@ export default {
     //展开/隐藏资源
     expendResource(){
       this.isShowResource=!this.isShowResource;
+      // this.isShowHolderC=!this.isShowHolderC;
       this.resize();
     },
      //展开云台控制
@@ -274,17 +265,29 @@ export default {
       this.resize();
     },
     //隐藏云台控制
-    HideHolder(){
-      // this.isShowHolder=false;
-      // this.isShowHolderC=false;
-      // this.isShowResource=true;
-      // this.resize();
-      this.$refs.holderControl.closedDialog();
+    HideHolder(data){
+       let HolderResourceId= this.$refs.holderControl.resourceId
+      if(typeof(data)=='boolean'){
+        this.$refs.holderControl.closedDialog();
+      }else if(typeof(data)=='number'){
+          let currentScreen=JSON.parse(sessionStorage.getItem('currentScreen'));
+          let currentScreenData=[];
+          currentScreenData.push(currentScreen.find(item=>parseInt(item.screenIndex)==data));
+          if(currentScreenData.length>0){
+              let n=currentScreenData.findIndex(item=>item.resId==HolderResourceId);
+            if(n>-1)
+            this.$refs.holderControl.closedDialog();
+          }
+      }else{
+        let n=data.findIndex(item=>item.id==HolderResourceId);
+        if(n>-1)
+        this.$refs.holderControl.closedDialog();
+      }
     },
     //展开/隐藏云台控制
     expendTogetherHolder(){
       this.isShowHolderC=!this.isShowHolderC;
-      //  this.isShowResource=!this.isShowResource;
+      // this.isShowResource=!this.isShowResource;
       this.resize();
     },
   
@@ -333,7 +336,6 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
-  /* height: calc(100% + 30px); */
 }
 #divHeader {
   padding: 0px;
@@ -423,17 +425,20 @@ div > div#divImageContent_Monitor > div#divImageShow_Monitor {
 }
 .toLeft{
   left: -35px;
-  top: 6px;
+    top: 6px;
+  /* background: url(../../../static/common/toLeft.png) no-repeat center; */
   background: url(../../../static/common/left-btn.png) no-repeat center;
 }
 .toLeft:hover{
   left: -35px;
   top: 6px;
+  /* background: url(../../../static/common/toLeft_hover.png) no-repeat center; */
   background: url(../../../static/common/left-btn-hover.png) no-repeat center;
 }
 .toLeft:active{
   left: -35px;
   top: 6px;
+  /* background: url(../../../static/common/toLeft_active.png) no-repeat center; */
   background: url(../../../static/common/left-btn-click.png) no-repeat center;
 }
 .toRight{
@@ -459,6 +464,7 @@ div > div#divImageContent_Monitor > div#divImageShow_Monitor {
   background-size: 100% 100%;
   border-top: 1px solid #5C6D86;
 }
+
 
 .toLeft.toLeft_R{
   left: 0px;

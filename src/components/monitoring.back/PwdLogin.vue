@@ -110,6 +110,7 @@ export default {
                 passWord: decodeURIComponent(xtxk.cache.get('AutomaticPlayPassword').passWord),
                 ip: '10.79.201.179'
             };
+
             let that = this;
             this.apiSDK.userLogin(data, obj => {
                 if( obj.code == 1 && obj.data ) {
@@ -164,34 +165,6 @@ export default {
                 this.login();
             }
         },
-        // 中油 统一登录
-        unifyRegister_hhid(hhid){
-            let data = {
-                hhid: hhid,
-                ip: "127.0.0.1"
-            };
-            let that = this;
-            this.apiSDK.queryUserInfo(data, obj => {
-                if( obj.code == 1 && obj.data ) {
-                    console.log('根据 HHID 统一登录返回------', obj);
-                    // 返回 openVone 密码（解决两边系统密码不同步问题）
-                    that.form.username = obj.data.yhdm;
-                    xtxk.cache.set('AutomaticPlayUsername',  obj.data.yhdm);
-                    obj.data.nsp && xtxk.cache.set('AutomaticPlayPassword',  { passWord: window.atob(obj.data.nsp) });  
-
-                    // 将手机号保存在本地
-                    xtxk.cache.set('yhsjhm',  obj.data.yhsjhm );
-                    xtxk.cache.set('yhidym',  obj.data.yhid );
-                    xtxk.cache.set('dwsx',  "" );
-                    xtxk.cache.set('hhid',  hhid );
-                    xtxk.cache.set('monitoringStyle',  true );
-                    that.login('play');
-                } else {
-                    that.$message({message: '登录失败: ' + obj.msg, type: 'error'});
-                    that.$router.push('LoginFailure');
-                }
-            });
-        },
         // 登录
         login() {
             this.apiSDK.loginWithAccount(this.form.username, xtxk.cache.get('AutomaticPlayPassword').passWord, 'aaaa', (res) => {
@@ -202,6 +175,7 @@ export default {
                     this.apiSDK.initUserInfo(res.data.userID, res.data.userName, res.token);
                     this.$router.push('MonitorHome/VideoMonitor');
                     // this.$router.push('MonitorHome/VideoMonitor')
+
                 } else if(res && res.Ret == 2){
                     this.$store.commit("updateUserinfo", {token:res.token, userID:res.data.userID, userName:res.data.userName});
                     xtxk.cache.set('USER', {token: res.token, userId: res.data.userID, userName:res.data.userName})

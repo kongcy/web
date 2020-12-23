@@ -138,7 +138,7 @@ var playerSDK = {
          if(!this.playerType){
               //socket 
          let protocol = window.location.protocol;
-         let socketProtocol = protocol.indexOf('s') > -1 ? 'wss' : 'wss';
+         let socketProtocol = protocol.indexOf('s') > -1 ? 'ws' : 'ws';
          let busUrl = `${msIp}:${msPort}`
          let url1 = `${socketProtocol}://${busUrl}`;
          this.businessSDKC = new WebSocketSDK(url1, () => {
@@ -184,8 +184,9 @@ var playerSDK = {
 				businessCB(eventType, status_code, screenIndex);
             });
          }else{
+            // '/DispatcherWeb3/static/js/play/play.js'
             // 加载播放器脚本 
-            loadJs('playSDK', '/static/js/play/play.js', () => {
+            loadJs('playSDK', 'static/js/play/play.js', () => {
                 console.log('加载播放器脚本成功！')
                 webglPlayer.initMediaServer(mediaServerConfig.ffmepgServer ,mediaServerConfig.decodeResolution)
             }) 
@@ -194,7 +195,7 @@ var playerSDK = {
     },
     initXTPlayer(msIp,msPort,businessCB){ 
         // msIp = '127.0.0.1'
-        let socketProtocol = window.location.protocol.indexOf('s') > -1 ? 'wss' : 'ws';
+        let socketProtocol = window.location.protocol.indexOf('s') > -1 ? 'ws' : 'ws';
         const _wsURL = `${socketProtocol}://${msIp}:${msPort}`;
         this.businessSDKC = new dbBusinessSDK(_wsURL, ()=>{
             this.businessSDKC.initServer(0);
@@ -230,7 +231,7 @@ var playerSDK = {
 
         //socket
         let protocol = window.location.protocol;
-        let socketProtocol = protocol.indexOf('s') > -1 ? 'wss' : 'wss';
+        let socketProtocol = protocol.indexOf('s') > -1 ? 'ws' : 'ws';
         let url1 = socketProtocol + "://127.0.0.1:4443";
         this.businessSDKC = new WebSocketSDK(url1, () => {
             this.businessSDKC.initServer(type);
@@ -761,7 +762,8 @@ var playerSDK = {
             //return {width: 0, height: 0}//原画质
             return {width: 1920, height: 1080}//原画质
         } else if(screenCount <= 4) {
-            return {width: 1080, height: 720}
+            // return {width: 1080, height: 720}
+            return {width: 640, height: 480}
         } else if(screenCount <= 9) {
             return {width: 352, height: 288}
         } else {

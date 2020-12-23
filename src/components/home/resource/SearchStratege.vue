@@ -38,14 +38,15 @@
         <div class="treefoot">
             
             <div class="treeOperate">
-                <div class="treeOperate-l">
+                <div class="treeOperate-l"  :title="'已选中'+selectedStratege">
                     已选中<span class="treeSelectedNum">{{selectedStratege}}</span>
                 </div>
                 <div class="treeOperate-btn">
-                  
                     <el-button type="text"  style="width: 47px;" ></el-button>
-                    <el-button type="primary" size="small" @click="startPlays()" style="margin-left:5px"><i class="icon-start"></i><span>点播</span></el-button>
-                    <el-button type="danger" size="small" :class="{'isStop':selectedStratege!=''}" @click="stopAll()"><i class="icon-stop"></i><span>停止</span></el-button>
+                     <el-button type="primary" class="btn-span" size="small" @click="startPlays()" style="margin-left:5px;margin-top: 6px;"><i class="icon-start"></i><span>点播</span></el-button>
+                    <el-button type="danger" class="btn-span"  size="small"   :class="{'isStop':selectedStratege!=''}" @click="stopAll()"><i class="icon-stop"></i><span>停止</span></el-button>
+                    <!-- <el-button type="primary" class="btn-span" size="small" @click="startPlays()" style="margin-left:5px;margin-top: 6px;"><i class="icon-start"></i><span>点播</span></el-button>
+                    <el-button type="danger" class="btn-span"  size="small"   :class="{'isStop':selectedStratege!=''}" @click="stopAll()"><i class="icon-stop"></i><span>停止</span></el-button> -->
                 </div>
             </div>
         </div>
@@ -483,9 +484,6 @@ export default {
 <style scoped>
 .treeBox{
     height: 100%;
-    background: url(../../../../static/main/screen/resource_bg.png) no-repeat top;
-    margin-top: -2px;
-    background-size: 100% 100%;
 }
 .newSearchBtn{
     display: inline-block;
@@ -639,42 +637,36 @@ export default {
 .el-button {
     /* padding: 0 15px; */
 }
-.el-button span{
-    display: inline-block;
-    height: 22px;
-}
 .el-button .icon-start,.el-button .icon-stop{
     display: inline-block;
     width: 22px;
     height: 22px;
     vertical-align: middle;
-    margin-right: 3px;
+  
 }
 .el-button .icon-start{
-    background:url(../../../../static/stratege/icon-play.png) no-repeat center;
+    background:url(../../../../static/main/res/icon-play.png) no-repeat center;background-size: 22px;
 }
 .el-button .icon-stop{
-    background:url(../../../../static/stratege/icon-stopPlay.png) no-repeat center;
+    background:url(../../../../static/main/res/icon-stopPlay.png) no-repeat center;
+    background-size: 22px;
 }
 .isStop.el-button .icon-stop{
-    background:url(../../../../static/stratege/icon-stopPlay-act.png) no-repeat center;
-}
-.el-button .icon-start+span,.el-button .icon-stop+span{
-    display: inline-block;
-    line-height: 22px;
-    height: 22px;
-    vertical-align: middle;
+    background:url(../../../../static/main/res/icon-stopPlay1.png) no-repeat center;
+    background-size: 22px;
 }
 /deep/.isStop.el-button--danger{
     color: #FFF;
     background: url(../../../../static/common/btn-danger.png) no-repeat center;
+    border-color: #F56C6C;
 }
 /deep/.isStop.el-button--danger:hover{
-    background: transparent;
-    border-color: #E05656;
-    color: #E05656;
+    background: #f78989;
+    border-color: #f78989;
+    color: #FFF;
 }/deep/.isStop.el-button--danger:hover .icon-stop{
-    background:url(../../../../static/stratege/icon-stopPlay.png) no-repeat center;
+    background:url(../../../../static/stratege/icon-stopPlay-act.png) no-repeat center;
+    background-size: 22px;
 }
 /deep/ .el-button--danger{
     background: transparent;
@@ -776,6 +768,10 @@ export default {
     margin-bottom: 20px;
 }
 
+.treeOperate{
+    padding: 8px 12px;
+    box-sizing: border-box;
+}
 .treeOperate-l{
     width: 135px;
     text-align: left;
@@ -783,19 +779,16 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
     vertical-align: middle;
-}
-.treeOperate{
-    padding: 8px 12px;
-    box-sizing: border-box;
+    line-height: 41px;
+    float: left;
 }
 .treeOperate-btn{
     width: 245px;
-    vertical-align: middle;
+    float: right;
 }
 .treeOperate-l,.treeOperate-btn{
     display: inline-block;
     height: 41px;
-    line-height: 38px;
     font-size: 12px;
 }
 .treeSelectedNum{
@@ -803,8 +796,23 @@ export default {
   font-size: 14px;
 }
 
+.el-button .icon-start+span,.el-button .icon-stop+span{
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 5px;   
+}
+.treefoot /deep/ .el-button--text{
+  color: #599AFF;
+  font-size: 14px;
+  padding: 0;
+  height: 41px;
+  vertical-align: middle;
+}
 /deep/ .el-button--danger:hover{
-    color: #f78989!important;
     border: 1px solid #f78989!important;
+}
+.btn-span>span{
+    height: 32px;
+    line-height: 32px;
 }
 </style>

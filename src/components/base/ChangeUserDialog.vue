@@ -105,17 +105,17 @@ export default {
     LoginSwitch() {
         this.$refs.form.validate(valid => {
             if (valid) {
-                this.apiSDK.LoginSwitch(this.form.loginName, this.form.loginpwd, this.form.validCode, res => {
+                this.apiSDK.LoginSwitch(c, this.form.loginpwd, this.form.validCode, res => {
                     if(res && res.Ret == 0){
                         //store
                         this.$store.commit("updateUserinfo", {token:res.token, userID:res.data.userID, userName:res.data.userName});
-                        xtxk.cache.set('USER', {token: res.token, userId: res.data.userID, userName:res.data.userName})
+                        xtxk.cache.set('USER', {token: res.token, userId: res.data.userID, userName:res.data.userName,userLoginID:this.form.username})
                         this.apiSDK.initUserInfo(res.data.userID, res.data.userName, res.token);
                         this.apiSDK.publishLeave(function(){});
                         this.reload();
                     } else if(res && res.Ret === 2){
                         this.$store.commit("updateUserinfo", {token:res.token, userID:res.data.userID, userName:res.data.userName});
-                        xtxk.cache.set('USER', {token: res.token, userId: res.data.userID, userName:res.data.userName})
+                        xtxk.cache.set('USER', {token: res.token, userId: res.data.userID, userName:res.data.userName,userLoginID:this.form.username})
                         this.apiSDK.initUserInfo(res.data.userID, res.data.userName , res.token);
                         this.apiSDK.publishLeave(function(){});
 

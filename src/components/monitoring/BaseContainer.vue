@@ -1,13 +1,16 @@
 <template>
   <section class="el-container is-vertical wrapper">
-    <header class="header" style="display: none;">
+    <!-- style="display: none;" -->
+    <header class="header" >
       <header-area />
     </header>
     <main class="main">
       <router-view />
     </main>
-    <footer class="footer" style="display: none;"></footer>
-    <show-message-dialog :ref="showMessageId" style="display: none;"/>
+    <!-- style="display: none;" -->
+    <footer class="footer" ></footer>
+    <!-- style="display: none;" -->
+    <show-message-dialog :ref="showMessageId" />
   </section>
 </template>
 <script>
@@ -135,8 +138,8 @@ export default {
               self.leaveDialog = null;
               // self.apiSDK.publishLeave();
               const USER = xtxk.cache.get("USER");
-              if(this.apiSDK.playType == 1){
-                this.apiSDK.noPluginLoginOut(USER.userName)
+              if(self.apiSDK.playType == 1){
+                self.apiSDK.noPluginLoginOut(USER.userName)
               }
               self.$router.push("Login");
             }, 200);
@@ -325,9 +328,9 @@ export default {
     unloadHandler() {
       //e = e || window.event
       console.log("刷新页面==================");
-      xtxk.cache.set("REFRESH", true);
-      let url = localStorage.getItem('url');
-      this.$router.push('../Login2?' + url);
+      // xtxk.cache.set("REFRESH", true);
+      // let url = localStorage.getItem('url');
+      // this.$router.push('../Login2?' + url);
     },
 
     //告警弹窗不自动关闭，必须手动关闭，关闭时调用设置   告警消息已读接口

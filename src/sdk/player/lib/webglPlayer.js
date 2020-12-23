@@ -281,12 +281,14 @@ var decoderPlayer = {
 	 * @return {[type]} [description]
 	 */
 	_initLayout(containerWidth, containerHeight) {
-	    decoderPlayer._containerDiv.style.width = containerWidth + 'px';
-	    decoderPlayer._containerDiv.style.height = containerHeight + 'px';
-
-	    // 初始化容器宽高
-	    decoderPlayer._containerWidth            = containerWidth;
-		decoderPlayer._containerHeight           = containerHeight;
+		// if( decoderPlayer._containerDiv ) {
+			decoderPlayer._containerDiv.style.width = containerWidth + 'px';
+			decoderPlayer._containerDiv.style.height = containerHeight + 'px';
+	
+			// 初始化容器宽高
+			decoderPlayer._containerWidth            = containerWidth;
+			decoderPlayer._containerHeight           = containerHeight;
+		// };
 	},
 	/*分屏计算接口***************************************************************/
 	//计算标准分屏
@@ -641,7 +643,7 @@ var decoderPlayer = {
 				innerHTML =
 					"<table style=\"height:100%;\">" +
 					"	<tr style=\"height:25px;\" valign=\"bottom\">" +
-					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate1 + "></img></td>" +
+					// "		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate1 + "></img></td>" +
 					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate2 + "></img></td>" +
 					// "		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate7 + "></img></td>" +
 					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate3 + "></img></td>" +
@@ -658,7 +660,7 @@ var decoderPlayer = {
 			innerHTML =
 					"<table style=\"height:100%;\">" +
 					"	<tr style=\"height:25px;\" valign=\"bottom\">" +
-					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate1 + "></img></td>" +
+					// "		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate1 + "></img></td>" +
 					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate2 + "></img></td>" +
 					// "		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate7 + "></img></td>" +
 					"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate3 + "></img></td>" +
@@ -1306,6 +1308,17 @@ var decoderPlayer = {
 		decoderPlayer._currentSplitType = null;
 		decoderPlayer._refreshDataType = refreshDataType;
 		decoderPlayer._screens                   = new Array();
+		if( document.getElementById(divId) ){
+			console.log('视频插件加载中----111');
+            decoderPlayer.assignment(divId, containerWidth, containerHeight, refreshDataType,playerType);
+		} else {
+            setTimeout(()=> {
+				console.log('视频插件加载中----222');
+				decoderPlayer.init(divId, containerWidth, containerHeight, refreshDataType,playerType);
+			},1000)
+		};
+	},
+	assignment(divId, containerWidth, containerHeight, refreshDataType,playerType){
 		decoderPlayer._containerDiv              = document.getElementById(divId);
 		// 初始化布局
 		decoderPlayer._initLayout(containerWidth, containerHeight);
@@ -1450,9 +1463,6 @@ var decoderPlayer = {
 			//执行
 			if(decoderPlayer._fullScreenChangedCB != null && businessScreens.length > 0)
 				decoderPlayer._fullScreenChangedCB(businessScreens, isFull);
-
-
-
         });
 	},
 	/**

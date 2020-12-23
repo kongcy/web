@@ -8967,8 +8967,7 @@ $.fn.extend({
                     passWord:option.passWord,
                     width:option.width,
                     height:option.height,
-					// type:option.type
-					type: 3
+					type:option.type
                 }
             };
             topObj.openCallback = openCallback;

@@ -11,7 +11,7 @@
         "_description2": "------------- openVone6.0",
         "dataURL": "http://11.55.10.170:31084/DataApiService",
         "businessURL": "ws://11.55.10.171:31087/websocket_api",
-        "strategeURL": "http://10.79.108.159:7070/monitor",
+        "strategeURL": "http://172.16.12.19:7070/monitor",
         "fileUploadURL": "http://11.55.10.170:30900",
         "_description3": "------------- openVone5.0",
         "dataURL5": "https://172.16.3.188:8444/DispatcherBusinessWeb",
@@ -19,7 +19,7 @@
         "electronBlackboardUrl": "http://11.55.10.173:8018",
         "mapURL": "http://172.16.100.54/GISDataWeb/",
         "diagnoseUrl": "https://172.16.3.111:8443/StatusMonitorWeb",
-        "pluginLoginUrl": "http://10.79.108.39:8999/user"
+        "pluginLoginUrl": "http://172.16.11.211:8999/user"
         
     },
 

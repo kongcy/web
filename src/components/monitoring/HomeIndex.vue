@@ -1,6 +1,6 @@
 <template>
  <!-- style="display: none;" -->
-  <div class="homebox"  style="display: none;" >
+  <div class="homebox" style="display: none;"  >
     <el-scrollbar class="homeContent hiddenXScroll">
       <div class="divHoveType" ><i class="type_icon icon_video"></i>视频融合应用</div>
       <div class="divHomeBox" :class="tabs.length>5?'spaceBetween':''">

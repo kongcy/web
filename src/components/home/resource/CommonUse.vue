@@ -42,7 +42,7 @@
         <div class="treefoot">
             <!-- <div class="treeSelectedNum">已选中{{selectedNum}}个视频资源</div> -->
             <div class="treeOperate">
-                <div class="treeOperate-l">
+                <div class="treeOperate-l"  :title="'已选中'+selectedNum+'个视频资源'">
                     已选中<span class="treeSelectedNum">{{selectedNum}}</span>个视频资源
                 </div>
                 <div class="treeOperate-btn">
@@ -162,32 +162,33 @@ export default {
         },
         //全部停止
         stopAll(){
-            var targetNodesP = [];
-            var targetNodesD = [];
+            // var targetNodesP = [];
+            // var targetNodesD = [];
 
-            var nodes = this.mergeResourceData();
-            console.log(nodes);
-            for( var i=0;i<nodes.length;i++ ){
-                if( nodes[i].nodeStatus.indexOf("person_")>-1){
-                    if( nodes[i].nodeStatus != "person_online"){
-                        targetNodesP.push(nodes[i]);
-                    }
-                }
-                if(nodes[i].nodeStatus.indexOf("device_")>-1||nodes[i].nodeStatus.indexOf("channel_")>-1){
-                    if( nodes[i].nodeStatus != "device_online"&&nodes[i].nodeStatus != 'device_offline'&&nodes[i].nodeStatus != 'channel_online'&&nodes[i].nodeStatus != 'channel_offline'){
-                        targetNodesD.push(nodes[i]);
-                    }
-                }
+            // var nodes = this.mergeResourceData();
+            // console.log(nodes);
+            // for( var i=0;i<nodes.length;i++ ){
+            //     if( nodes[i].nodeStatus.indexOf("person_")>-1){
+            //         if( nodes[i].nodeStatus != "person_online"){
+            //             targetNodesP.push(nodes[i]);
+            //         }
+            //     }
+            //     if(nodes[i].nodeStatus.indexOf("device_")>-1||nodes[i].nodeStatus.indexOf("channel_")>-1){
+            //         if( nodes[i].nodeStatus != "device_online"&&nodes[i].nodeStatus != 'device_offline'&&nodes[i].nodeStatus != 'channel_online'&&nodes[i].nodeStatus != 'channel_offline'){
+            //             targetNodesD.push(nodes[i]);
+            //         }
+            //     }
                
-            }
-            if( targetNodesP.length + targetNodesD.length == 0 ){
-                var content = '请至少选择一个在线播放的资源发起停止点播';
-                this.$message({message: content, type: 'warning'})
-                return;
-            }
-             Fun.stopPlayDevices(this,targetNodesP.concat(targetNodesD));
-                // this.apiSDK.stopAll();  
-            this.$listeners.StopAllHideHolder(targetNodesP.concat(targetNodesD));
+            // }
+            // if( targetNodesP.length + targetNodesD.length == 0 ){
+            //     var content = '请至少选择一个在线播放的资源发起停止点播';
+            //     this.$message({message: content, type: 'warning'})
+            //     return;
+            // }
+            //  Fun.stopPlayDevices(this,targetNodesP.concat(targetNodesD));
+            // this.$listeners.StopAllHideHolder(targetNodesP.concat(targetNodesD));
+             this.apiSDK.stopAll();  
+            this.$listeners.StopAllHideHolder(true);
         },
         handleChangeSerachWrap(){
             this.searchChange = !this.searchChange;
@@ -220,15 +221,13 @@ export default {
             this.moreNum="";
             this.getTreeNode()
         },
-        
         //获取常用节点
         getTreeNode(){
             let self=this;
-            
              this.apiSDK.getCommonUse(this.moreNum,function(obj){
                  console.log('常用资源',obj);
                   if (obj ) {
-                //设备组织
+                    //设备组织
                     self.clearTree();
                     self.treeData = Fun._initCommonUseTreeData(obj);
                    // 默认展开一级节点
@@ -268,8 +267,8 @@ export default {
         changeStatus(){
             let self=this;
             let currentScreen=JSON.parse(sessionStorage.getItem('currentScreen'));
-            console.log(currentScreen);
-            if(currentScreen.length>0){
+            console.log("-------"+currentScreen);
+            if(currentScreen&&currentScreen.length>0){
                 self.hasPlayD=true;
                 self.treeData[0].children.forEach(item=>{
                     var n=currentScreen.findIndex(val=>item.id==val.resId);
@@ -436,7 +435,7 @@ export default {
 
             this.$refs.rightMenu.closeRightMenu();
             if( data.nodeStatus != 'department' ) {
-               node.checked = !node.checked;
+              // node.checked = !node.checked;
             }
             //
             if( data.nodeStatus == 'department' ) {
@@ -675,9 +674,6 @@ export default {
 }
 .treeBox{
     height: 100%;
-    background: url(../../../../static/main/screen/resource_bg.png) no-repeat 0 -1px;
-    /* margin-top: -2px; */
-    background-size: 100% 100%;
 }
 .newSearchBtn{
     display: inline-block;
@@ -862,6 +858,8 @@ export default {
 .treefoot /deep/ .el-button--text{
   color: #599AFF;
   font-size: 14px;
+  padding: 0;
+  height: 41px;
 }
 .treeSelectedNum{
   color:#599AFF;  
@@ -869,27 +867,27 @@ export default {
 }
 .icon-play{
     display: inline-block;
-     width: 20px;
-    height: 13px;
+    width: 22px;
+    height: 22px;
     vertical-align: middle;
     background: url(../../../../static/main/res/icon-play.png) no-repeat center;
-        background-size: 21px
+        background-size: 22px
 }
 .icon-stopPlay{
     display: inline-block;
-    width: 20px;
-    height: 13px;
+     width: 22px;
+    height: 22px;
     vertical-align: middle;
     background: url(../../../../static/main/res/icon-stopPlay.png) no-repeat center;
-        background-size: 21px
+        background-size: 22px
 }
 .icon-stopPlay_bg{
      display: inline-block;
-    width: 20px;
-    height: 13px;
+     width: 22px;
+    height: 22px;
     vertical-align: middle;
     background: url(../../../../static/main/res/icon-stopPlay1.png) no-repeat center;
-        background-size: 21px
+        background-size: 22px
 }
 
 .el-tree /deep/ .el-tree-node.is-current.is-focusable > .el-tree-node__content{
@@ -922,20 +920,20 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
     vertical-align: middle;
+    line-height: 41px;
+    float: left;
 }
 .treeOperate-btn{
     width: 245px;
     vertical-align: middle;
+    float: right;
 }
 .treeOperate-l,.treeOperate-btn{
     display: inline-block;
     height: 41px;
-    line-height: 41px;
 }
 .icon-play+span,.icon-stopPlay+span,.icon-stopPlay_bg+span{
     display: inline-block;
-    line-height: 22px;
-    height: 22px;
     vertical-align: middle;
     margin-left: 5px;
 }

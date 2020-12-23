@@ -169,7 +169,7 @@ export var strategeSDK6 = {
             strategeSDK6._noPluginURLPrefix = prefix; // 'http://172.16.7.149:8999/user'
         }
     },
-    _plugindoGet: function(url, data, callback) {
+    _plugindoGet: function(url, data, callback,errorCB) {
         var configObj = {
             method: "GET",
             url: strategeSDK6._noPluginURLPrefix  + url,
@@ -179,17 +179,19 @@ export var strategeSDK6 = {
             success: callback,
             error: strategeSDK6._errorCB
         };
-        Axios.get(configObj.url + '?' + data).then((res) => {
+        Axios.get(configObj.url + '?' + data,{timeout:3000}).then((res) => {
             if (callback) callback(res.data);
+        }).catch(err=>{
+            if(errorCB)errorCB(err);
         });
     },
     // =================================   免插登录  =============================================
-    noPluginLogin: function(account, callback) {
+    noPluginLogin: function(account, callback,errorCB) {
         var mapObj = new Map();
         mapObj.set('account', account);
         var data = strategeSDK6._getDataString(mapObj);
         var url = "/noPluginLogin";
-        strategeSDK6._plugindoGet(url,data, callback);
+        strategeSDK6._plugindoGet(url,data, callback,errorCB);
     },
     // =================================   免插退出  =============================================
     noPluginLoginOut: function(account, callback) {
@@ -296,22 +298,34 @@ export var strategeSDK6 = {
         strategeSDK6._doPost(url,JSON.stringify(obj), callback);
     },
     
-        // =================================   视频诊断 新加SDK   1216  =============================================
+    // =================================   视频诊断 新加SDK   1216  =============================================
     getDiagnoseList: function(data, callback) {
             var url = "/diag/diag_share";
             strategeSDK6._doPost(url,JSON.stringify(data), callback);
      },
-     
+    
     newOpenMeeting(data, callback){
         var mapObj = new Map();
-        mapObj.set("resourceSipId", data.resId);
+        mapObj.set("resourceSipId", data.encoderSipID);
+        // mapObj.set("resId", data.resId);
         mapObj.set("joinMember", data.joinMember);
+        mapObj.set("channelNum", data.channel);
         var data = strategeSDK6._getDataString(mapObj);
         var url = "/xiaoyu/startMeeting";
         strategeSDK6._doGet(url, data, callback);
     },
 
-    // 统一登录
+    // 根据 HHID 查询用户信息（与下面 userLogin 返回一样）
+    queryUserInfo(data, callback){
+        var mapObj = new Map();
+        mapObj.set("hhid", data.hhid);
+        mapObj.set("ip", data.ip);
+        var data = strategeSDK6._getDataString(mapObj);
+        var url = "/third/queryUserInfo";
+        strategeSDK6._doGet(url, data, callback);
+    },
+
+    // 统一认证登录
     userLogin(data, callback){
         var obj = {
              "ydm": data.ydm,

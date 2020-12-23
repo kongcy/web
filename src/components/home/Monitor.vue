@@ -26,7 +26,7 @@
       </div>
       
       <div id="divResourceArea_Monitor" v-show="isShowResource" :style="resourceAreaStyle">
-        <resource-container ref="resourcecontainer" @StopAllHideHolder="HideHolder"/>
+        <resource-container ref="resourcecontainer" @StopAllHideHolder="HideHolder" />
       </div>
      
     </div>
@@ -88,6 +88,7 @@ export default {
 
     //在其它页面刷新后再进入本页面时执行，此时socket已连接
     if (this.apiSDK.socketStatus != -1) {
+      console.log('其它页面刷新后再进入本页面时执行---1111');
       //媒体
       self.$refs.imageShow.initMXTC(this.imageShowWidth, this.imageShowHeight,"MonitorContainer");
       //资源树
@@ -121,6 +122,7 @@ export default {
       } else if (obj.state == 1) {
         //首次
         //媒体
+         console.log('其它页面刷新后再进入本页面时执行---2222');
         self.$refs.imageShow.initMXTC(
           this.imageShowWidth,
           this.imageShowHeight
@@ -136,6 +138,7 @@ export default {
     //所有全屏 回调
     this.apiSDK.fullAllScreenCallback(isFull => {
       this.isAllFull = isFull
+      this.$refs.imageShow.isFullScreen = isFull;
       this.resize();
     })
   },
@@ -264,15 +267,24 @@ export default {
     //隐藏云台控制
     HideHolder(data){
       console.log("隐藏云台控制",data)
-      // this.isShowHolderC=false;
-      // this.resize();
-      if(data){
-        let HolderResourceId= this.$refs.holderControl.resourceId
+      let HolderResourceId= this.$refs.holderControl.resourceId
+      if(typeof(data)=='boolean'){
+        this.$refs.holderControl.closedDialog();
+      }else if(typeof(data)=='number'){
+          let currentScreen=JSON.parse(sessionStorage.getItem('currentScreen'));
+          let currentScreenData=[];
+          currentScreenData.push(currentScreen.find(item=>parseInt(item.screenIndex)==data));
+          console.log(currentScreenData)
+          if(currentScreenData.length>0){
+              let n=currentScreenData.findIndex(item=>item.resId==HolderResourceId);
+            if(n>-1)
+            this.$refs.holderControl.closedDialog();
+          }
+      }else{
         let n=data.findIndex(item=>item.id==HolderResourceId);
         if(n>-1)
         this.$refs.holderControl.closedDialog();
       }
-     
     },
     //展开/隐藏云台控制
     expendTogetherHolder(){

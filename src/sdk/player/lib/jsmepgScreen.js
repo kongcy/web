@@ -36,13 +36,15 @@ export default class JsmpegScreen {
         const player = this.videoPlayer
         if(player){
             const r= this.decodeResolution;
+            const decodeType = xtxk.cache.get('mediaServerInfo').decodeType;
             const params = {
                 url: options.rtsp, //'rtsp://11.55.10.140:8557/0', //'rtsp://13.55.10.192:8557/0', //
                 userName: "admin", 
                 passWord: "yzfar123",
                 width: r[0],//1280,//_pContainer.width(),
                 height:r[1],//720, //_pContainer.height(),
-                type: 0
+                // type: 0
+                type: decodeType ? decodeType : 0
               } 
               player.play(params,(e)=>{
                 if(e){

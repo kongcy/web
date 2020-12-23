@@ -91,10 +91,10 @@ export default {
             console.log('进来了-----', id);
             let self=this;
             self.id=id;
-            setTimeout(()=> {
+            // setTimeout(()=> {
                 self.apiSDK.initLayout(id, width, height, self.onBtnEvent, self.onSessionEvent, self.onWgtSelected, self.onPlaybackEvent, self.onPlayResult, this.onSelectedDrop);
                 self.initMedia();
-            }, 1000)
+            // }, 2000)
             // this.$nextTick(function(){
             //     //  //初始化插件
             //     // if(self.apiSDK.config.version == self.apiSDK.enumSDKVersion.SDKVersion5){
@@ -249,7 +249,7 @@ export default {
             });
 
             this.apiSDK.setInformSplitScreenByLocalCallback(function (obj) {
-                console.log( "收到分屏(软解)", obj );
+                console.log("收到分屏(软解)");
                 if (obj) {
                   that.apiSDK.splitWidowForPlugin(parseInt(obj.splitType))
                   if(that.$parent.$refs.imageBottomNav){
@@ -378,7 +378,7 @@ export default {
             if (btnkey == "Nor_StopPlay") //停止视频
             {
                 this.apiSDK.stopPlayByIndex(wgtpos);
-                 this.$parent.HideHolder();
+                 this.$parent.HideHolder(wgtpos);
             } else if (btnkey == "Nor_VolOn") //关声音
             {
                 // this.apiSDK.publishVolume(wgtpos, false,0);
@@ -643,11 +643,15 @@ export default {
         // 开启会议
         openMeeting(pos){
             // let meetingNo = ''; // 拉人入会的会议号
-            // let xiaoYuNums = ''; // 被拉的小鱼号
+            // let xiaoYuNums = ''; // 被拉的小鱼号 11
+            console.log('主页---开启会议', this.currentPlayScreens);
            let data = {
-               resId: this.currentPlayScreens[pos].encoderSipID,
+               encoderSipID: this.currentPlayScreens[pos].encoderSipID,
+               resId: this.currentPlayScreens[pos].resId,
                joinMember: xtxk.cache.get('yhsjhm'),
+               channel: this.currentPlayScreens[pos].channel,
            };
+           console.log('开启会议--- 111', data );
            this.apiSDK.newOpenMeeting(data, obj => {
                console.log('点击会议返回', obj);
            });

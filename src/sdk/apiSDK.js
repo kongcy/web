@@ -22,6 +22,7 @@ var apiSDK = {
         SDKVersion5: "version5",
         SDKVersion6: "version6"
     },
+    OrganizationData:{},
 
     //初始化配置
     initConfig: function(config_) {
@@ -34,7 +35,7 @@ var apiSDK = {
             dataSDK6.setURLPrefix(this.config.dataURL);
             //查询策略 新加sdk 11.24
             strategeSDK6.setURLPrefix(this.config.strategeURL);
-             // 设置免插登录服务地址
+            // 设置免插登录服务地址
             strategeSDK6.setNoPluginURLPrefix(this.config.noPluginServerURL);
         }
     },
@@ -44,6 +45,7 @@ var apiSDK = {
         this.userID = userID;
         this.userName = userName;
         this.userToken = userToken;
+        this.userLoginID = xtxk.cache.get('USER').userLoginID
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
 
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
@@ -254,7 +256,7 @@ var apiSDK = {
             playerSDKNew.close();
             callback();
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
-            this.noPluginLoginOut(this.userName)
+            this.noPluginLoginOut()
             // businessSDK6.publishUserStatus(1);    // 11.26 同步云调度 1124 用户状态上报从ws改成http
             dataSDK6.setUserStatus(this.userID, 'UserOffline')   // 11.26 同步云调度 1124 用户状态上报从ws改成http
             businessSDK6.leave();
@@ -631,10 +633,12 @@ var apiSDK = {
      * */
     initEncoder: function(sipid, password, domain, port) {
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
-            let url = "wss://127.0.0.1:8888";
+            // let url = "wss://127.0.0.1:8888";
+            let url = "ws://127.0.0.1:8888";
             softBusinessSDK5.init(url, sipid, password, domain, port)
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
-            let url = "wss://127.0.0.1:8888";
+            // let url = "wss://127.0.0.1:8888";
+            let url = "ws://127.0.0.1:8888";
             softBusinessSDK6.initScoket(url, function(){
                 softBusinessSDK6.startRegister(sipid, password, domain, parseInt(port));
                 softBusinessSDK6.startWork();
@@ -694,6 +698,7 @@ var apiSDK = {
      *var resp ={subscribeId:'',rows:[{departmentId:'',departmentName:'',parentId:'',devCnt:0}....]}
      */
     getOrganizationDevice: function(organizationId, id, subjectId, callback) {
+        var self=this;
         var subjectId = subjectId || 0;
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
             dataSDK5.getOrganizationDevice(this.userID, this.userToken, id, subjectId, "", function(obj) {
@@ -714,10 +719,12 @@ var apiSDK = {
             businessSDK6.setReceiveInformAddDepartmentCallback(id, function(res) {
                 //wxx 2020.11.26
                 let resJ=JSON.parse(res);
+                resJ.userID=self.userID;
+                self.OrganizationData=resJ;
                 if(resJ.params.subscribeID=='MainOrganizationDevice'){
                     strategeSDK6.queryResCount(res,function(objV){
                         let obj=objV.params;
-                        const resp = { subscribeId: '', rows: [] };
+                        const resp = { subscribeId: '', rows: []};
                         resp.subscribeId = obj.subscribeID
                         obj.nodes && obj.nodes.forEach(function(item) {
                             var it = {}
@@ -747,6 +754,26 @@ var apiSDK = {
                 }
             })
         }
+    },
+    //=================刷新设备资源树在线数量和总数量 20201219=================
+    refreshOrganizationDevice:function(callback){
+        //先测试完再放开
+        // strategeSDK6.queryResCount(this.OrganizationData,function(objV){
+        //     let obj=objV.params;
+        //     const resp = { subscribeId: '', rows: []};
+        //     resp.subscribeId = obj.subscribeID
+        //     obj.nodes && obj.nodes.forEach(function(item) {
+        //         var it = {}
+        //         it.departmentId = item.departmentid
+        //         it.departmentName = item.name
+        //         it.parentId = item.parentid
+        //         it.userCnt = item.resourceCount
+        //         it.onLineCount=item.onLineCount
+        //         it.totalCount=item.totalCount
+        //         resp.rows.push(it)
+        //     })
+        //     callback(resp);
+        // })
     },
      /**
      * 获取常用树  2020.12.13
@@ -8270,9 +8297,10 @@ var apiSDK = {
     initMedia:function(businessCB){
         console.log('初始化媒体信息!')
         let type = 0;
+        let that = this;
         playerSDKNew.initMedia(type,function(eventType, status_code, screenIndex) {
             if (businessCB) businessCB(eventType, null, status_code, null, screenIndex);
-        },this.config.playerType,this.getMediaServerConfig())
+        },that.config.playerType,that.getMediaServerConfig())
     },
     // 免插件播放配置
     getMediaServerConfig(){
@@ -15563,26 +15591,40 @@ var apiSDK = {
     // ======================  免插登录 新加SDK   1214   ==========================================================
     // 免插登录
     noPluginLogin(account,callback){
+        if(!this.config.noPluginServerURL){ // 未配置免插服务，跳过免插登录
+            if(callback)callback();
+            return
+        }
         const noPluginLoginFlag = xtxk.cache.get('noPluginLoginFlag')
         if(!noPluginLoginFlag){
-            const userName =account?account:this.userName; 
-            strategeSDK6.noPluginLogin( userName , obj => {
+            const userID =this.userLoginID; 
+            let that = this;
+            strategeSDK6.noPluginLogin( userID , obj => {
                 const data = obj.data
-                if(data&&data.status){ 
-                    this.config.playerType = 1
+                if(data){ 
+                    that.config.playerType = Number(data.status)
                     // 媒体服务信息
-                    this.config.mediaServerIp = data.ip
-                    this.config.mediaServerPort =  data.port
+                    // decodeType --- 解码类型（1-CPU；2-英特尔-QSV；3-英伟达-CUDA）
+                    that.config.mediaServerIp = data.ip
+                    that.config.mediaServerPort =  data.port
+                    that.config.decodeType = data.decodeType
+                    that.config.decodeResolution = data.decodeResolution
                     xtxk.cache.set('mediaServerInfo',{
-                        playerType:1,
-                        ip:this.config.mediaServerIp,
-                        port:this.config.mediaServerPort
+                        playerType: 1,
+                        ip: that.config.mediaServerIp,
+                        port: that.config.mediaServerPort,
+                        decodeType: that.config.decodeType,
+                        decodeResolution: that.config.decodeResolution
                     })
+
                 }
                 xtxk.cache.set('noPluginLoginFlag',true)
                 console.log(`获取媒体服务器信息:初始化${xtxk.cache.get('noPluginLoginFlag')}`)
-                console.log(`获取媒体服务器信息:播放器版本${this.config.playerType}`)
-                console.log(`获取媒体服务器信息:${this.config.mediaServerIp}:${this.config.mediaServerPort}`)
+                console.log(`获取媒体服务器信息:播放器版本${that.config.playerType}`)
+                console.log(`获取媒体服务器信息:${that.config.mediaServerIp}:${that.config.mediaServerPort}`)
+                if(callback)callback();
+            },(err)=>{
+                console.log("无法访问免插件服务,默认启用插件服务!");
                 if(callback)callback();
             });
         }else{
@@ -15591,6 +15633,8 @@ var apiSDK = {
                 this.config.playerType = 1
                 this.config.mediaServerIp = mediaServerInfo.ip
                 this.config.mediaServerPort =  mediaServerInfo.port
+                this.config.decodeType = mediaServerInfo.decodeType
+                this.config.decodeResolution = mediaServerInfo.decodeResolution
             }
             if(callback)callback();
         }
@@ -15598,9 +15642,14 @@ var apiSDK = {
 
     // 免插退出
     noPluginLoginOut(account,callback){
-        const userName =account?account:this.userName;
-        strategeSDK6.noPluginLoginOut( userName , obj => {
-            xtxk.cache.set('noPluginLoginFlag',false)
+        if(!this.config.noPluginServerURL){ // 未配置免插服务，跳过免插登录
+            if(callback)callback();
+            return
+        }
+        const userID =this.userLoginID;
+        strategeSDK6.noPluginLoginOut( userID , obj => {
+            xtxk.cache.set('noPluginLoginFlag',false);
+            xtxk.cache.set('mediaServerInfo', null)
             console.log('用户退出免插登录!')
             if(callback)callback();
         });
@@ -15618,7 +15667,13 @@ var apiSDK = {
             callback(isFull)
         })
     },
-    // 统一登录
+    // 根据 HHID 查询用户信息（与下面 userLogin 返回一样）
+    queryUserInfo(data, callback){
+        strategeSDK6.queryUserInfo( data , obj => {
+            callback(obj);
+        });
+    },
+    // 统一认证登录
     userLogin(data, callback){
         strategeSDK6.userLogin( data , obj => {
             callback(obj);

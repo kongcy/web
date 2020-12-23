@@ -63,6 +63,7 @@ export default {
     methods: {
         getUserAndPsw(){
             let url = window.location.href.split('?')[1];
+            let hhid;
             localStorage.setItem('url', url);
             let vars = url.split('&'); // 去掉问号, 问号为第一个字符
             for( let i = 0; i < vars.length; i++ ){
@@ -73,16 +74,57 @@ export default {
                 else if( pair[0] === 'strategeId' ){ xtxk.cache.set('AutomaticPlayStrategeId', { strategeId: pair[1]})  }
                 else if( pair[0] === 'resourceId' ){ xtxk.cache.set('AutomaticPlayResourceId', { resourceId: pair[1]}) }
                 else if( pair[0] === 'NVRDeviceId' ){ xtxk.cache.set('AutomaticPlayNVRDeviceId', { NVRDeviceId: pair[1]}) }
+                else if( pair[0] === 'hhid' ){ hhid = pair[1]}
             }
-            console.log('url获取的用户', this.form.username);
-            this.unifyRegister();
+            let userName;
+            let array;
+            if( xtxk.cache.get('AutomaticPlayUsername') &&  xtxk.cache.get('AutomaticPlayUsername').userName ) {
+                userName = xtxk.cache.get('AutomaticPlayUsername').userName;
+                array = userName && userName.split('.');
+            }
+            if (hhid){
+                this.unifyRegister_hhid(hhid);
+            } else if( array[1] ) {
+                console.log('unifyRegister_userpwd');
+                this.unifyRegister_userpwd(userName, array);
+            } else {
+                this.form.username = array[0];
+                console.log('直接登录兴图后台', this.form.username);
+                this.login();
+            }
         },
         // 中油 统一登录
-        unifyRegister(){
+        unifyRegister_hhid(hhid){
+            let data = {
+                hhid: hhid,
+                ip: "127.0.0.1"
+            };
+            let that = this;
+            this.apiSDK.queryUserInfo(data, obj => {
+                if( obj.code == 1 && obj.data ) {
+                    console.log('根据 HHID 统一登录返回------', obj);
+                    // 返回 openVone 密码（解决两边系统密码不同步问题）
+                    that.form.username = obj.data.yhdm;
+                    xtxk.cache.set('AutomaticPlayUsername',  obj.data.yhdm);
+                    obj.data.nsp && xtxk.cache.set('AutomaticPlayPassword',  { passWord: window.atob(obj.data.nsp) });  
+
+                    // 将手机号保存在本地
+                    xtxk.cache.set('yhsjhm',  obj.data.yhsjhm );
+                    xtxk.cache.set('yhidym',  obj.data.yhid );
+                    xtxk.cache.set('dwsx',  "" );
+                    xtxk.cache.set('hhid',  hhid );
+                    
+                    that.login('play');
+                } else {
+                    that.$message({message: '登录失败: ' + obj.msg, type: 'error'});
+                    that.$router.push('LoginFailure');
+                }
+            });
+        },
+        // 中油 统一登录
+        unifyRegister_userpwd(userName, array){
             let tilimu = this.apiSDK.config.talimu;
-            let userName = xtxk.cache.get('AutomaticPlayUsername').userName;
             let ydm;
-            let array = userName.split('.');
             if( array ) {
                ydm = array[1];
                this.form.username = array[0];
@@ -97,14 +139,14 @@ export default {
             this.apiSDK.userLogin(data, obj => {
                 if( obj.code == 1 && obj.data ) {
                     console.log('统一登录返回------', obj);
-                    // xtxk.cache.set('unifyRegister', obj);
                     // 将手机号保存在本地
                     xtxk.cache.set('yhsjhm',  obj.data.yhsjhm );
                     xtxk.cache.set('yhidym',  obj.data.yhid );
-                    xtxk.cache.set('dwsx',  obj.data.dwsx );
+                    xtxk.cache.set('dwsx',  "" );
+                    xtxk.cache.set('hhid',  obj.msg );
+
                     that.login('play');
                 } else {
-                    // console.log('统一登录失败------', obj);
                     that.$message({message: '登录失败: ' + obj.msg, type: 'error'});
                     that.$router.push('LoginFailure');
                 }
@@ -112,17 +154,17 @@ export default {
         },
         // 登录
         login(type) {
-            console.log('登录');
             // this.$refs.login.validate(valid => {
             //     if (valid) {
             //         this.remberMeChange(this.remberMe)
             //         this.loginLoading = true
-                    this.apiSDK.loginWithAccount(xtxk.cache.get('AutomaticPlayUsername').userName, xtxk.cache.get('AutomaticPlayPassword').passWord, 'aaaa', (res) => {
+                    this.apiSDK.loginWithAccount(this.form.username, xtxk.cache.get('AutomaticPlayPassword').passWord, 'aaaa', (res) => {
                         // this.loginLoading = false
                         if(res && res.Ret == 0){
+                           
                             //store
                             this.$store.commit("updateUserinfo", {token:res.token, userID:res.data.userID, userName:res.data.userName});
-                            xtxk.cache.set('USER', {token: res.token, userId: res.data.userID, userName:res.data.userName, validTime:res.validTime})
+                            xtxk.cache.set('USER', {token: res.token, userId: res.data.userID, userName:res.data.userName,userLoginID:this.form.username, validTime:res.validTime})
                             this.apiSDK.initUserInfo(res.data.userID, res.data.userName, res.token);
                             // if(type === 'play'){
                             this.$router.push('Play/AutomaticPlay');
@@ -132,7 +174,7 @@ export default {
 
                         } else if(res && res.Ret == 2){
                             this.$store.commit("updateUserinfo", {token:res.token, userID:res.data.userID, userName:res.data.userName});
-                            xtxk.cache.set('USER', {token: res.token, userId: res.data.userID, userName:res.data.userName})
+                            xtxk.cache.set('USER', {token: res.token, userId: res.data.userID, userName:res.data.userName,userLoginID:this.form.username})
                             this.apiSDK.initUserInfo(res.data.userID, res.data.userName , res.token);
                             //抢占登录
                             this.$refs.controlDialog.showDialog("login");

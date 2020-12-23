@@ -196,10 +196,19 @@ export default {
       this.channel = channel;
       this.isNVRChannel = this.resourceId.length > 20 ? false : true;
       //通过id获取树名
-      let deviceTree = this.$parent.$refs.resourcecontainer.$refs.equipementRes[0].$refs.deviceTree[0]
-     let resourceChV= this.resourceCh==-1?0:this.resourceCh
-      let d=deviceTree.$refs.main_device_tree.getNode(this.resourceId);
-      var c=deviceTree.$refs.main_device_tree.getNode(this.resourceId+'_'+resourceChV);
+      let EquipementTab=this.$parent.$refs.resourcecontainer.$refs.equipementRes[0].activeName;
+      let deviceTree='';
+      let d='',c='';
+      let resourceChV= this.resourceCh==-1?0:this.resourceCh
+      if(EquipementTab=='CommonUse'){
+        deviceTree = this.$parent.$refs.resourcecontainer.$refs.equipementRes[0].$refs.commonUse[0]
+         d=deviceTree.$refs.recently_tree.getNode(this.resourceId);
+       c=deviceTree.$refs.recently_tree.getNode(this.resourceId+'_'+resourceChV);
+      }else{
+        deviceTree = this.$parent.$refs.resourcecontainer.$refs.equipementRes[0].$refs.deviceTree[0];
+        d=deviceTree.$refs.main_device_tree.getNode(this.resourceId);
+        c=deviceTree.$refs.main_device_tree.getNode(this.resourceId+'_'+resourceChV);
+      }
       if(d){
          this.title=d.data.name;
       }else if(c){
@@ -588,11 +597,6 @@ export default {
                 on-click={() => this.skipOperate(data)}
               ></span>
               <span
-                class="setDefault_icon"
-                title="设置默认预置点"
-                on-click={() => this.setOperate(data)}
-              ></span>
-              <span
                 class="edit_icon"
                 title="编辑预置点"
                 on-click={() => this.updateOperate(data)}
@@ -601,6 +605,11 @@ export default {
                 class="del_icon"
                 title="删除预置点"
                 on-click={() => this.delectOperate(data)}
+              ></span>
+               <span
+                class="setDefault_icon"
+                title="设置默认预置点"
+                on-click={() => this.setOperate(data)}
               ></span>
             </span>
           </span>
@@ -979,6 +988,9 @@ export default {
 /* 预置组图标 */
 .prepare-tree-node.prepareGroup .node-icon {
   background: url("../../../static/holderControl/prepareGroupIcon.png");
+}
+.holderControl .el-tree-node.is-expanded .prepare-tree-node.prepareGroup .node-icon{
+   background: url("../../../static/holderControl/prepareGroupIco-n.png");
 }
 .prepare-tree-node .node-icon {
   margin-right: 5px;

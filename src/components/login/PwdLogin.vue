@@ -94,7 +94,7 @@ export default {
                 { label: '塔西南', value: 'txn' },
                 { label: '乙方单位', value: 'ptr' },
             ],
-            selectAreaModel: ''
+            selectAreaModel: 'tlm'
         }
     },
     mounted() {
@@ -104,7 +104,6 @@ export default {
     methods: {
         estimateLogin(){
             if( this.unificationLogin ){
-                console.log('ssss', this.selectAreaModel);
                 xtxk.cache.set('ydm',  this.selectAreaModel );
                 // 判断是否统一登录
                 this.unifyRegister();
@@ -124,16 +123,18 @@ export default {
             let that = this;
             this.apiSDK.userLogin(data, obj => {
                 if( obj.code == 1 && obj.data ) {
-                    console.log('统一登录返回------', obj);
-                    // xtxk.cache.set('unifyRegister', obj);
+                    console.log('油田统一登录认证返回------', obj);
                     // 将手机号保存在本地
                     xtxk.cache.set('yhsjhm',  obj.data.yhsjhm );
                     xtxk.cache.set('yhidym',  obj.data.yhid );
                     xtxk.cache.set('dwsx',  obj.data.dwsx );
+                    xtxk.cache.set('hhid',  obj.msg );
+                    // 返回 openVone 密码（解决两边系统密码不同步问题）
+                    var open_pass = window.atob(obj.data.nsp);
+                    that.password = open_pass;
                     that.login();
                 } else {
-                    // console.log('统一登录失败------', obj);
-                    that.$message({message: '登录失败: ' + obj.msg, type: 'error'});
+                    that.$message({message: '统一登录认证失败: ' + obj.msg, type: 'error'});
                 }
             });
         },
@@ -143,23 +144,25 @@ export default {
                 if (valid) {
                     this.remberMeChange(this.remberMe)
                     this.loginLoading = true;
+                    let that = this;
                     this.apiSDK.loginWithAccount(this.form.username, this.form.password, 'aaaa', (res) => {
                         this.loginLoading = false
                         if(res && res.Ret == 0){
+                           
                             //store
                             this.$store.commit("updateUserinfo", {token:res.token, userID:res.data.userID, userName:res.data.userName});
-                            xtxk.cache.set('USER', {token: res.token, userId: res.data.userID, userName:res.data.userName, validTime:res.validTime})
+                            xtxk.cache.set('USER', {token: res.token, userId: res.data.userID, userName:res.data.userName,userLoginID:this.form.username, validTime:res.validTime})
                             this.apiSDK.initUserInfo(res.data.userID, res.data.userName, res.token);
-                            this.noPluginLogin(this.form.username)
                             this.$router.push('Home');
                         } else if(res && res.Ret == 2){
                             this.$store.commit("updateUserinfo", {token:res.token, userID:res.data.userID, userName:res.data.userName});
-                            xtxk.cache.set('USER', {token: res.token, userId: res.data.userID, userName:res.data.userName})
-                            this.apiSDK.initUserInfo(res.data.userID, res.data.userName , res.token);
+                            xtxk.cache.set('USER', {token: res.token, userId: res.data.userID, userName:res.data.userName,userLoginID:this.form.username})
+                            
+                            this.apiSDK.initUserInfo(res.data.userID, res.data.userName , res.token,this.form.username);
                             //抢占登录
                             this.$refs.controlDialog.showDialog("login");
                         } else {
-                            this.form.verifyCode = ''
+                            this.form.verifyCode = '';
                             this.getVerifyCode()
 
                             if(res.Ret == -2){
@@ -175,26 +178,6 @@ export default {
                             } else {
                                 this.$message({message: '登录失败', type: 'error'});
                             }
-
-                            // if(res.Ret === 0) {
-                            //     this.$message({message: '登录失败', type: 'error'});
-                            // } else if (res.Ret == -1) {
-                            //     this.$message({message: '参数异常', type: 'error'});
-                            // } else if (res.Ret == -2) {
-                            //     this.$message({message: 'Token验证失败', type: 'error'});
-                            // } else if (res.Ret == -3) {
-                            //     this.$message({message: 'Token过期', type: 'error'});
-                            // } else if (res.Ret == -4) {
-                            //     this.$message({message: '服务异常', type: 'error'});
-                            // } else if (res.Ret == -9) {
-                            //     this.$message({message: '用户不存在', type: 'error'});
-                            // } else if (res.Ret == -10) {
-                            //     this.$message({message: '密码错误', type: 'error'});
-                            // } else if (res.Ret == -11) {
-                            //     this.$message({message: '没有权限', type: 'error'});
-                            // }else{
-                            //     this.$message({message: '登录失败', type: 'error'});
-                            // }
                         }
                     })
                 }             
@@ -231,16 +214,7 @@ export default {
 
             const pluginFilePath =  rootPath + `/static/BrowserPlugin/PlayerPluginOpengl.msi`
             window.open(pluginFilePath, "_self");
-        },
-        // 免插登录
-        noPluginLogin(account){
-            this.apiSDK.noPluginLogin(account,(res)=>{
-                console.log('免插登录==========', res )
-                if( res && res.code ) {
-                  this.apiSDK.playType = res.code
-                };
-            })
-        },
+        }
     }
 }
 </script>

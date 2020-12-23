@@ -51,7 +51,7 @@ export default {
             //    { title: '十六分屏', class: 'screenSixteen',param:16 },
                ],
             btnName : [
-			   { title: '全部停止', class: 'stopAll' },
+				{ title: '全部停止', class: 'stopAll' },
                { title: '全屏', class: 'Allfullscreen' },
             //    { title: '暂停巡查', class: 'stopPatrol' },
               { title: '系统设置', class: 'setSystem' },
@@ -77,7 +77,7 @@ export default {
 			if(curBtn == "stopAll"){
                 //全部停止
 				this.apiSDK.stopAll();
-				this.$parent.HideHolder();
+				this.$parent.HideHolder(true);
 				//1211 dj 停止巡查的定时器
 				this.$parent.$refs.resourcecontainer.$refs.searchStratege[0].stopAll()
 				

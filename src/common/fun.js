@@ -320,6 +320,23 @@ export default {
         }
         return onlines;
     },
+    //刷新设备树数据 --在线数量和总数量
+    _refreshResourceNum: function(treeObj, list) {
+        if(treeObj){
+            var treeDataArr = this.transformTreeToArray(treeObj.data);
+            for (var i = 0, l = list.length; i < l; i++) {
+                var item = list[i];
+                for (var j = 0, l2 = treeDataArr.length; j < l2; j++) {
+                    var item2 = treeDataArr[j];
+                    if (item.departmentId == item2.id) {
+                       item2.onLineCount=item.onLineCount
+                       item2.totalCount=item.totalCount
+                    }
+                }
+            }
+        }
+    },
+
    //初始化常用节点树数据  2020.12.16
     _initCommonUseTreeData: function(obj) {
         var zNodes = [{
@@ -384,7 +401,6 @@ export default {
     _refreshCommonUseData: function(treeObj, list) {
         var onlines = [];
         var treeDataArr = this.transformTreeToArray(treeObj.data);
-        console.log(treeDataArr)
         for (var i = 0, l = list.length; i < l; i++) {
             var item = list[i];
             var preStatus = null,
@@ -758,7 +774,6 @@ export default {
         }
         //添加点击常用节点 2020.12.13
         startPlayNode.push(list);
-        console.log(startPlayNode)
         $vue.apiSDK.AddCommonUse(startPlayNode);
     },
 
@@ -889,7 +904,6 @@ export default {
             startPlayNode.push({"deviceId":item.deviceId,"channel":item.channels.join(',')})
         })
 
-        console.log(startPlayNode)
         $vue.apiSDK.AddCommonUse(startPlayNode);
     },
 
@@ -1117,7 +1131,7 @@ export default {
         switch (type) {
             case 'register': //插件注册
                 $this.$notify({
-                    title: '插件注册服务失败',
+                    title: '播放器工作异常',
                     message: '不能发起业务操作',
                     type: 'warning',
                     position: 'bottom-right'

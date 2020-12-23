@@ -38,7 +38,7 @@
                                 </div>
                             </div>
                             <div class="control-item">
-                                <span class="lable-stratege label-strategeType">策略类型</span>
+                                <span class="lable-stratege label-strategeType">方案类型</span>
                                 <div class="control-div strategeInfo-type">
                                     <el-select v-model="strategeType" placeholder="请选择活动区域" :popper-append-to-body="false" disabled>
                                         <el-option label="巡查方案" value="0">
@@ -335,7 +335,7 @@ export default {
                 callback(new Error("请输入分组名称"));
             } else if (!/^[\u4e00-\u9fa50-9a-zA-Z_]+$/.test(value)) {
                 callback(
-                new Error("策略名称为包含中文、英文字母(大小写)、数字、下划线的组合!")
+                new Error("方案名称为包含中文、英文字母(大小写)、数字、下划线的组合!")
                 );
             } else {
                 callback();

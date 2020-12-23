@@ -45,7 +45,7 @@
 			</div>-->
 			<!-- <div id="divHeaderRight_1" >欢迎您：{{curUser.userName}}</div>-->
 			<!-- <input type="button" id="btnExit" v-on:click="showHeaderMenu"/>  -->
-			
+			<!-- v-if="conversationType"  -->
 			<div id="divHeaderRight_1" ref="divHeaderRight" :title="userTitle" :class="{Menuactived:actived}"  @click="showHeaderMenu">
 				<i class="icon-userphoto"></i>
 				{{curUser.userName}}
@@ -55,7 +55,7 @@
 		</div>
 		<div style="clear:both;"></div>
 
-		<header-menu ref="headerMenu"  @changeActivedStatus="changeActivedStatusFun"/>
+		<header-menu v-if="conversationType" ref="headerMenu"  @changeActivedStatus="changeActivedStatusFun"/>
 		<send-request-dialog ref="sendRequestDialog" />
 		<Im6-dialog ref="talkDialog" /> 
 	</div>
@@ -83,6 +83,7 @@ export default {
 			actived:false,
 			badgeValue:null,
 			userTitle: '',
+			conversationType: true
 		};
 	},
 	computed: {
@@ -93,11 +94,18 @@ export default {
 	},
 	mounted(){
 		if( xtxk.cache.get('yhsjhm') ) {
-		  this.userTitle =  xtxk.cache.get('yhidym') + ',' +  xtxk.cache.get('yhsjhm') + ',' + xtxk.cache.get('dwsx');
-		}
-
-		console.log('右上角悬停', this.userTitle);
+		  this.userTitle += xtxk.cache.get('hhid') + ',' + xtxk.cache.get('yhidym') + ',' +  xtxk.cache.get('yhsjhm') + ',' + xtxk.cache.get('dwsx');
+		};
+		if( xtxk.cache.get('monitoringStyle') ){
+			this.conversationType = false;
+		};
 		var self = this;
+		// setTimeout(() => {
+		// 	console.log('无插件模式', xtxk.cache.get('mediaServerInfo') );
+		// 	if( xtxk.cache.get('mediaServerInfo') ) {
+		// 		self.userTitle = '无插件模式';
+		// 	};
+		// }, 1000);
 		this.curUser = xtxk.cache.get('USER');
 		this.actived=this.$store.getters.getStatus;
 		this.isSendMessageDialog = sessionStorage.getItem('isSendMessageDialog');

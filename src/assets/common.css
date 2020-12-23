@@ -561,9 +561,18 @@
     background:none;
 }
 
+.el-scrollbar__wrap{
+    /* scrollbar-base-color: rgba(170, 183, 194,0.1);
+    scrollbar-highlight-color:rgba(170, 183, 194, 0.1);
+    scrollbar-arrow-color: rgba(170, 183, 194, 0.1);
+    scrollbar-face-color: rgba(170, 183, 194,0.1); */
+    overflow-x:hidden; 
+    margin-right: -23px !important;
+}
+
 /* 滚动条颜色 */
 .el-scrollbar__bar.is-vertical>div{
-    background-color:rgba(170, 183, 194,.5)
+    background-color:rgba(170, 183, 194,.5);
 }
 
 .el-input__inner::placeholder,
@@ -576,3 +585,4 @@
 .el-input__inner:focus{
     /* color:#f00; */
 }
+ 

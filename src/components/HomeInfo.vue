@@ -155,15 +155,16 @@ export default {
         }
       } else if (obj.state == 1) {
         //首次
-         //初始化插件
+        //初始化插件
         if(this.apiSDK.config.version == this.apiSDK.enumSDKVersion.SDKVersion5){
             this.$store.commit("setMediaService", Enum.enumMediaService.Success);
         }else if(this.apiSDK.config.version == this.apiSDK.enumSDKVersion.SDKVersion6){
             this.$store.commit("setMediaService", Enum.enumMediaService.Unregister);
         }
-          //首次 
+        //首次 
         //媒体 
        this.apiSDK.noPluginLogin('',(res)=>{
+             console.log('免插件----登录', xtxk.cache.get('mediaServerInfo'));
              this.initMXTC()
              this.initMedia()
         })
@@ -217,36 +218,44 @@ export default {
     //eventType: 0, status_code: 1 播放；0 停止播放；-1 断流
     //eventType: 1, status_code: 1 注册成功；-1注册失败；-2 移除成功；-3 链路断开，2 注销成功
     onSessionEvent: function(eventType, sessionid, status_code, msg, wgtpos) {
-        console.log("播放器回调------eventType:" + eventType + "--sessionid：" + sessionid + "--status_code:" + status_code + "--msg:" + msg + "--wgtpos:" + wgtpos);
-        // if (eventType == 0) {
-        //     switch (status_code) {
-        //         case 1: //点播成功
-        //             let curObj = this.currentPlayScreens.find(item => wgtpos == item.screenIndex)
-        //             if (curObj) this.apiSDK.sendForceIFrame(curObj.resId, curObj.resCh, curObj.resType);
-        //             break;
-        //         case 0: //点播失败
-        //             // this.apiSDK.stopPlayByIndex(wgtpos);
-        //             break;
-        //         case -1: break;
-        //     }
-        // } else if (eventType == 1) {
-        //     switch (status_code) {
-        //         case 2:  break;//注销成功
-        //         case 1:  this.$store.commit("setMediaService", Enum.enumMediaService.Success); break;//注册成功
-        //         case -1: this.$store.commit("setMediaService", Enum.enumMediaService.Unregister); break;//注册失败
-        //         case -2: break;
-        //         case -3: break;
-        //     }
+        //console.log("播放器回调------eventType:" + eventType + "--sessionid：" + sessionid + "--status_code:" + status_code + "--msg:" + msg + "--wgtpos:" + wgtpos);
+      console.log("播放器回调------eventType:" + eventType + "--sessionid：" + sessionid + "--status_code:" + status_code + "--msg:" + msg + "--wgtpos:" + wgtpos);
+            if (eventType == 0) {
+                switch (status_code) {
+                    case 1: //点播成功
+                        let currentPlayScreens = sessionStorage.getItem('currentScreen');
+                        if(currentPlayScreens){
+                          currentPlayScreens = JSON.parse(currentPlayScreens);
+                            let curObj = currentPlayScreens.find(item => wgtpos == item.screenIndex);
+                        if (curObj) {
+                            this.apiSDK.sendForceIFrame(curObj.encoderSipID, curObj.resCh, curObj.resType, curObj.channel);
+                            this.apiSDK.setVolumeStateForPlugin(wgtpos, false);
+                        }
+                         }
+                      
+                    case 0: //点播失败
+                        // this.apiSDK.stopPlayByIndex(wgtpos);
+                        break;
+                    case -1: break;
+                }
+            } else if (eventType == 1) {
+                switch (status_code) {
+                    case 2:  break;//注销成功
+                    case 1:  this.$store.commit("setMediaService", Enum.enumMediaService.Success); break;//注册成功
+                    case -1: this.$store.commit("setMediaService", Enum.enumMediaService.Unregister); break;//注册失败
+                    case -2: break;
+                    case -3: break;
+                }
+            }
+        // if (eventType == 1) {
+        //   switch (status_code) {
+        //       case 2:  break;//注销成功
+        //       case 1:  this.$store.commit("setMediaService", Enum.enumMediaService.Success); break;//注册成功
+        //       case -1: this.$store.commit("setMediaService", Enum.enumMediaService.Unregister); break;//注册失败
+        //       case -2: break;
+        //       case -3: break;
+        //   }
         // }
-        if (eventType == 1) {
-          switch (status_code) {
-              case 2:  break;//注销成功
-              case 1:  this.$store.commit("setMediaService", Enum.enumMediaService.Success); break;//注册成功
-              case -1: this.$store.commit("setMediaService", Enum.enumMediaService.Unregister); break;//注册失败
-              case -2: break;
-              case -3: break;
-          }
-        }
     },
 
 

@@ -5,7 +5,7 @@
     <div class="tabWrap" style="height:100%">
         <el-tabs v-model="activeName" class="tabWrap_tabs" :before-leave="changeActiveName">
         <!-- <el-tabs v-model="activeName" class="tabWrap_tabs"> -->
-            <el-tab-pane v-for="(item, index) in editableTabs" :label="item.title" :name="item.name" :key="item.name" style="height:100%;width:412px;">
+            <el-tab-pane class="bg-div" v-for="(item, index) in editableTabs" :label="item.title" :name="item.name" :key="item.name" style="height:100%;width:412px;">
                 <component :is="item.content" :ref="item.ref" :treeId="item.treeId" v-on="$listeners"></component>
             </el-tab-pane>
         </el-tabs>
@@ -704,5 +704,11 @@ export default {
 .btn-stratege:active{
   background: url(../../../static/stratege/icon-mainStratege-act.png) no-repeat center;
 }
-
+.bg-div{
+  height: 100%;
+  background: url(../../../static/main/screen/resource_bg.png) no-repeat center;
+  margin-top: 0px;
+  /* padding-top:2px; */
+  background-size: 100% 100%;
+}
 </style>

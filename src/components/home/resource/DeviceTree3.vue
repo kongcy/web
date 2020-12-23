@@ -95,8 +95,8 @@
         </el-scrollbar>
         <div class="treefoot">
             <!-- <div class="treeSelectedNum">已选中{{selectedNum}}个视频资源</div> -->
-            <div class="treeOperate" :title="'已选中'+selectedNum+'个视频资源'">
-                <div class="treeOperate-l">
+            <div class="treeOperate" >
+                <div class="treeOperate-l" :title="'已选中'+selectedNum+'个视频资源'">
                     已选中<span class="treeSelectedNum">{{selectedNum}}</span>个视频资源
                 </div>
                 <div class="treeOperate-btn">
@@ -322,7 +322,8 @@ export default {
             searchChange:false,
             relationshipValue:0,
 
-            selectedNum:0
+            selectedNum:0,
+            timer:null,
         };
     },
     filters: {
@@ -425,30 +426,32 @@ export default {
         },
         //全部停止
         stopAll(){
-            var targetNodesP = [];
-            var targetNodesD = [];
+            // var targetNodesP = [];
+            // var targetNodesD = [];
 
-            var nodes = this.mergeResourceData();
-            for( var i=0;i<nodes.length;i++ ){
-                if( nodes[i].nodeStatus.indexOf("person_")>-1){
-                    if( nodes[i].nodeStatus != "person_online"){
-                        targetNodesP.push(nodes[i]);
-                    }
-                }
-                if(nodes[i].nodeStatus.indexOf("device_")>-1||nodes[i].nodeStatus.indexOf("channel_")>-1){
-                    if( nodes[i].nodeStatus != "device_online"&&nodes[i].nodeStatus != 'device_offline'&&nodes[i].nodeStatus != 'channel_online'&&nodes[i].nodeStatus != 'channel_offline'){
-                        targetNodesD.push(nodes[i]);
-                    }
-                }
+            // var nodes = this.mergeResourceData();
+            // for( var i=0;i<nodes.length;i++ ){
+            //     if( nodes[i].nodeStatus.indexOf("person_")>-1){
+            //         if( nodes[i].nodeStatus != "person_online"){
+            //             targetNodesP.push(nodes[i]);
+            //         }
+            //     }
+            //     if(nodes[i].nodeStatus.indexOf("device_")>-1||nodes[i].nodeStatus.indexOf("channel_")>-1){
+            //         if( nodes[i].nodeStatus != "device_online"&&nodes[i].nodeStatus != 'device_offline'&&nodes[i].nodeStatus != 'channel_online'&&nodes[i].nodeStatus != 'channel_offline'){
+            //             targetNodesD.push(nodes[i]);
+            //         }
+            //     }
                
-            }
-            if( targetNodesP.length + targetNodesD.length == 0 ){
-                var content = '请至少选择一个在线播放的资源发起停止点播';
-                this.$message({message: content, type: 'warning'})
-                return;
-            }
-             Fun.stopPlayDevices(this,targetNodesP.concat(targetNodesD));
-            this.$listeners.StopAllHideHolder(targetNodesP.concat(targetNodesD));
+            // }
+            // if( targetNodesP.length + targetNodesD.length == 0 ){
+            //     var content = '请至少选择一个在线播放的资源发起停止点播';
+            //     this.$message({message: content, type: 'warning'})
+            //     return;
+            // }
+            //  Fun.stopPlayDevices(this,targetNodesP.concat(targetNodesD));
+            // this.$listeners.StopAllHideHolder(targetNodesP.concat(targetNodesD));
+             this.apiSDK.stopAll();  
+            this.$listeners.StopAllHideHolder(true);
         },
         handleChangeSerachWrap(){
             this.searchChange = !this.searchChange;
@@ -494,7 +497,6 @@ export default {
         },
         //资源回调
         setReceiveInformResourceStatusCallback(obj) {
-            console.log(obj)
             if (obj && obj.nodes) {
                 var list = obj.nodes;
                 if (obj.operate === "init") {
@@ -523,9 +525,7 @@ export default {
                 this.treeData = Fun._initDeviceTreeData(list);
             } 
 
-            if (this.apiSDK.config.version === this.apiSDK.enumSDKVersion.SDKVersion5) {
-                // console.log(list);
-                // console.log(this.treeData);
+            //if (this.apiSDK.config.version === this.apiSDK.enumSDKVersion.SDKVersion5) {
                 let treeObj = this.$refs.main_device_tree;
                 let checkedArr = [];
                 checkedArr = treeObj.getCheckedNodes();
@@ -539,7 +539,7 @@ export default {
                     }
                 })
                 treeObj.setCheckedNodes(checkedArr); 
-            }
+           // }
         },
         //add
         addResourceStatus(subscribeId, list) {
@@ -582,7 +582,106 @@ export default {
                 Fun._refreshDeviceTreeData(this.$refs.main_device_tree, list);
             }
         },
-        //设备上线通知
+       //refresh 单位、部门树在线数量和总数量
+       refreshResourceNum(){
+            this.timer=null;
+            var self=this;
+            this.timer=setInterval(()=>{
+                self.apiSDK.refreshOrganizationDevice(function(obj){
+                    if(obj&&obj.rows){
+                        // let list={
+                        //     subscribeId:"MainOrganizationDevice",
+                        //     rows:[{
+                        //         departmentId: "7606971c-d277-4b24-99d6-b6527d928e93",
+                        //         departmentName: "兴图",
+                        //         parentId: "",
+                        //         userCnt: undefined,
+                        //         onLineCount:n,
+                        //         totalCount: n+1,
+                        //     },
+                        //     {
+                        //         departmentId: "5e4491a3-d0cc-43bb-a645-39f80138d073",
+                        //         departmentName:"平台产品部",
+                        //         parentId: "7606971c-d277-4b24-99d6-b6527d928e93",
+                        //         userCnt: undefined,
+                        //         onLineCount: "0",
+                        //         totalCount: "0",
+                        //     },
+                        //     {
+                        //         departmentId: "ba483661-70ba-4131-a3ae-a39de41c68c9",
+                        //         departmentName: "测试1",
+                        //         parentId: "5e4491a3-d0cc-43bb-a645-39f80138d073",
+                        //         userCnt: undefined,
+                        //         onLineCount: "16",
+                        //         totalCount: "34",
+                        //     },
+                        //     {
+                        //         departmentId: "c1bd259bc8e449b48cc3873b46f7ab29",
+                        //         departmentName: "测试专用",
+                        //         parentId: "5e47ec4a3c2f41328dd1affa5e7dd303",
+                        //         userCnt: undefined,
+                        //         onLineCount: "37",
+                        //         totalCount: "54",
+                        //     },
+                        //     {
+                        //         departmentId: "ff55ec4e6da74332b51e6a4dfcb8e2d4",
+                        //         departmentName: "test11",
+                        //         parentId: "ba483661-70ba-4131-a3ae-a39de41c68c9",
+                        //         userCnt: undefined,
+                        //         onLineCount: "1",
+                        //         totalCount: "36",
+                        //     },
+                        //     {
+                        //         departmentId: "390e0a0f5a30485abccb56abccd486bd",
+                        //         departmentName: "兴图新科",
+                        //         parentId: "",
+                        //         userCnt: undefined,
+                        //         onLineCount: "0",
+                        //         totalCount: "0",
+                        //     },
+                        //     {
+                        //         departmentId: "5e47ec4a3c2f41328dd1affa5e7dd303",
+                        //         departmentName: "测试部",
+                        //         parentId: "390e0a0f5a30485abccb56abccd486bd",
+                        //         userCnt: undefined,
+                        //         onLineCount: "0",
+                        //         totalCount: "0",
+                        //     },
+                        //     {
+                        //         departmentId: "e8700dcfa4a24b4cab759aaeb349a7c0",
+                        //         departmentName: "会议账号",
+                        //         parentId: "",
+                        //         userCnt: undefined,
+                        //         onLineCount: "0",
+                        //         totalCount: "0",
+                        //     },
+                        //     {
+                        //         departmentId: "848d5f1cfd384869bf5e8482bbf0d032",
+                        //         departmentName: "测试小组2",
+                        //         parentId: "e8700dcfa4a24b4cab759aaeb349a7c0",
+                        //         userCnt: undefined,
+                        //         onLineCount: "0",
+                        //         totalCount: "6",
+                        //     },
+                        //     {
+                        //         departmentId: "49a18a6af099469c95e34b67acaa4e6f",
+                        //         departmentName: "性能测试GB",
+                        //         parentId: "5e47ec4a3c2f41328dd1affa5e7dd303",
+                        //         userCnt: undefined,
+                        //         onLineCount: "0",
+                        //         totalCount: "1",
+                        //     }]
+                        // }
+                         Fun._refreshResourceNum(self.$refs.main_device_tree, obj.rows);
+                    }
+                })
+            },2000)
+       },
+       stopRefreshOrganizationDevice(){
+           clearInterval(this.timer);
+           this.timer=null;
+       },
+       //设备上线通知
         onlineNotify(list){
             for(var i = 0, l = list.length; i < l; i++){
                 var item = list[i];
@@ -632,7 +731,6 @@ export default {
                 if(data.nodeStatus=="virtual_online" || data.nodeStatus=="virtual_playing"){
                     this.virtualTreeId = data.id;
                     this.showVirtual = true;
-
                 }
                 //点击播放中的 设备节点 相对应的屏幕被选中
                 //获取选中的设备ID
@@ -653,12 +751,14 @@ export default {
             this.currentNode.time = new Date().getTime();
 
             this.$refs.rightMenu.closeRightMenu();
-            if( data.nodeStatus != 'department' ) {
+            if( data.nodeStatus != 'department'&& data.nodeStatus != 'company') {
                node.checked = !node.checked;
             }
             //
-            if( data.nodeStatus == 'department' ) {
-               this.setDeviceAlarmStatusByClick(data)
+            if( data.nodeStatus == 'department'||data.nodeStatus == 'company' ) {
+               if(data.nodeStatus == 'department'){
+                    this.setDeviceAlarmStatusByClick(data)
+               }
             }
             this.$parent.isTreeItemShow=false;
         },
@@ -708,7 +808,7 @@ export default {
         },
         //树行样式
         renderContent(h, { node, data, store }) {
-            console.log(data.nodeStatus, data.alarm, data,'------------')
+            // console.log(data.nodeStatus, data.alarm, data,'------------')
             let icon = data.nodeStatus
             let alarm = data.alarm ? "alarm" : ''
             //wxx 2020.11.25
@@ -887,6 +987,11 @@ export default {
              this.selectedNum=0;
         }
    },
+   beforeDestroy(){
+    if(this.timer){
+      clearInterval(this.timer); // 在vue 实例销毁前，清楚我们的定时器
+    }
+  },
 }
 </script>
 
@@ -899,11 +1004,7 @@ export default {
 
 <style scoped>
 .treeBox{
-    height: 100%;
-    background: url(../../../../static/main/screen/resource_bg.png) no-repeat 0 -1px;
-    margin-top: 0px;
-    /* padding-top:2px; */
-    background-size: 100% 100%;
+   height: 100%;
 }
 .newSearchBtn{
     display: inline-block;
@@ -1086,6 +1187,8 @@ export default {
   color: #599AFF;
   font-size: 14px;
   /* margin-left:14px; */
+  padding: 0;
+  height: 41px;
 }
 .treeSelectedNum{
   color:#599AFF;  
@@ -1143,20 +1246,20 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
     vertical-align: middle;
+    line-height: 41px;
+    float: left;
 }
 .treeOperate-btn{
     width: 245px;
     vertical-align: middle;
+    float: right;
 }
 .treeOperate-l,.treeOperate-btn{
     display: inline-block;
     height: 41px;
-    line-height: 41px;
 }
 .icon-play+span,.icon-stopPlay+span,.icon-stopPlay_bg+span{
     display: inline-block;
-    line-height: 22px;
-    height: 22px;
     vertical-align: middle;
     margin-left: 5px;
 }

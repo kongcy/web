@@ -28,23 +28,25 @@ const setConfigInstance = () => {
   const configFilePath =  window.location.pathname + `static/config/config.json`
   return axios.create().get(configFilePath).then(res => {
       xtxk.config = res.data
+      const noPluginFlag = !!res.data.api.noPluginServerURL
       //初始化sdk配置
       apiSDK.initConfig({
         version       : res.data.version,
         dataURL       : res.data.api.dataURL,
         businessURL   : res.data.api.businessURL,
-        strategeURL   : res.data.api.strategeURL,
-        noPluginServerURL: res.data.api.noPluginServerURL,
+        strategeURL   : res.data.api.strategeURL, 
         electronBlackboardUrl : res.data.api.electronBlackboardUrl,
         pluginVersion : res.data.pluginVersion,
         platformVersion: res.data.platformVersion,   // 0-标准音视频平台 1-互联互通平台
         diagnoseUrl: res.data.api.diagnoseUrl,
-        talimu: res.data.talimu,
-         ffmepgServer: res.data.ffmepgServer.serverUrl,
-        decodeResolution:res.data.ffmepgServer.decodeResolution,
+        noPluginServerURL: noPluginFlag?res.data.api.noPluginServerURL:'',
+        ffmepgServer: noPluginFlag?res.data.ffmepgServer.serverUrl:'',
+        decodeResolution:noPluginFlag?res.data.ffmepgServer.decodeResolution:'',
+	      talimu: res.data.talimu,
         playerType:0,
         mediaServerIp:'127.0.0.1', 
-        mediaServerPort:'4443'
+        mediaServerPort:'4443',
+        isNoPlujinCheck: res.data.isNoPlujinCheck
       });
   })
 }

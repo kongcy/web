@@ -289,7 +289,7 @@ export default {
             });
 
             this.apiSDK.setInformStartMediaByLocalCallback((obj) =>{
-                console.log("收到开启媒体(软解)");
+                console.log("收到开启媒体(软解)", obj );
                 if(obj){
                     // that.apiSDK.startPlayForPlugin(obj.screenIndex, obj.videoRTPId || "", obj.audioRTPId || "",
                     //     obj.localVPort, obj.fIPS, obj.fCH, 0, obj.resId, obj.resCh, "", obj.resType);
@@ -616,7 +616,6 @@ export default {
                         this.apiSDK.resumeDBImageByPosForPlugin(pos,1,2,"Pause");
                     }
                 } else {
-                    debugger;
                     // console.log("点播失败" + resID);
                     this.apiSDK.stopPlayByIndex(pos);
                 }
@@ -762,12 +761,16 @@ export default {
         },
         // 开启会议
         openMeeting(pos){
-        //    let meetingNo = ''; // 拉人入会的会议号
-        //    let xiaoYuNums = ''; // 被拉的小鱼号
+            // let meetingNo = ''; // 拉人入会的会议号
+            // let xiaoYuNums = ''; // 被拉的小鱼号 11
+            console.log('自动点播--开启会议', this.currentPlayScreens);
            let data = {
-               resId: this.currentPlayScreens[pos].encoderSipID,
+               encoderSipID: this.currentPlayScreens[pos].encoderSipID,
+               resId: this.currentPlayScreens[pos].resId,
                joinMember: xtxk.cache.get('yhsjhm'),
+               channel: this.currentPlayScreens[pos].channel,
            };
+           console.log('开启会议--- 111', data );
            this.apiSDK.newOpenMeeting(data, obj => {
                console.log('点击会议返回', obj);
            });

@@ -84,6 +84,7 @@ export default {
   mounted() {
     this.activetabName=xtxk.cache.get('activeName');
     // 根据URL 传递的参数 自动点播最近的9条或者9条以内的记录 
+    console.log('根据URL 传递的参数 自动点播最近的9条或者9条以内的记录',xtxk.cache.get('isAutoPlay'));
     if( xtxk.cache.get('isAutoPlay') == 1 ){
         this.tabClickHandler(this.editableTabs[0]);
         this.$refs.commonUse[0].isAutoPlay();
@@ -97,8 +98,11 @@ export default {
         let subjectId = 0;
         //获取设备组织结构
         this.apiSDK.getOrganizationDevice(organId, Enum.enumSubscribeType.main.subscribeOrganizationDevice, subjectId, function(obj){
-          //console.log(obj);
+          // console.log('获取设备组织结构-------',obj);
           self.$refs.deviceTree[0]&& self.$refs.deviceTree[0].setReceiveInformAddDepartmentCallback(obj);
+          //2s刷新数据在线数量和总数量
+          self.$refs.deviceTree[0]&& self.$refs.deviceTree[0].refreshResourceNum();
+          
         });
           // 资源状态回调
         this.apiSDK.setReceiveResourceStatusQueryCallback("main", function(obj) {
@@ -145,8 +149,6 @@ export default {
   padding: 0px;
   width: 412px;
   height: 100%;
-   background: url(../../../../static/main/screen/resource_bg.png) no-repeat 0 -1px;
-  background-size: 100% 100%;
 }
 
 .el-tabs{
@@ -157,12 +159,9 @@ export default {
 
 /* ui tab样式12.12 */
 .divSelectItemTab{
- /* background:url(../../../../static/main/screen/bg.png) no-repeat center; */
 } 
 .el-tabs.divSelectItemTab /deep/ .el-tabs__header{
     background: transparent!important;
-    /* background:#f00 */
-     /* background:url(../../../../static/main/screen/bg.png) no-repeat center; */
 }
 .el-tabs.divSelectItemTab /deep/ .el-tabs__header>.el-tabs__nav-wrap>.el-tabs__nav-scroll>.el-tabs__nav>.el-tabs__item{
   padding: 0 12px;
@@ -216,5 +215,7 @@ export default {
     background:url(../../../../static/resource_tree/tab/department_active.png) no-repeat center;
     background-size: 18px;
 }
-
+/deep/ .el-tabs__nav-wrap{
+  margin-bottom: 0px;
+}
 </style>

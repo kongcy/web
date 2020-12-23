@@ -114,16 +114,13 @@ export default {
 
     // 事件
     window.addEventListener("resize", this.resize);
-
-
-   
   },
   methods: {
     // 免插登录
     noPluginLogin(account){
+        let that = this;
         this.apiSDK.noPluginLogin(account,(res)=>{
-            this.apiSDK.playType = res.code
-            console.log('免插登录==========', res )
+            that.apiSDK.playType = res.code
         })
     },
     // 通过url获取相关信息
