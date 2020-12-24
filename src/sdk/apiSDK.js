@@ -15610,13 +15610,13 @@ var apiSDK = {
                     that.config.decodeType = data.decodeType
                     that.config.decodeResolution = data.decodeResolution
                     xtxk.cache.set('mediaServerInfo',{
-                        playerType: 1,
+                        playerType: that.config.playerType,
                         ip: that.config.mediaServerIp,
                         port: that.config.mediaServerPort,
                         decodeType: that.config.decodeType,
                         decodeResolution: that.config.decodeResolution
                     })
-
+                    console.log(obj.msg);
                 }
                 xtxk.cache.set('noPluginLoginFlag',true)
                 console.log(`获取媒体服务器信息:初始化${xtxk.cache.get('noPluginLoginFlag')}`)
@@ -15630,7 +15630,7 @@ var apiSDK = {
         }else{
             const mediaServerInfo = xtxk.cache.get('mediaServerInfo')
             if(mediaServerInfo){
-                this.config.playerType = 1
+                this.config.playerType = mediaServerInfo.playerType
                 this.config.mediaServerIp = mediaServerInfo.ip
                 this.config.mediaServerPort =  mediaServerInfo.port
                 this.config.decodeType = mediaServerInfo.decodeType
@@ -15649,7 +15649,7 @@ var apiSDK = {
         const userID =this.userLoginID;
         strategeSDK6.noPluginLoginOut( userID , obj => {
             xtxk.cache.set('noPluginLoginFlag',false);
-            xtxk.cache.set('mediaServerInfo', null)
+            xtxk.cache.remove('mediaServerInfo');
             console.log('用户退出免插登录!')
             if(callback)callback();
         });
