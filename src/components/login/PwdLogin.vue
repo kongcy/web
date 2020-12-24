@@ -36,7 +36,7 @@
             <el-row>
                 <el-col :span="7"><el-checkbox v-model="unificationLogin">统一认证</el-checkbox></el-col>
                 <el-col :span="11"><el-checkbox v-model="remberMe">记住密码</el-checkbox></el-col>               
-                <el-col :span="6"  style="text-align: right;" ><div style="cursor: pointer; font-size: 14px;color:#fff;" @click="download"><i class="el-icon-download" ></i>组件下载</div></el-col>
+                <el-col :span="6"  style="text-align: right;" ><div style="cursor: pointer; font-size: 14px;color:#fff;" @click="download"><i class="el-icon-download" ></i>插件下载</div></el-col>
             </el-row>
             <center>
                 <!-- @click="login" -->
