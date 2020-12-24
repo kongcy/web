@@ -337,8 +337,8 @@ export default {
         }
       }
       if( targetNodesP.length + targetNodesD.length == 0 ){
-        var content = '请选择在线空闲的资源发起点播';
-        this.$message({message: content, type: 'warning'})
+        // var content = '请选择在线空闲的资源发起点播';
+        // this.$message({message: content, type: 'warning'})
         return;
       }
       Fun.startPlayRess(this, targetNodesP.concat(targetNodesD));

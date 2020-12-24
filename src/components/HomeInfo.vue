@@ -227,12 +227,20 @@ export default {
                         if(currentPlayScreens){
                           currentPlayScreens = JSON.parse(currentPlayScreens);
                             let curObj = currentPlayScreens.find(item => wgtpos == item.screenIndex);
-                        if (curObj) {
-                            this.apiSDK.sendForceIFrame(curObj.encoderSipID, curObj.resCh, curObj.resType, curObj.channel);
-                            this.apiSDK.setVolumeStateForPlugin(wgtpos, false);
+                            if (curObj) {
+                                this.apiSDK.sendForceIFrame(curObj.encoderSipID, curObj.resCh, curObj.resType, curObj.channel);
+                                let that = this;
+                                let timeIndex =  0;
+                                let playTime = setInterval(() => {
+                                    timeIndex++;
+                                    if( timeIndex < 3 ) {
+                                      that.apiSDK.sendForceIFrame(curObj.encoderSipID, curObj.resCh, curObj.resType, curObj.channel);
+                                      timeIndex === 2 && window.clearInterval(playTime);
+                                    }
+                                 }, 500);
+                                this.apiSDK.setVolumeStateForPlugin(wgtpos, false);
+                            }
                         }
-                         }
-                      
                     case 0: //点播失败
                         // this.apiSDK.stopPlayByIndex(wgtpos);
                         break;

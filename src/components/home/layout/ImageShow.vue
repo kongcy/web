@@ -195,7 +195,7 @@ export default {
             });
 
             this.apiSDK.setInformStartMediaByLocalCallback((obj) =>{
-                console.log("收到开启媒体(软解)");
+                console.log("收到开启媒体(软解)" );
                 if(obj){
                     // that.apiSDK.startPlayForPlugin(obj.screenIndex, obj.videoRTPId || "", obj.audioRTPId || "",
                     //     obj.localVPort, obj.fIPS, obj.fCH, 0, obj.resId, obj.resCh, "", obj.resType);
