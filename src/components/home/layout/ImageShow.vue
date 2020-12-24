@@ -1,7 +1,7 @@
 <template>
     <div class="imageContentBox">
         <!-- <div id="imageShowContainer" style="width:100%;height:100%"></div> -->
-        <div class="imageDiv" :id="id" style="width:100%;height:100%"></div>
+        <div class="imageDiv" :id="id" style="width:100%;height:100%"  title="xxxxx"></div>
         <div class="cornerBox">
             <i class="icon-corner corner-top-left"></i>
             <i class="icon-corner corner-top-right"></i>
@@ -59,7 +59,7 @@ export default {
         window.onPlaybackEvent = this.onPlaybackEvent;
         window.onPtz3DMessage = this.onPtz3DMessage;
     },
-    watch: {
+    watch: { 
         currentPlayScreens: {
             handler(newArr, old) {
                 sessionStorage.setItem('currentScreen', JSON.stringify(newArr))
@@ -91,10 +91,13 @@ export default {
             console.log('进来了-----', id);
             let self=this;
             self.id=id;
-            // setTimeout(()=> {
+            this.$nextTick(()=>{
+               const  cdom = document.getElementById(this.id);
+               console.log('player容器更新!')
+                console.log('----------------------------------------------')
                 self.apiSDK.initLayout(id, width, height, self.onBtnEvent, self.onSessionEvent, self.onWgtSelected, self.onPlaybackEvent, self.onPlayResult, this.onSelectedDrop);
                 self.initMedia();
-            // }, 2000)
+            }) 
             // this.$nextTick(function(){
             //     //  //初始化插件
             //     // if(self.apiSDK.config.version == self.apiSDK.enumSDKVersion.SDKVersion5){
