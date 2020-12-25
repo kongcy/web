@@ -78,9 +78,9 @@
         </div>
 
         <el-button v-if="this.apiSDK.config.version === this.apiSDK.enumSDKVersion.SDKVersion5 && this.apiSDK.config.platformVersion == 1 && !isNVRChannel" class="unbindLock lock01" disabled title="接管"></el-button>
-        <el-button v-if="this.apiSDK.config.version === this.apiSDK.enumSDKVersion.SDKVersion5 && this.apiSDK.config.platformVersion == 1 && !isNVRChannel" class="windshieldWiper wiper01" disabled title="雨刷"></el-button>
-        <el-button v-if="this.apiSDK.config.version === this.apiSDK.enumSDKVersion.SDKVersion5 && this.apiSDK.config.platformVersion == 1 && !isNVRChannel" class="heat heat01" disabled title="加热"></el-button>
-        <el-button v-if="this.apiSDK.config.version === this.apiSDK.enumSDKVersion.SDKVersion5 && this.apiSDK.config.platformVersion == 1 && !isNVRChannel" class="_3d _3d01" disabled title="3d"></el-button>
+        <el-button v-if="this.apiSDK.config.version === this.apiSDK.enumSDKVersion.SDKVersion5 && this.apiSDK.config.platformVersion == 1 " class="windshieldWiper wiper01" disabled title="雨刷"></el-button>
+        <el-button v-if="this.apiSDK.config.version === this.apiSDK.enumSDKVersion.SDKVersion5 && this.apiSDK.config.platformVersion == 1 " class="heat heat01" disabled title="加热"></el-button>
+        <el-button v-if="this.apiSDK.config.version === this.apiSDK.enumSDKVersion.SDKVersion5 && this.apiSDK.config.platformVersion == 1 " class="_3d _3d01" disabled title="3d"></el-button>
       </div>
       <div class="holder-who">{{ title }}</div>
       <!-- 预制点组 -->
@@ -167,7 +167,7 @@ export default {
   mounted() {
     //云台状态反馈
     this.apiSDK.setInformYTStatusCallback((res) => {
-      console.log(res);
+      console.log('云台控制',res);
       if (!res.isAllow) {
         this.ytTitle = "云台控制";
         this.display.unbindLock = true;
@@ -314,48 +314,44 @@ export default {
         }
       }
     },
-    // 雨刷控制 开
+    // 雨刷控制 开 12.28 同步云高度 nvr云台控制提交-----------
     windshieldWiper() {
-      if (this.display.disabled === true) {
+      if (this.display.disabled === true && !this.isNVRChannel) {
         return;
       }
-      this.apiSDK.publishStartYTWiperCtl(
-        this.resourceId,
-        this.resourceCh,
-        function (obj) {}
-      );
+      this.apiSDK.publishStartYTWiperCtl(this.resourceId,this.resourceCh,function (obj) {}, this.channelEncoderSIPID, this.channel);
     },
-    // 雨刷控制 关
+    // 雨刷控制 关 12.28 同步云高度 nvr云台控制提交-----------
     windshieldWiperStop() {
-      if (this.display.disabled === true) {
+      if (this.display.disabled === true && !this.isNVRChannel) {
         return;
       }
       this.apiSDK.publishStopYTWiperCtl(
         this.resourceId,
         this.resourceCh,
-        function (obj) {}
+        function (obj) {}, this.channelEncoderSIPID, this.channel
       );
     },
-    // 加热控制 开
+    // 加热控制 开 12.28 同步云高度 nvr云台控制提交-----------
     heatControl() {
-      if (this.display.disabled === true) {
+      if (this.display.disabled === true && !this.isNVRChannel) {
         return;
       }
       this.apiSDK.publishStartYTHeatCtl(
         this.resourceId,
         this.resourceCh,
-        function (obj) {}
+        function (obj) {}, this.channelEncoderSIPID, this.channel
       );
     },
-    // 加热控制 关
+    // 加热控制 关 12.28 同步云高度 nvr云台控制提交-----------
     heatControlStop() {
-      if (this.display.disabled === true) {
+      if (this.display.disabled === true && !this.isNVRChannel) {
         return;
       }
       this.apiSDK.publishStopYTHeatCtl(
         this.resourceId,
         this.resourceCh,
-        function (obj) {}
+        function (obj) {}, this.channelEncoderSIPID, this.channel
       );
     },
     // 3d 开
@@ -427,23 +423,23 @@ export default {
           break;
       }
     },
-    // 聚焦控制 鼠标按下
+    // 聚焦控制 鼠标按下 12.28 同步云高度 nvr云台控制提交-----------
     focusMousedown(zoom) {
-      if (this.display.disabled === true) {
+      if (this.display.disabled === true&& !this.isNVRChannel) {
         return;
       }
-      this.apiSDK.publishStartYTFocusCtl(this.resourceId,this.resourceCh,zoom,this.sliderValue,function (obj) {});
+      this.apiSDK.publishStartYTFocusCtl(this.resourceId,this.resourceCh,zoom,this.sliderValue,function (obj) {}, this.channelEncoderSIPID, this.channel);
     },
-    // 聚焦控制 鼠标松开
+    // 聚焦控制 鼠标松开  12.28 同步云高度 nvr云台控制提交-----------
     focusMouseup(zoom) {
-      if (this.display.disabled === true) {
+      if (this.display.disabled === true&& !this.isNVRChannel) {
         return;
       }
-      this.apiSDK.publishStopYTFocusCtl(this.resourceId,this.resourceCh,zoom,function (obj) {} );
+      this.apiSDK.publishStopYTFocusCtl(this.resourceId,this.resourceCh,zoom,function (obj) {},this.channelEncoderSIPID, this.channel);
     },
-    // 光圈控制 鼠标按下
+    // 光圈控制 鼠标按下 12.28 同步云高度 nvr云台控制提交-----------
     apertureMousedown(zoom) {
-      if (this.display.disabled === true) {
+      if (this.display.disabled === true && !this.isNVRChannel) {
         return;
       }
       this.apiSDK.publishStartYTApertureCtl(
@@ -451,12 +447,12 @@ export default {
         this.resourceCh,
         zoom,
         this.sliderValue,
-        function (obj) {}
+        function (obj) {}, this.channelEncoderSIPID, this.channel
       );
     },
-    // 光圈控制 鼠标松开
+    // 光圈控制 鼠标松开 12.28 同步云高度 nvr云台控制提交-----------
     apertureMouseup(zoom) {
-      if (this.display.disabled === true) {
+      if (this.display.disabled === true&& !this.isNVRChannel) {
         return;
       }
       this.apiSDK.publishStopYIApertureCtrl(
@@ -464,12 +460,12 @@ export default {
         this.resourceCh,
         zoom,
         this.sliderValue,
-        function (obj) {}
+        function (obj) {}, this.channelEncoderSIPID, this.channel
       );
     },
-    // 变焦 鼠标按下
+    // 变焦 鼠标按下  12.28 同步云高度 nvr云台控制提交-----------
     changeBurntMousedown(zoom) {
-      if (this.display.disabled === true) {
+      if (this.display.disabled === true&& !this.isNVRChannel) {
         return;
       }
       this.apiSDK.publishStartYTZoomCtl(
@@ -477,19 +473,19 @@ export default {
         this.resourceCh,
         zoom,
         this.sliderValue,
-        function (obj) {}
+        function (obj) {}, this.channelEncoderSIPID, this.channel
       );
     },
-    // 变焦 鼠标松开
+    // 变焦 鼠标松开  12.28 同步云高度 nvr云台控制提交-----------
     changeBurntMouseup(zoom) {
-      if (this.display.disabled === true) {
+      if (this.display.disabled === true&& !this.isNVRChannel) {
         return;
       }
       this.apiSDK.publishStopYTZoomCtl(
         this.resourceId,
         this.resourceCh,
         zoom,
-        this.sliderValue
+        this.sliderValue, this.channelEncoderSIPID, this.channel
       );
     },
     // 获取 预置点数据 右侧tree
@@ -502,8 +498,7 @@ export default {
       this.apiSDK.getYTPointGroupWithPoints(this.resourceId,this.resourceCh,1,1024,(obj) => {
           console.log(obj);
           if (obj) {
-            obj.rows &&
-              obj.rows.forEach((item, index) => {
+            obj.rows && obj.rows.forEach((item, index) => {
                 //组
                 let curObj = {
                   id: item.groupId,
@@ -513,8 +508,7 @@ export default {
                   children: [],
                 };
                 //组内
-                item.points &&
-                  item.points.forEach((item2) => {
+                item.points && item.points.forEach((item2) => {
                     curObj.children.push({
                       id: item2.pointId,
                       name: item2.pointName,
@@ -811,7 +805,7 @@ export default {
     },
     // 跳转到当前预置点
     skipOperate(data) {
-      this.apiSDK.publishUpResPoint(this.resourceId,this.resourceCh,data.id,data.value);
+      this.apiSDK.publishUpResPoint(this.resourceId,this.resourceCh,data.id,data.value, this.channel);
     },
     // 点击节点 隐藏其他节点
     treeShowOperate() {

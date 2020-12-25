@@ -296,7 +296,6 @@ export default {
             for(var i = 0, l = list.length; i < l; i++){
                 var item = list[i];
                 var nodeId = item.resId + "_" + (item.resCh || 0);
-
                 //主席节点
                 if (item.role == Enum.enumRoleType.chairman) {
                     this.chairmanInfo = {
@@ -358,21 +357,26 @@ export default {
                         microphoneAbility: item.microphoneAbility,
                         isJoinWhiteBoard: item.isJoinWhiteBoard
                     };
-                    item.microphoneAbility=='true';
-                    ++hasMicrophoneAbility;
+                    // item.microphoneAbility=='true';
+                  
                     this.treeData.push(data)
                 }
 
             }
             console.log(this.treeData)
+            if( item.microphoneAbility=='true')  ++hasMicrophoneAbility;
            if(this.chairmanInfo.microphoneAbility=='true') ++hasMicrophoneAbility;
-           if(hasMicrophoneAbility>0)  this.SoundBtn='全员静音';
+           console.log(hasMicrophoneAbility)
+           if(hasMicrophoneAbility>0){
+               this.SoundBtn='全员放音';
+           }else{
+               this.SoundBtn='全员静音';
+           }
             this.initrantNum=this.treeData.length+1;
         },
         //树显示模版
         renderContent(h, { node, data, store }) {
-            console.log(data.microphoneAbility )
-            console.log(data.microphoneAbility=='true' ? "放音" : "静音")
+            // console.log(data.microphoneAbility=='true' ? "放音" : "静音")
             let isCurrentUser=data.id==this.currentUser.userId?'【本人】':'';
             if(this.isChairman){
                 return (<span class={"custom-tree-node " + data.nodeStatus} >
@@ -404,25 +408,6 @@ export default {
                     </span>
                 </span>);
             }
-            
-            // return (<span class={"custom-tree-node " + data.nodeStatus} >
-            //         <span class="node-icon"></span>
-            //         <span class="node-label">{node.label}</span>
-            //         <span class="node-btn-right">
-            //             <i class={data.microphoneAbility ? "close-microphone" : "open-microphone"}></i>
-            //         </span>
-            //         <span class="node-btn-right">
-            //              <i class={data.audioAbility ? "close-audio floatR" : "open-audio floatR"}></i>
-            //         </span>
-            //         <span class="node-btn-right">
-            //             <i class={data.videoAbility ? "close-video floatR" : "open-video floatR"}></i>
-            //         </span>
-            //         <span class="node-btn-right">
-            //             <i class={data.isJoinWhiteBoard == 'true' ? "whiteboard floatR"  : "set-hide floatR"}></i>
-            //         </span>
-            //     </span>);
-                 
-            // <span on-click={(event) => {this.showMenu(node, data, event)}} class={this.isChairman || node.id ==  this.USER.userId ? "set" : "set-hide"}></span>
         },
         //树节点点击事件
         handleNodeClick(data, node, tree){
@@ -539,6 +524,10 @@ export default {
                 // this.apiSDK.publishMemberMicrophone(this.conferenceId, memberIDs, false);
             }
             item.microphoneAbility=item.microphoneAbility=='true'?'false':'true';
+            if(item.id==this.currentUser.userId){
+                this.$parent.meetingBnt.filter(item=>item.title=='麦克风').map(cs=>cs.class=cs.class=='icon_microphone'?'icon_microphone_close':'icon_microphone')
+            }
+            this.$parent.meetingPersonD.init.members.filter(items=>items.resId==this.currentUser.userId).map(cs=>cs.microphoneAbility=cs.microphoneAbility=='true'?'false':'true')
         },
        
         //全员静音/全员放音
@@ -561,6 +550,7 @@ export default {
                        item.microphoneAbility='true';
                    })
                    this.chairmanInfo.microphoneAbility='true';
+                     this.$parent.meetingBnt.filter(item=>item.title=='麦克风').map(cs=>cs.class='icon_microphone_close')
             }else{
                 this.apiSDK.publishMemberAudioAbility(this.conferenceId, memberIDs, true);
                 this.SoundBtn="全员静音";
@@ -568,9 +558,14 @@ export default {
                    item.microphoneAbility='false';
                 })
                  this.chairmanInfo.microphoneAbility='false';
+                  this.$parent.meetingBnt.filter(item=>item.title=='麦克风').map(cs=>cs.class='icon_microphone')
             }
             this.isOpenSound=!this.isOpenSound;
-            console.log(this.treeData);
+         
+            this.$parent.meetingPersonD.init.members.forEach(item=>{
+                   item.microphoneAbility=item.microphoneAbility=='true'?'false':'true';
+                })
+          
             // if (btn.title === '开音') {
             //     this.apiSDK.publishMemberAudioAbility(this.conferenceId, memberIDs, true);
             //     btn.title = '闭音'
@@ -610,7 +605,7 @@ export default {
     }
     .custom-tree-node span.node-label{
         display: inline-block;
-        width: calc(100% - 134px);
+        width: calc(100% - 126px);
         /* padding: 0 2px; */
     }
   .el-tree /deep/ span.node-label{
@@ -648,6 +643,9 @@ export default {
    /deep/ .custom-tree-node span.node-btn-right:hover{
         background: url("../../../static/meeting/takeChairbtn_bg_hover.png") no-repeat center;
          background-size: 100% 100%;
+   }
+   /deep/ .el-tree-node.is-current.is-focusable > .el-tree-node__content{
+       background:transparent;
    }
 </style>
 <style scoped>

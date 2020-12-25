@@ -141,8 +141,10 @@ export default {
       var screenHeight = document.body.clientHeight;
       var headerWidth = screenWidth;
       var headerHeight = 72;
-      var paddingW=48;
-      var paddingH=44;
+      // var paddingW=48;
+      // var paddingH=44;
+       var paddingW=0;
+      var paddingH=0;
       var mainWidth = screenWidth;
       var mainHeight = screenHeight - headerHeight;
 
@@ -155,10 +157,10 @@ export default {
       var imageShowHeight = imageContentHeight-paddingH;
 
       //图像顶部区域
-      var imageTopWidth   = imageShowWidth-16
+      var imageTopWidth   = imageShowWidth
       var imageTopHeight  = 40;
       //图像底部区域
-      var imageFooterWidth   = imageShowWidth-16
+      var imageFooterWidth   = imageShowWidth
       var imageFooterHeight  = 58;
       
      
@@ -180,8 +182,8 @@ export default {
       }
       //图像显示区域
       this.imageShowStyle ="width:" + imageShowWidth + "px" + ";height:" + imageShowHeight + "px";
-      this.imageShowWidth = imageShowWidth-16;
-      this.imageShowHeight = imageShowHeight-imageFooterHeight-8;
+      this.imageShowWidth = imageShowWidth;
+      this.imageShowHeight = imageShowHeight-imageFooterHeight;
     },
     //点击全屏
     Allfullscreen(isFull){
@@ -436,7 +438,7 @@ export default {
 }
 #divImageContent {
   float: left;
-  padding: 20px 24px 24px 24px;
+  /* padding: 20px 24px 24px 24px; */
   margin: 0px;
   height: 100%;
   width: 100%;
@@ -479,8 +481,8 @@ div > div#divImageContent > div#divImageShow {
 }
 #divImageTopTitle{
   position: absolute;
-  top:28px;
-  left:32px;
+  top:0;
+  left:0;
   padding: 0px;
   margin: 0px;
   background: url(../../../static/main/screen/imgshow_title_bg.png) no-repeat center;
@@ -547,8 +549,8 @@ div > div#divImageContent > div#divImageShow {
 }
 .footerMenu{
   position: absolute;
-  bottom: 24px;
-  left: 32px;
+  bottom: 0;
+  left: 0;
   padding: 0px;
   margin: 0px;
   background:#324d78

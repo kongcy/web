@@ -557,18 +557,24 @@
     border-top:none;
     padding: 0px 4px;
 }
+
+
+
 .el-time-spinner__item:hover:not(.disabled):not(.active){
     background:none;
 }
-
-.el-scrollbar__wrap{
-    /* scrollbar-base-color: rgba(170, 183, 194,0.1);
-    scrollbar-highlight-color:rgba(170, 183, 194, 0.1);
-    scrollbar-arrow-color: rgba(170, 183, 194, 0.1);
-    scrollbar-face-color: rgba(170, 183, 194,0.1); */
-    /* overflow-x:hidden;  */
-    margin-right: -23px !important;
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    /* IE10+ CSS styles go here */
+    .el-scrollbar__wrap{
+        /* scrollbar-base-color: rgba(170, 183, 194,0.1);
+        scrollbar-highlight-color:rgba(170, 183, 194, 0.1);
+        scrollbar-arrow-color: rgba(170, 183, 194, 0.1);
+        scrollbar-face-color: rgba(170, 183, 194,0.1); */
+        overflow-x:hidden; 
+        margin-right: -23px !important;
+    }
 }
+
 
 /* 滚动条颜色 */
 .el-scrollbar__bar.is-vertical>div{
@@ -585,4 +591,3 @@
 .el-input__inner:focus{
     /* color:#f00; */
 }
- 

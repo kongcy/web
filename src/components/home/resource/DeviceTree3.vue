@@ -466,7 +466,13 @@ export default {
                         });
                     }
                 })
-                treeObj.setCheckedNodes(checkedArr); 
+                treeObj.setCheckedNodes(checkedArr);  
+                  // 刷新选中数量
+                this.$nextTick(()=>{ 
+                    this.getCheckNodesNum(treeObj.getCheckedNodes());
+                    let udKeys = treeObj.getCheckedKeys()
+                    treeObj.updateKeyChildren(udKeys,checkedArr);
+                })
             // }
         },
         //add
@@ -628,6 +634,41 @@ export default {
             let checkednodes=node.checkedNodes;
             this.getCheckNodesNum(checkednodes);
             this.$parent.isTreeItemShow=false;
+            
+            if(data.nodeStatus === 'department'&&this.$refs.main_device_tree.getNode(data).checked){
+                // this.$refs.main_device_tree.getNode(data).expanded = true  
+                this.expandedNodes.push(data.nodeId);
+                let isLoadChildren = false;
+                const lcNode = []
+                if(data.children.length === 0){
+                    isLoadChildren = true;
+                    lcNode.push(data)
+                }
+                else{ 
+                     data.children.some(el=>{
+                        if(el.nodeStatus === 'device_online'||el.nodeStatus === 'device_offline'){
+                            isLoadChildren = false;
+                            return true
+                        } 
+                        lcNode.push(el);
+                        isLoadChildren = true;
+                     });
+                }
+                if(isLoadChildren){
+                    const  that = this 
+                    that.$nextTick(()=>{
+                        lcNode.forEach(n=>{
+                        const ln = that.$refs.main_device_tree.getNode(n);
+                        if(ln){ 
+                            console.log('加载设备节点-'+ ln);
+                            ln.expanded = true;
+                            that.apiSDK.subscribeDeviceStatus(ln.data.id, Enum.enumSubscribeType.main.subscribeDevicesStatus);
+                        }
+                        })
+                    }) 
+                }
+            } 
+           
         },
         //获取勾选设备数量
         getCheckNodesNum(node){

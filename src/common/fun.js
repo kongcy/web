@@ -257,7 +257,7 @@ export default {
                     });
                 }
                 if (parentNode) treeObj.append(data, parentNode);
-                else treeObj.append(data);
+                else treeObj.append(data); 
             }
         }
     },

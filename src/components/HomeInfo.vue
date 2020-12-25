@@ -228,7 +228,16 @@ export default {
                           currentPlayScreens = JSON.parse(currentPlayScreens);
                             let curObj = currentPlayScreens.find(item => wgtpos == item.screenIndex);
                         if (curObj) {
-                            this.apiSDK.sendForceIFrame(curObj.encoderSipID, curObj.resCh, curObj.resType, curObj.channel);
+                           this.apiSDK.sendForceIFrame(curObj.encoderSipID, curObj.resCh, curObj.resType, curObj.channel);
+                                let that = this;
+                                let timeIndex =  0;
+                                let playTime = setInterval(() => {
+                                    timeIndex++;
+                                    if( timeIndex < 5 ) {
+                                      that.apiSDK.sendForceIFrame(curObj.encoderSipID, curObj.resCh, curObj.resType, curObj.channel);
+                                      timeIndex === 4 && window.clearInterval(playTime);
+                                    }
+                                 }, 600);
                             this.apiSDK.setVolumeStateForPlugin(wgtpos, false);
                         }
                          }

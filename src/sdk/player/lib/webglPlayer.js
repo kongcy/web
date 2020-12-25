@@ -668,9 +668,9 @@ var decoderPlayer = {
 						"		<td style=\"width:100%\"></td>" +
 						// "		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate6 + "></img><div class=\"pictureQuality\" style=\"display:none\"></div></td>" +
 						"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate9 + "></img></td>" 
-			if(!isNVRChannel&&!decoderPlayer.allFull){
+			// if(!isNVRChannel&&!decoderPlayer.allFull){ 多通道和全屏保留云台
 				innerHTML+="		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate4 + "></img></td>"
-			}
+			// }
 			
 			innerHTML+="		<td><img style=\"width:20px; height:20px; padding: 0px 5px 0px 5px; cursor: pointer;\"" + jsOperate8 + "></img></td>" +
 				"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate5 + "></img></td>" +
@@ -809,7 +809,7 @@ var decoderPlayer = {
 				isBtn = true;
 			} else if (targetId == decoderPlayer._btnKeySoundOn) {
 				isBtn = true;
-			} else if (targetId == decoderPlayer._btnKeyYTControl&& !screenInfo.isFull) {
+			} else if (targetId == decoderPlayer._btnKeyYTControl) {
 				isBtn = true;
 			} else if (targetId == decoderPlayer._btnKeyFullScreen) {
 				isBtn = true;

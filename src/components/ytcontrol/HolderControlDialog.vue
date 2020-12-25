@@ -27,31 +27,31 @@
                     </div>
                 </div>
                 <div class="holdControlBox windshieldWiper">
-                    <div v-if="!display.windshieldWiper && this.apiSDK.config.platformVersion == 0 && !isNVRChannel"  @click="windshieldWiper">
+                    <div v-if="!display.windshieldWiper && this.apiSDK.config.platformVersion == 0"  @click="windshieldWiper">
                          <i class="holdControlbtn icon-windshieldWiper-start" title="打开雨刷"></i>
                         <div >雨刷</div>
                     </div>
-                    <div v-if="display.windshieldWiper && this.apiSDK.config.platformVersion == 0 && !isNVRChannel"   @click="windshieldWiperStop">
+                    <div v-if="display.windshieldWiper && this.apiSDK.config.platformVersion == 0"   @click="windshieldWiperStop">
                         <i class="holdControlbtn icon-windshieldWiper-close" title="关闭雨刮"></i>
                         <div>雨刷</div>
                     </div>
                 </div>
                 <div class="holdControlBox heat">
-                    <div v-if="!display.heatControl && this.apiSDK.config.platformVersion == 0 && !isNVRChannel" @click="heatControl">
+                    <div v-if="!display.heatControl && this.apiSDK.config.platformVersion == 0" @click="heatControl">
                        <i class="holdControlbtn icon-heat-start" title="打开加热"></i>
                         <div >加热</div>
                     </div>
-                    <div v-if="display.heatControl && this.apiSDK.config.platformVersion == 0 && !isNVRChannel"  @click="heatControlStop">
+                    <div v-if="display.heatControl && this.apiSDK.config.platformVersion == 0"  @click="heatControlStop">
                        <i class="holdControlbtn icon-heat-close" title="关闭加热"></i>
                        <div>加热</div>
                     </div>
                 </div>
                 <div class="holdControlBox _3d">
-                    <div  v-if="!display._3d && this.apiSDK.config.platformVersion == 0 && !isNVRChannel" @click="_3dControl">
+                    <div  v-if="!display._3d && this.apiSDK.config.platformVersion == 0" @click="_3dControl">
                        <i class="holdControlbtn icon-3d-start" title="打开3d"></i>
                       <div>3D</div>
                     </div>
-                    <div v-if="display._3d && this.apiSDK.config.platformVersion == 0 && !isNVRChannel"  @click="_3dControlStop">
+                    <div v-if="display._3d && this.apiSDK.config.platformVersion == 0"  @click="_3dControlStop">
                          <i class="holdControlbtn icon-3d-close" title="关闭3d"></i>
                       <div>3D</div>
                     </div>
@@ -67,11 +67,11 @@
 
                 
                 <el-button v-if="this.apiSDK.config.version === this.apiSDK.enumSDKVersion.SDKVersion5 && this.apiSDK.config.platformVersion == 1 && !isNVRChannel" class="unbindLock lock01" disabled title="接管"></el-button>
-                <el-button v-if="this.apiSDK.config.version === this.apiSDK.enumSDKVersion.SDKVersion5 && this.apiSDK.config.platformVersion == 1 && !isNVRChannel" class="windshieldWiper wiper01" disabled title="雨刷"></el-button>
-                <el-button v-if="this.apiSDK.config.version === this.apiSDK.enumSDKVersion.SDKVersion5 && this.apiSDK.config.platformVersion == 1 && !isNVRChannel" class="heat heat01" disabled title="加热"></el-button>
-                <el-button v-if="this.apiSDK.config.version === this.apiSDK.enumSDKVersion.SDKVersion5 && this.apiSDK.config.platformVersion == 1 && !isNVRChannel" class="_3d _3d01" disabled title="3d"></el-button>
+                <el-button v-if="this.apiSDK.config.version === this.apiSDK.enumSDKVersion.SDKVersion5 && this.apiSDK.config.platformVersion == 1" class="windshieldWiper wiper01" disabled title="雨刷"></el-button>
+                <el-button v-if="this.apiSDK.config.version === this.apiSDK.enumSDKVersion.SDKVersion5 && this.apiSDK.config.platformVersion == 1" class="heat heat01" disabled title="加热"></el-button>
+                <el-button v-if="this.apiSDK.config.version === this.apiSDK.enumSDKVersion.SDKVersion5 && this.apiSDK.config.platformVersion == 1" class="_3d _3d01" disabled title="3d"></el-button>
              </div>
-             <div class="adjust" v-if="!isNVRChannel">
+             <div class="adjust">
                 <p v-for="(item,index) in adjustData" :key="index" >
                   <span class="adjustAdd" @mousedown="addReduce(item, true, 'mousedown')"
                    @mouseup="addReduce(item, true, 'mouseup')"></span>
@@ -145,7 +145,7 @@ export default {
         bottomData: [
           // { title: '保存'  , class: 'save' },
           { title: '新增预置点', class: 'prepareAdd' },
-          { title: '预置点管理' , class: 'prepare' },
+       //   { title: '预置点管理' , class: 'prepare' },
           { title: '巡航配置' , class: 'cruise' },
         ],
         treeData: [],
@@ -191,9 +191,9 @@ export default {
         this.channel = channel;
         this.isNVRChannel = this.resourceId.length > 20 ? false : true;
         this.isVisible = true;
-        this.$nextTick(() => {
-          xtxk.media.setDialogTop("云台控制");
-        });
+        // this.$nextTick(() => {
+        //   xtxk.media.setDialogTop("云台控制");
+        // });
         //获取预置点
         this.getPrepareData();
         //订阅云台状态
@@ -261,31 +261,31 @@ export default {
       },
       // 雨刷控制 开
       windshieldWiper() {
-          if( this.display.disabled === true ){
+          if( this.display.disabled === true && !this.isNVRChannel){
               return;
           }
-        this.apiSDK.publishStartYTWiperCtl( this.resourceId, this.resourceCh, function (obj) {});
+        this.apiSDK.publishStartYTWiperCtl( this.resourceId, this.resourceCh, function (obj) {},this.channelEncoderSIPID, this.channel);
       },
       // 雨刷控制 关
       windshieldWiperStop() {
-          if( this.display.disabled === true ){
+          if( this.display.disabled === true && !this.isNVRChannel){
               return;
           }
-        this.apiSDK.publishStopYTWiperCtl( this.resourceId, this.resourceCh, function (obj) {});
+        this.apiSDK.publishStopYTWiperCtl( this.resourceId, this.resourceCh, function (obj) {},this.channelEncoderSIPID, this.channel);
       },
       // 加热控制 开
       heatControl() {
-          if( this.display.disabled === true ){
+          if( this.display.disabled === true && !this.isNVRChannel){
               return;
           }
-        this.apiSDK.publishStartYTHeatCtl(this.resourceId, this.resourceCh, function (obj) {});
+        this.apiSDK.publishStartYTHeatCtl(this.resourceId, this.resourceCh, function (obj) {},this.channelEncoderSIPID, this.channel);
       },
       // 加热控制 关
       heatControlStop() {
-          if( this.display.disabled === true ){
+          if( this.display.disabled === true && !this.isNVRChannel){
               return;
           }
-        this.apiSDK.publishStopYTHeatCtl(this.resourceId, this.resourceCh, function (obj) {});
+        this.apiSDK.publishStopYTHeatCtl(this.resourceId, this.resourceCh, function (obj) {},this.channelEncoderSIPID, this.channel);
       },
       // 3d 开
       _3dControl() {
@@ -350,45 +350,45 @@ export default {
       },
       // 聚焦控制 鼠标按下
       focusMousedown(zoom) {
-          if( this.display.disabled === true ){
+          if( this.display.disabled === true && !this.isNVRChannel){
               return;
           }
-        this.apiSDK.publishStartYTFocusCtl(this.resourceId, this.resourceCh, zoom, this.sliderValue, function (obj) {})
+        this.apiSDK.publishStartYTFocusCtl(this.resourceId, this.resourceCh, zoom, this.sliderValue, function (obj) {}, this.channelEncoderSIPID, this.channel)
       },
       // 聚焦控制 鼠标松开
       focusMouseup(zoom) {
-          if( this.display.disabled === true ){
+          if( this.display.disabled === true && !this.isNVRChannel){
               return;
           }
-        this.apiSDK.publishStopYTFocusCtl(this.resourceId, this.resourceCh, zoom, function (obj) {})
+        this.apiSDK.publishStopYTFocusCtl(this.resourceId, this.resourceCh, zoom, function (obj) {}, this.channelEncoderSIPID, this.channel)
       },
       // 光圈控制 鼠标按下
       apertureMousedown(zoom) {
-          if( this.display.disabled === true ){
+          if( this.display.disabled === true && !this.isNVRChannel){
               return;
           }
-        this.apiSDK.publishStartYTApertureCtl(this.resourceId, this.resourceCh, zoom, this.sliderValue, function (obj) {})
+        this.apiSDK.publishStartYTApertureCtl(this.resourceId, this.resourceCh, zoom, this.sliderValue, function (obj) {}, this.channelEncoderSIPID, this.channel)
       },
       // 光圈控制 鼠标松开
       apertureMouseup(zoom) {
-          if( this.display.disabled === true ){
+          if( this.display.disabled === true && !this.isNVRChannel){
               return;
           }
-        this.apiSDK.publishStopYIApertureCtrl(this.resourceId, this.resourceCh, zoom, this.sliderValue, function (obj) {})
+        this.apiSDK.publishStopYIApertureCtrl(this.resourceId, this.resourceCh, zoom, this.sliderValue, function (obj) {}, this.channelEncoderSIPID, this.channel)
       },
       // 变焦 鼠标按下
       changeBurntMousedown(zoom) {
-          if( this.display.disabled === true ){
+          if( this.display.disabled === true && !this.isNVRChannel){
               return;
           }
-        this.apiSDK.publishStartYTZoomCtl(this.resourceId, this.resourceCh, zoom, this.sliderValue, function (obj) {})
+        this.apiSDK.publishStartYTZoomCtl(this.resourceId, this.resourceCh, zoom, this.sliderValue, function (obj) {}, this.channelEncoderSIPID, this.channel)
       },
       // 变焦 鼠标松开
       changeBurntMouseup(zoom) {
-          if( this.display.disabled === true ){
+          if( this.display.disabled === true && !this.isNVRChannel){
               return;
           }
-        this.apiSDK.publishStopYTZoomCtl(this.resourceId, this.resourceCh, zoom, this.sliderValue);
+        this.apiSDK.publishStopYTZoomCtl(this.resourceId, this.resourceCh, zoom, this.sliderValue, this.channelEncoderSIPID, this.channel);
       },
       // 获取 预置点数据 右侧tree
       getPrepareData() {
@@ -647,7 +647,7 @@ export default {
       },
       // 跳转到当前预置点
       skipOperate(data) {
-         this.apiSDK.publishUpResPoint( this.resourceId, this.resourceCh, data.id, data.value )
+         this.apiSDK.publishUpResPoint( this.resourceId, this.resourceCh, data.id, data.value, this.channel )
       },
       // 点击节点 隐藏其他节点
       treeShowOperate () {

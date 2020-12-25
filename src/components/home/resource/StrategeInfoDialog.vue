@@ -53,7 +53,7 @@
                                 </div>
                             </div>
                             <div class="control-item">
-                                <span class="lable-stratege label-strategeType">巡查间隔(s/秒)</span>
+                                <span class="lable-stratege label-strategeType">巡查间隔(秒)</span>
                                 <div class="control-div time-select  strategeInfo-type">
                                     <el-select v-model="strategeTime" :popper-append-to-body="false">
                                         <el-option label="10" value="10"><i v-if="strategeTime == '10'"></i><span>10</span></el-option>
@@ -191,7 +191,7 @@
                                 </div>
                             </div>
                             <div class="control-item">
-                                <span class="lable-stratege label-strategeType">巡查间隔(s/秒)</span>
+                                <span class="lable-stratege label-strategeType">巡查间隔(秒)</span>
                                 <div class="control-div time-select strategeInfo-type">
                                     <el-select v-model="strategeTime" :popper-append-to-body="false">
                                          <el-option label="10" value="10"><i v-if="strategeTime == '10'"></i><span>10</span></el-option>

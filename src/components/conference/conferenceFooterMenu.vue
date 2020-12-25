@@ -2,7 +2,22 @@
   <div id="conferenceFooterMenu">
       <el-tabs class="conferenceFooterTab" :style="{'width':footbarW,'margin':footbarMargin}" @tab-click="handleClick">
         <el-tab-pane v-for="item in meetingBnt" :key="item.key" :title="item.title" > 
-            <span slot="label">
+            <span slot="label" v-if="item.class=='icon_screen'"  v-popover:navPopper>
+                <el-button  :class="item.class">
+                    <i class="icon-button" ></i>{{item.title}}
+                </el-button>
+                 <el-popover
+                    ref="navPopper"
+                    popper-class="navPopper"
+                    placement="top"
+                    width="300"
+                    trigger="click">
+                    <div class="horizontal">
+                        <div class="button" v-for="item in screenTypeShow" :key="item.key" :class="activeScreenNum==item.param?item.class+' actived':item.class" :title="item.title"  v-on:click="setWindowLayout(item)"></div>
+                    </div>
+                </el-popover>
+            </span>
+            <span slot="label" v-else>
                 <el-button  :class="item.class" >
                     <i class="icon-button" ></i>{{item.title}}
                 </el-button>
@@ -66,7 +81,27 @@ export default {
             footbarW:'900px',
             footbarMargin:'2px auto',
             isChairman:true,//是否为主席
-            meetingBnt:[],
+            activeScreenNum:4,
+            selfNode:{},
+            screenTypeShow: [
+				   { title: '一分屏', class: 'screenOne',param:1},
+				    { title: '二分屏', class: 'screenTwo',param:12 },
+			   	{ title: '四分屏', class: 'screenFour',param:4},
+				   { title: '一加五分屏', class: 'screenOneFive',param:6 },
+				     { title: '六分屏', class: 'screenSix',param:100},
+			   	{ title: '九分屏', class: 'screenNine',param:9 },
+               ],
+            meetingBnt:[ {title:this.isChairman?'主持会商':'成员列表', class: this.isChairman?'icon_hostMeeting':'icon_member', event: 'publishToastmasterMeeting'},
+                    {title:'视频调试', class: 'icon_videoDispatch', event: 'publishMemberMicrophone'},
+                    {title:'会议共享', class: 'icon_shareMeeting', event: 'shareFun'},
+                    {title:'聊天室', class: 'icon_chartRoom', event: ''},
+                    {title:'窗口布局', class: 'icon_screen', event: ''},
+                    {title:'更多', class: 'icon_more', event: ''},
+                    {title:'麦克风', class: 'icon_microphone', event: 'publishMemberMicrophone'},
+                    {title:'摄像头', class: 'icon_videoAbility', event: 'publishMemberVideoAbility'},
+                    {title:'扬声器', class: 'icon_voice', event: 'publishMemberVideoAbility'},
+                    {title:'开始录制', class: 'icon_startRecord', event: 'startMeetRecording'},
+                    {title:'我的设置', class: 'icon_myset', event: 'startMeetRecording'},],
             outMeetingBnt:[],
             menuLoc: '',
             isMenuShow: false,
@@ -125,7 +160,7 @@ export default {
     },
     mounted () {
         this.init();
-        // this.initBtn();
+         this.currentUser = xtxk.cache.get('USER') || {};
          // 事件
         window.addEventListener("resize", this.resize);
     },
@@ -154,37 +189,28 @@ export default {
                 this.footbarMargin="2px 10px";
             }
         },
-        initBtn(){
-            this.meetingBnt=[
-               {title:'主持会商', class: 'icon_hostMeeting', event: 'publishToastmasterMeeting'},
-                 {title:'视频调试', class: 'icon_videoDispatch', event: 'publishMemberMicrophone'},
-                {title:'会议共享', class: 'icon_shareMeeting', event: 'shareFun'},
-                {title:'聊天室', class: 'icon_chartRoom', event: ''},
-                {title:'窗口布局', class: 'icon_screen', event: 'setWindowLayout'},
-                {title:'更多', class: 'icon_more', event: ''},
-                {title:'麦克风', class: 'icon_microphone', event: 'publishMemberMicrophone'},
-                {title:'摄像头', class: 'icon_videoAbility', event: 'publishMemberVideoAbility'},
-                {title:'扬声器', class: 'icon_voice', event: 'publishMemberVideoAbility'},
-                {title:'开始录制', class: 'icon_startRecord', event: 'startMeetRecording'},
-                {title:'我的设置', class: 'icon_myset', event: 'startMeetRecording'},
-            ];
-            this.outMeetingBnt=[
-                {title:'退出会商', class: 'icon_out outConference', event: 'publishChairmanQuitConference',style:"right:143px",isShow:true},
-                {title:'结束会商', class: 'icon_out exitConference', event: 'stopConference',style:"right:30px",isShow:true},
-            ]
-
-        },
         resize() {
             let self = this;
             self.init();
         },
         //node判断
         checkTreeNode(list){
-           
             for(var i = 0, l = list.length; i < l; i++){
                 var item = list[i];
                 var nodeId = item.resId + "_" + (item.resCh || 0);
 
+                //本人节点
+                if(item.resId == xtxk.cache.get('USER').userId){
+                     this.selfNode = {
+                        nodeId:nodeId,
+                        id: item.resId, 
+                        name: item.resName, 
+                        audioAbility:   item.audioAbility,
+                        videoAbility:   item.videoAbility,
+                        microphoneAbility: item.microphoneAbility,
+                        isJoinWhiteBoard: item.isJoinWhiteBoard
+                    }
+                }
                 //主席节点
                 if (item.role == Enum.enumRoleType.chairman) {
                    this.chairmanInfo = {id: item.resId, name: item.resName}
@@ -199,44 +225,6 @@ export default {
 
                 //自己是否为旁观
                 this.isSpectator = item.resId == xtxk.cache.get('USER').userId ? item.isSpectator : false
-
-                //主席同意后，申请发言图标改为退出发言
-                if(item.role == Enum.enumRoleType.speak && item.resId == xtxk.cache.get('USER').userId){
-                    // let index = this.conferenceBtn.findIndex(item => item.event == 'applySpeaking')
-                    // if(index !== -1) {
-                    //     this.$set(this.conferenceBtn, index, { title: '退出发言', class: 'unspeak', event: 'finishSpeaking' } );
-                    // }
-                    // 发言人添加共享屏幕
-                    // this.conferenceBtn.splice(this.getConferenceBtnIndex('退出会议',this.conferenceBtn),0, this.getShareScreenBtn())
-                }else if(item.role == Enum.enumRoleType.member && item.resId == xtxk.cache.get('USER').userId){
-                    // let index = this.conferenceBtn.findIndex(item => item.event == 'finishSpeaking')
-                    // if (index !== -1) {
-                    //     this.$set(this.conferenceBtn, index, { title: '申请发言', class: 'applyspeak', event: 'applySpeaking' } );
-                    // }
-                    // // 发言人删除共享屏幕
-                    // let sIndex = this.conferenceBtn.findIndex(item => (item.class == 'noShareScreen' || item.class == 'shareScreen' || item.class == 'shareCamera'));
-                    // if (sIndex !== -1) {
-                    //     this.conferenceBtn.splice(sIndex, 1);
-                    // }
-                }
-
-                //图标处理
-                // var resStatus = 0;
-                // if(item.isOnline == Enum.enumMerberStatus.online) resStatus = 1;
-                // else if(item.isOnline == Enum.enumMerberStatus.offline) resStatus = 0;
-                // else if(item.isOnline == Enum.enumMerberStatus.onlineJoin) resStatus = 1;
-                // else if(item.isOnline == Enum.enumMerberStatus.onlineNotJoin) resStatus = 1;
-                // else if(item.isOnline == Enum.enumMerberStatus.breakdown) resStatus = 2;
-
-                // var busStatus = 0;
-                // if(item.role == Enum.enumRoleType.speak) {resStatus = 1; busStatus = Enum.enumBussStatus.Speaking};
-                // if(item.isOnline == Enum.enumMerberStatus.playing) {resStatus = 1; busStatus = Enum.enumBussStatus.Playing};
-
-                // var icon_ = Fun._getNodeStatus(item.resType, resStatus, busStatus, item.deviceType);
-
-                // var namePrifex = "";
-                // if(resStatus == 1 && item.inGroup == true)  namePrifex = "[已入会]";
-                // if(resStatus == 1 && item.inGroup == false)  namePrifex = "[未入会]";
 
                 
             }
@@ -317,58 +305,26 @@ export default {
              if (data.operate === 'init' && isOpen) {
                  this.meetingBnt=[
                     {title:this.isChairman?'主持会商':'成员列表', class: this.isChairman?'icon_hostMeeting':'icon_member', event: 'publishToastmasterMeeting'},
-                    {title:'视频调试', class: 'icon_videoDispatch', event: 'publishMemberMicrophone'},
+                    // {title:'视频调试', class: 'icon_videoDispatch', event: 'publishMemberMicrophone'},
                     {title:'会议共享', class: 'icon_shareMeeting', event: 'shareFun'},
                     {title:'聊天室', class: 'icon_chartRoom', event: ''},
-                    {title:'窗口布局', class: 'icon_screen', event: 'setWindowLayout'},
+                    {title:'窗口布局', class: 'icon_screen', event: ''},
                     {title:'更多', class: 'icon_more', event: ''},
                     {title:'麦克风', class: 'icon_microphone', event: 'publishMemberMicrophone'},
                     {title:'摄像头', class: 'icon_videoAbility', event: 'publishMemberVideoAbility'},
-                    {title:'扬声器', class: 'icon_voice', event: 'publishMemberVideoAbility'},
+                    {title:'扬声器', class: 'icon_voice', event: 'publishMemberAudioAbility'},
                     {title:'开始录制', class: 'icon_startRecord', event: 'startMeetRecording'},
                     {title:'我的设置', class: 'icon_myset', event: 'startMeetRecording'},
                 ];
+                if(!this.isChairman){
+                    this.meetingBnt.splice(-2,1);
+                }
                 this.outMeetingBnt=[
                     {title:'退出会商', class: 'icon_out outConference', event: 'publishChairmanQuitConference',style:this.isChairman?"right:143px":'right:30px',isShow:true},
                     {title:'结束会商', class: 'icon_out exitConference', event: 'stopConference',style:"right:30px",isShow:this.isChairman?true:false},
                 ]
-
-
-
-
-                //    var btns={};
-                //     if (this.isChairman) {
-                //         let n=this.meetingBnt.findIndex(item=>item.class=="icon_member")
-                //         if(n>-1){
-                //             this.meetingBnt[n].title="主持会商";
-                //             this.meetingBnt[n].class="icon_hostMeeting";
-                //         }
-                //         this.outMeetingBnt.forEach(item=>{
-                //             if(item.class.indexOf("outConference")>-1){
-                //                 item.event="publishChairmanQuitConference"
-                //             }
-                //         })
-                //     }else{
-                //         let n=this.meetingBnt.findIndex(item=>item.class=="icon_hostMeeting")
-                //         if(n>-1){
-                //             this.meetingBnt[n].title="成员列表";
-                //             this.meetingBnt[n].class="icon_member";
-                //         }
-                       
-                //          this.outMeetingBnt.forEach((item,index)=>{
-                //              item.isShow=true;
-                //             if(item.class.indexOf("outConference")>-1){
-                //                 item.event="applyLeaveConference";
-                //                 item.style="right:30px"
-                //             }
-                //              if(item.class.indexOf("exitConference")>-1){
-                //                item.isShow=false;
-                //             }
-                //         })
-                        this.init();
-                       
-                         
-                //    }
+                this.init();
+                
             }
          }
            
@@ -378,7 +334,7 @@ export default {
         handleClick(tab, event){
             let activeIndex=tab.index;
             let btnEvent=this.meetingBnt[activeIndex].event;
-            this[btnEvent](this.meetingBnt[activeIndex]);
+            if(btnEvent) this[btnEvent](this.meetingBnt[activeIndex]);
         },
          //主持会商/成员列表
         publishToastmasterMeeting(val){
@@ -401,13 +357,104 @@ export default {
         },
 
         //窗口布局
-        setWindowLayout(){
-
+        setWindowLayout(btn){
+            const curBtn = btn.class;
+            console.log(curBtn);
+            var param = 4;
+				if(curBtn == "screenOne"){
+					param = 1;
+				}else if(curBtn == "screenTwo"){
+					param = 12;
+				}else if(curBtn == "screenFour"){
+					param = 4;
+				}else if(curBtn == "screenSix"){
+					param = 100;
+				}else if(curBtn == "screenNine"){
+					param = 9;
+				}else if(curBtn == "screenOneFive"){
+					param = 6;
+				}else if(curBtn == "screenSixteen"){
+					param = 16;
+				}else if (curBtn == "screenTwelve") {
+					param = 15;
+				} else if (curBtn == "OnlyTweentyFour") {
+					param = 24;
+				} else if (curBtn == "OnlyTweentyFive") {
+					param = 25;
+				} else if (curBtn == "OnlyThirtyTwo") {
+					param = 32;
+				} else if (curBtn == "OnlyThirtySix") {
+					param = 36;
+				} else if (curBtn == "One_Seven") {
+					param = 8;
+				} else if (curBtn == "One_Eleven") {
+					param = 103;
+				} else if (curBtn == "Two_Eight") {
+					param = 110;
+				} else if (curBtn == "OneInOne") {
+					param = 2;
+				}
+				this.activeScreenNum=param;
+				this.apiSDK.splitWidowForPlugin(param);
+				this.apiSDK.publishSplitScreen(param);
         },
 
+        // 主席,成员闭麦
+        publishMemberMicrophone(btn) {
+            console.log(this.selfNode);
+            let memberIDs = this.selfNode.nodeId;
+            if (btn.class === 'icon_microphone') {
+                this.apiSDK.publishMemberMicrophone(this.conferenceId, memberIDs, true);
+                // btn.title = '闭麦'
+                btn.class = 'icon_microphone_close'
+               
+            } else {
+                this.apiSDK.publishMemberMicrophone(this.conferenceId, memberIDs, false);
+                // btn.title = '开麦'
+                btn.class = 'icon_microphone'
+            }
+            this.meetingPersonD.init.members.filter(item=>item.resId==this.selfNode.id).map(cs=>cs.microphoneAbility=cs.microphoneAbility=='true'?'false':'true')
+        },
+        // 主席,成员关闭视频
+        publishMemberVideoAbility(btn) {
+            let memberIDs = this.selfNode.nodeId;
+            if (btn.class === 'icon_videoAbility') {
+                this.apiSDK.publishMemberVideoAbility(this.conferenceId, memberIDs, true);
+               // btn.title = '关闭视频';
+                btn.class = 'icon_videoAbility_close'
+            } else {
+                this.apiSDK.publishMemberVideoAbility(this.conferenceId, memberIDs, false);
+                //btn.title = '开启视频';
+                btn.class = 'icon_videoAbility'
+            }
+        },
+        // 主席,成员闭音
+        publishMemberAudioAbility(btn) {
+             let memberIDs = this.selfNode.nodeId;
+            if (btn.class === 'icon_voice') {
+                this.apiSDK.publishMemberAudioAbility(this.conferenceId, memberIDs, true);
+                //btn.title = '闭音'
+                btn.class = 'icon_voice_close'
+            } else {
+                this.apiSDK.publishMemberAudioAbility(this.conferenceId, memberIDs, false);
+               // btn.title = '开音'
+                btn.class = 'icon_voice'
+            }
+        },
 
-
-
+        // 主席--开启录像
+        startMeetRecording(btn){
+              let memberIDs = this.selfNode.nodeId;
+            if (btn.class === 'icon_startRecord') {
+                this.apiSDK.startMeetRecording(this.conferenceId);
+                btn.title = '停止录制';
+                btn.class = 'icon_stopRecord'
+            } else {
+                this.apiSDK.stopMeetRecording(this.conferenceId);
+                btn.title = '开启录像';
+                btn.class = 'icon_startRecord'
+            }
+        },
 
 
         //退会和结束会议
@@ -427,35 +474,21 @@ export default {
             console.log(this.conferenceId);
             this.apiSDK.stopConference(this.conferenceId)
             this.$parent.$parent.goMeetingInfo();
-             //this.initBtn()
         },
         // 退出会议
         publishChairmanQuitConference() {
             this.apiSDK.publishChairmanQuitConference(this.conferenceId);
             this.$parent.$parent.goMeetingInfo();
             // this.isChairman=true;
-            // this.initBtn()
         },
         // 成员-申请退出会议
         applyLeaveConference() {
             this.apiSDK.applyLeaveConference(this.conferenceId, this.isSpectator)
             this.$parent.$parent.goMeetingInfo();
        
-            //this.initBtn()
         },
 
-        publishMemberMicrophone(){
-        },
-        //切换会商
-        publishChangeMeeting(){
-            this.$refs.changeMeeting.showDialog();
-        },
        
-         
-        //任务安排
-        taskArrangement(){
-             this.$refs.taskArrangement.showDialog();
-        },
        
     },
     destroyed: function() {
@@ -464,7 +497,16 @@ export default {
     },
 }
 </script>
-
+<style>
+.navPopper{
+    background: url(../../../static/main/screen/resource_bg3.png) no-repeat center;
+    background-size: 100% 100%;
+    border: none;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,0.25);
+    padding:0 12px;
+    width: auto!important;
+}
+</style>
 <style scoped>
 #conferenceFooterMenu{
     padding: 0;
@@ -486,6 +528,11 @@ export default {
 .conferenceFooterTab /deep/  .el-tabs__item{
     height: 53px;
     padding: 0 10px;
+}
+.conferenceFooterTab /deep/ .el-tabs__item>span{
+     width: 63px;
+   height:53px;
+   display: inline-block;
 }
 .conferenceFooterTab /deep/ .el-tabs__item:hover{
     /* background:#5d98ff;
@@ -604,8 +651,14 @@ export default {
 .icon_microphone .icon-button{
  background: url(../../../static/meeting/microphone.png) no-repeat center top;
 }
-.conferenceFooterTab button.icon_microphone :hover .icon-button{
+.conferenceFooterTab button.icon_microphone:hover .icon-button{
      background: url(../../../static/meeting/microphone_active.png) no-repeat center top;
+}
+.icon_microphone_close .icon-button{
+ background: url(../../../static/meeting/microphone_close.png) no-repeat center top;
+}
+.conferenceFooterTab button.icon_microphone_close:hover .icon-button{
+     background: url(../../../static/meeting/microphone_close_active.png) no-repeat center top;
 }
 /* 摄像头 */
 .icon_videoAbility .icon-button{
@@ -614,6 +667,12 @@ export default {
 .conferenceFooterTab button.icon_videoAbility:hover  .icon-button{
      background: url(../../../static/meeting/videoAbility_active.png) no-repeat center top;
 }
+.icon_videoAbility_close .icon-button{
+ background: url(../../../static/meeting/videoAbility_close.png) no-repeat center top;
+}
+.conferenceFooterTab button.icon_videoAbility_close:hover  .icon-button{
+     background: url(../../../static/meeting/videoAbility_close_active.png) no-repeat center top;
+}
 /* 扬声器 */
 .icon_voice .icon-button{
  background: url(../../../static/meeting/voice.png) no-repeat center top;
@@ -621,12 +680,25 @@ export default {
 .conferenceFooterTab button.icon_voice:hover  .icon-button{
      background: url(../../../static/meeting/voice_active.png) no-repeat center top;
 }
+.icon_voice_close .icon-button{
+ background: url(../../../static/meeting/voice_close.png) no-repeat center top;
+}
+.conferenceFooterTab button.icon_voice_close:hover  .icon-button{
+     background: url(../../../static/meeting/voice_close_active.png) no-repeat center top;
+}
 /* 开始录制 */
 .icon_startRecord .icon-button{
  background: url(../../../static/meeting/startRecord.png) no-repeat center top;
 }
 .conferenceFooterTab button.icon_startRecord:hover  .icon-button{
      background: url(../../../static/meeting/startRecord_active.png) no-repeat center top;
+}
+/* 停止录制 */
+.icon_stopRecord .icon-button{
+ background: url(../../../static/meeting/stopRecord.png) no-repeat center top;
+}
+.conferenceFooterTab button.icon_stopRecord:hover  .icon-button{
+     background: url(../../../static/meeting/stopRecord_active.png) no-repeat center top;
 }
 /* 我的设置 */
 .icon_myset .icon-button{
@@ -696,4 +768,82 @@ export default {
 .screenBtn-box p{
     margin-top: 5px;
 }
+/* popper样式 */
+
+div.button {
+	width: 40px;
+    height: 40px;
+    cursor: pointer;
+    margin: 10px 3px;
+}
+.horizontal{
+	display: flex;
+	flex-wrap: wrap;
+}
+.horizontal div.button{
+	margin:4px 0;
+}
+
+/* 一分屏 */
+div.screenOne {
+	background:url(../../../static/main/screen/screenOne.png) no-repeat center;
+}
+div.screenOne:hover {
+	background:url(../../../static/main/screen/screenOne_hover.png) no-repeat center;
+}
+div.screenOne.actived {
+	background:url(../../../static/main/screen/screenOne_active.png) no-repeat center;
+}
+/* 二分屏 */
+div.screenTwo {
+	background:url(../../../static/main/screen/screenTwo.png) no-repeat center;
+}
+div.screenTwo:hover {
+	background:url(../../../static/main/screen/screenTwo_hover.png) no-repeat center;
+}
+div.screenTwo.actived{
+	background:url(../../../static/main/screen/screenTwo_active.png) no-repeat center;
+}
+/* 四分屏 */
+div.screenFour {
+	background:url(../../../static/main/screen/screenFour.png) no-repeat center;
+}
+div.screenFour:hover {
+	background:url(../../../static/main/screen/screenFour_hover.png) no-repeat center;
+}
+div.screenFour.actived{
+	background:url(../../../static/main/screen/screenFour_active.png) no-repeat center;
+}
+/* 六分屏 */
+div.screenSix {
+	background:url(../../../static/main/screen/screenSix.png) no-repeat center;
+}
+div.screenSix:hover {
+	background:url(../../../static/main/screen/screenSix_hover.png) no-repeat center;
+}
+div.screenSix.actived {
+	background:url(../../../static/main/screen/screenSix_active.png) no-repeat center;
+}
+/* 1+5分屏 */
+div.screenOneFive {
+	background:url(../../../static/main/screen/screenOneFive.png) no-repeat center;
+}
+div.screenOneFive:hover {
+	background:url(../../../static/main/screen/screenOneFive_hover.png) no-repeat center;
+}
+div.screenOneFive.actived {
+	background:url(../../../static/main/screen/screenOneFive_active.png) no-repeat center;
+}
+/* 九分屏 */
+div.screenNine {
+	background:url(../../../static/main/screen/screenNine.png) no-repeat center;
+}
+div.screenNine:hover {
+	background:url(../../../static/main/screen/screenNine_hover.png) no-repeat center;
+}
+div.screenNine.actived {
+	background:url(../../../static/main/screen/screenNine_active.png) no-repeat center;
+}
+
+
 </style>

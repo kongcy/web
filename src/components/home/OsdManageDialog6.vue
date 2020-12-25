@@ -924,7 +924,7 @@ export default {
 /* el-card样式修改 */
 .osd-card{
     background: transparent;
-    border:none;
+    border:none !important;
     color: #B7C1D0;
 }
 .custom-dialog .osd-card /deep/ .el-card__header{
@@ -939,7 +939,7 @@ export default {
     height: auto;
 }
 
-.custom-dialog .osd-card.setOsdCard /deep/ .el-card__header{
+.custom-dialog .osd-card /deep/ .el-card__header{
     padding:10px 15px;
 }
 

@@ -559,21 +559,21 @@ var decoderPlayer = {
 			operateDiv.innerHTML = "";
 			return;
 		}
-        if(screenInfo.isFull) {
-            var jsOperate5 = '';
-            jsOperate5 += " id=\"" + decoderPlayer._btnKeyCancelFullScreen + "\"";
-            jsOperate5 += " title=\"取消全屏\" src=\"" + decoderPlayer._imgRestoreScreen +  "\"";
+        // if(screenInfo.isFull) {
+        //     var jsOperate5 = '';
+        //     jsOperate5 += " id=\"" + decoderPlayer._btnKeyCancelFullScreen + "\"";
+        //     jsOperate5 += " title=\"取消全屏\" src=\"" + decoderPlayer._imgRestoreScreen +  "\"";
 
-            operateDiv.innerHTML = "<table style=\"height:100%;\">" +
-                    "   <tr style=\"height:25px;\" valign=\"bottom\">" +
-                    "       <td style=\"width:100%\"></td>" +
-                    "       <td><img style=\"width:20px; height:20px; padding: 0px 5px; cursor: pointer;\"" + jsOperate5 + "></img></td>" +
-                    "   </tr>" +
-                    "</table>";
-        }
-        if(!screenInfo.isFull) {
+        //     operateDiv.innerHTML = "<table style=\"height:100%;\">" +
+        //             "   <tr style=\"height:25px;\" valign=\"bottom\">" +
+        //             "       <td style=\"width:100%\"></td>" +
+        //             "       <td><img style=\"width:20px; height:20px; padding: 0px 5px; cursor: pointer;\"" + jsOperate5 + "></img></td>" +
+        //             "   </tr>" +
+        //             "</table>";
+        // }
+        // if(!screenInfo.isFull) {
             decoderPlayer._initOperate(screenIndex);
-        }
+        // }
 		if(screenInfo.business != BUSINESS_NONE && operateDiv.children.length > 0){
 			operateDiv.style.display = screenInfo.isHover ? "block" : "none";
 		}
@@ -637,11 +637,12 @@ var decoderPlayer = {
 				jsOperate3 += " id=\"" + decoderPlayer._btnKeySoundOff + "\"";
 				jsOperate3 += " title=\"静音\" src=\"" + decoderPlayer._imgSoundOff +  "\"";
 			}
-			//云台按钮
-			jsOperate4 += " id=\"" + decoderPlayer._btnKeyYTControl + "\"";
-			jsOperate4 += " title=\"云台控制\" src=\"" + decoderPlayer._imgYTControl +  "\"";
+			//云台按钮 
+				jsOperate4 += " id=\"" + decoderPlayer._btnKeyYTControl + "\"";
+				jsOperate4 += " title=\"云台控制\" src=\"" + decoderPlayer._imgYTControl +  "\""; 
 			//判断分屏业务是否处于全屏状态
 			if(screenInfo.isFull == true){
+				jsOperate5 += " id=\"" + decoderPlayer._btnKeyCancelFullScreen + "\"";
 				jsOperate5 += " title=\"取消全屏\" src=\"" + decoderPlayer._imgRestoreScreen +  "\"";
 			} else {
 				jsOperate5 += " id=\"" + decoderPlayer._btnKeyFullScreen + "\"";
@@ -652,7 +653,7 @@ var decoderPlayer = {
 			// jsOperate6 += " title=\"画质调节\" src=\"" + decoderPlayer._imgPictureQuality +  "\"";
 			//抓拍按钮
 			jsOperate8 += " id=\"" + decoderPlayer._btnKeyPicCapture + "\"";
-			jsOperate8 += " src=\"" + decoderPlayer._imgCapture +  "\"";
+			jsOperate8 += " title=\"图片抓拍\"  src=\"" + decoderPlayer._imgCapture +  "\"";
 
 			jsOperate9 += " id=\"" + decoderPlayer._btnOpenMeeting + "\"";
 			jsOperate9 += " title=\"开启会议\" src=\"" + decoderPlayer._imgOpenMeeting +  "\"";
@@ -667,9 +668,9 @@ var decoderPlayer = {
 						"		<td style=\"width:100%\"></td>" +
 						// "		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate6 + "></img><div class=\"pictureQuality\" style=\"display:none\"></div></td>" +
 						"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate9 + "></img></td>" 
-			if(!isNVRChannel&&!decoderPlayer.allFull){
+			// if(!isNVRChannel&&!decoderPlayer.allFull){ 多通道和全屏保留云台
 				innerHTML+="		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate4 + "></img></td>"
-			}
+			// }
 			
 			innerHTML+="		<td><img style=\"width:20px; height:20px; padding: 0px 5px 0px 5px; cursor: pointer;\"" + jsOperate8 + "></img></td>" +
 				"		<td><img style=\"width:20px; height:20px; padding: 0px 0px 0px 5px; cursor: pointer;\"" + jsOperate5 + "></img></td>" +
@@ -729,7 +730,8 @@ var decoderPlayer = {
 			jsOperate4 += " id=\"" + decoderPlayer._btnKeyPicCapture + "\"";
 			jsOperate4 += " title=\"抓拍\"  src=\"" + decoderPlayer._imgCapture +  "\"";
 			//判断分屏业务是否处于全屏状态
-			if(screenInfo.isFull == true){
+			if(screenInfo.isFull == true){ 
+				jsOperate5 += " id=\"" + decoderPlayer._btnKeyCancelFullScreen + "\"";
 				jsOperate5 += " title=\"取消全屏\"  src=\"" + decoderPlayer._imgRestoreScreen +  "\"";
 			} else {
 				jsOperate5 += " id=\"" + decoderPlayer._btnKeyFullScreen + "\"";

@@ -1269,6 +1269,18 @@ var businessSDK = {
         var serviceName = "ResourceControlService";
         businessSDK.publish(funName, params, serviceName);
     },
+    publishNVRZoomControl: function(resourceID, zoom, speed, channelIndex, channelNo) {
+        var funName = "publishNVRZoomControl";
+        var params = {
+            "encoderSIPID": resourceID,
+            "zoom": zoom + "",
+            "speed": speed + "",
+            "channelIndex": channelIndex,
+            "channelNo": channelNo
+        };
+        var serviceName = "ResourceControlService";
+        businessSDK.publish(funName, params, serviceName);
+    },
     //焦点控制
     publishFocusControl: function(resourceID, focus, speed) {
         var funName = "publishFocusControl";
@@ -1280,12 +1292,35 @@ var businessSDK = {
         var serviceName = "ResourceControlService";
         businessSDK.publish(funName, params, serviceName);
     },
+    publishNVRFocusControl: function(resourceID, focus, speed, channelIndex, channelNo) {
+        var funName = "publishNVRFocusControl";
+        var params = {
+            "encoderSIPID": resourceID,
+            "focus": focus + "",
+            "speed": speed + "",
+            "channelIndex": channelIndex,
+            "channelNo": channelNo
+        };
+        var serviceName = "ResourceControlService";
+        businessSDK.publish(funName, params, serviceName);
+    },
     //雨刷控制
     publishWiperControl: function(resourceID, value) {
         var funName = "publishWiperControl";
         var params = {
             "resourceID": resourceID,
             "value": value + "",
+        };
+        var serviceName = "ResourceControlService";
+        businessSDK.publish(funName, params, serviceName);
+    },
+    publishNVRWiperControl: function(resourceID, value, channelIndex, channelNo) {
+        var funName = "publishNVRWiperControl";
+        var params = {
+            "encoderSIPID": resourceID,
+            "value": value + "",
+            "channelIndex": channelIndex,
+            "channelNo": channelNo
         };
         var serviceName = "ResourceControlService";
         businessSDK.publish(funName, params, serviceName);
@@ -1301,12 +1336,35 @@ var businessSDK = {
         var serviceName = "ResourceControlService";
         businessSDK.publish(funName, params, serviceName);
     },
+    publishNVRApertureControl: function(resourceID, aperturectrl, speed, channelIndex, channelNo) {
+        var funName = "publishNVRApertureControl";
+        var params = {
+            "encoderSIPID": resourceID,
+            "aperturectrl": aperturectrl +'',
+            "speed": speed + "",
+            "channelIndex": channelIndex,
+            "channelNo": channelNo
+        };
+        var serviceName = "ResourceControlService";
+        businessSDK.publish(funName, params, serviceName);
+    },
     //加热控制
     publishAddHeat: function(resourceID, value) {
         var funName = "publishAddHeat";
         var params = {
             "resourceID": resourceID,
             "value": value + "",
+        };
+        var serviceName = "ResourceControlService";
+        businessSDK.publish(funName, params, serviceName);
+    },
+    publishNVRAddHeat: function(resourceID, value, channelIndex, channelNo) {
+        var funName = "publishNVRAddHeat";
+        var params = {
+            "encoderSIPID": resourceID,
+            "value": value + "",
+            "channelIndex": channelIndex,
+            "channelNo": channelNo
         };
         var serviceName = "ResourceControlService";
         businessSDK.publish(funName, params, serviceName);
@@ -1321,12 +1379,13 @@ var businessSDK = {
         businessSDK.publish(funName, params, serviceName);
     },
     //nvr停止控制
-    publishStopNVRControl: function(resourceID, encoderSIPID, channelNo) {
+    publishStopNVRControl: function(resourceID, encoderSIPID, channelNo,channelIndex) {
         var funName = "publishStopNVRControl";
         var params = {
-            "encoderSIPID": encoderSIPID,
+            "encoderSIPID": encoderSIPID+'',
             "channelID": resourceID,
-            "channelNo": channelNo
+            "channelNo": channelNo+'',
+            "channelInex": channelIndex || ''
         };
         var serviceName = "ResourceControlService";
         businessSDK.publish(funName, params, serviceName);
@@ -1347,6 +1406,18 @@ var businessSDK = {
             "resourceID": resourceID,
             "pointID": pointID,
             index: index
+        };
+        var serviceName = "ResourceControlService";
+        businessSDK.publish(funName, params, serviceName);
+    },
+    publishNVRUpResPoint: function(resourceID, pointID, index, channelIndex, channelNo) {
+        var funName = "publishNVRUpResPoint";
+        var params = {
+            "resourceID": resourceID,
+            "pointID": pointID,
+            index: index,
+            "channelNo": channelNo,
+            "channelInex": channelInex || ''
         };
         var serviceName = "ResourceControlService";
         businessSDK.publish(funName, params, serviceName);
@@ -2482,6 +2553,17 @@ var businessSDK = {
         };
         businessSDK6.publish(funName, params);
     },
+       //强退成员
+    /*publishKickMember: function(sceneID, accepterIDs, operatorID) {
+        var funName = "publishCommandForcedMember";
+        var params = {
+            sceneID: sceneID,
+            operatorID: operatorID,
+            accepterIDs: JSON.stringify(accepterIDs)
+        };
+        var serviceName = "SceneControlService"
+        businessSDK6.publish(funName, params, serviceName);
+    },*/
     //强行插入指挥组参与指挥
     publishForceJoin: function(sceneId) {
         var funName = "publishForceJoin";
@@ -2490,6 +2572,16 @@ var businessSDK = {
         };
         businessSDK6.publish(funName, params);
     },
+   /* publishCommandForced: function(sceneID, operatorID, accepterID) {
+        var funName = "publishCommandForced";
+        var params = {
+            sceneID: sceneID,
+            operatorID: operatorID,
+            accepterID: accepterID
+        };
+        var serviceName = "SceneControlService"
+        businessSDK6.publish(funName, params, serviceName);
+    },*/
     //申请退出指挥
     publishApplyLeave: function(sceneId) {
         var funName = "publishApplyLeave";

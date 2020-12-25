@@ -4489,7 +4489,7 @@ var apiSDK = {
 
     var resp ={Ret=0/1}
  */
-    publishStartYTFocusCtl: function(resourceId, resourceCh, zoom, speed, callback) {
+    publishStartYTFocusCtl: function(resourceId, resourceCh, zoom, speed, callback,channelEncoderSIPID, channel) {
         var resp = {};
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
             zoom = zoom ? "2x" : "-2x"
@@ -4498,12 +4498,16 @@ var apiSDK = {
                 callback(resp)
             });
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
-            businessSDK6.publishFocusControl(resourceId, zoom, speed);
+            if (resourceId.length <= 20) {
+                businessSDK6.publishNVRFocusControl(channelEncoderSIPID, zoom, speed, '', channel);
+            } else {
+                businessSDK6.publishFocusControl(resourceId, zoom, speed);
+            }
         }
 
 
     },
-    publishStopYTFocusCtl: function(resourceId, resourceCh, zoom, callback) {
+    publishStopYTFocusCtl: function(resourceId, resourceCh, zoom, callback, channelEncoderSIPID, channel) {
         var resp = {}
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
             zoom = zoom ? "2x" : "-2x"
@@ -4512,7 +4516,11 @@ var apiSDK = {
                 callback(resp)
             });
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
-            businessSDK6.publishStopControl(resourceId);
+            if (resourceId.length <= 20) {
+                businessSDK6.publishStopNVRControl(resourceId, channelEncoderSIPID, channel);
+            } else {
+                businessSDK6.publishStopControl(resourceId);
+            }
         }
 
     },
@@ -4527,7 +4535,7 @@ var apiSDK = {
 
         var resp ={Ret=0/1}
         */
-    publishStartYTApertureCtl: function(resourceId, resourceCh, zoom, speed, callback) {
+    publishStartYTApertureCtl: function(resourceId, resourceCh, zoom, speed, callback, channelEncoderSIPID, channel) {
         var resp = {}
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
             zoom = zoom ? "2x" : "-2x"
@@ -4536,10 +4544,14 @@ var apiSDK = {
                 callback(resp)
             });
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
-            businessSDK6.publishApertureControl(resourceId, zoom, speed);
+            if (resourceId.length <= 20) {
+                businessSDK6.publishNVRApertureControl(channelEncoderSIPID, zoom, speed, '', channel);
+            } else {
+                businessSDK6.publishApertureControl(resourceId, zoom, speed);
+            }
         }
     },
-    publishStopYIApertureCtrl: function(resourceId, resourceCh, zoom, speed, callback) {
+    publishStopYIApertureCtrl: function(resourceId, resourceCh, zoom, speed, callback, channelEncoderSIPID, channel) {
         var resp = {}
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
             zoom = zoom ? "2x" : "-2x"
@@ -4548,7 +4560,11 @@ var apiSDK = {
                 callback(resp)
             });
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
-            businessSDK6.publishStopControl(resourceId);
+            if (resourceId.length <= 20) {
+                businessSDK6.publishStopNVRControl(resourceId, channelEncoderSIPID, channel);
+            } else {
+                businessSDK6.publishStopControl(resourceId);
+            }
         }
     },
     /*变焦控制
@@ -4560,7 +4576,7 @@ var apiSDK = {
 
         var resp ={Ret=0/1}
         */
-    publishStartYTZoomCtl: function(resourceId, resourceCh, zoom, speed, callback) {
+    publishStartYTZoomCtl: function(resourceId, resourceCh, zoom, speed, callback, channelEncoderSIPID, channel) {
         var resp = {}
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
             zoom = zoom ? "2x" : "-2x"
@@ -4569,11 +4585,15 @@ var apiSDK = {
                 callback(resp)
             });
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
-            businessSDK6.publishZoomControl(resourceId, zoom, speed);
+            if (resourceId.length <= 20) {
+                businessSDK6.publishNVRZoomControl(channelEncoderSIPID, zoom, speed, '', channel);
+            } else {
+                businessSDK6.publishZoomControl(resourceId, zoom, speed);
+            }
         }
 
     },
-    publishStopYTZoomCtl: function(resourceId, resourceCh, zoom, speed) {
+    publishStopYTZoomCtl: function(resourceId, resourceCh, zoom, speed, channelEncoderSIPID, channel) {
         var resp = {}
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
             zoom = zoom ? "2x" : "-2x"
@@ -4582,7 +4602,11 @@ var apiSDK = {
                 callback(resp)
             });
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
-            businessSDK6.publishStopControl(resourceId);
+            if (resourceId.length <= 20) {
+                businessSDK6.publishStopNVRControl(resourceId, channelEncoderSIPID, channel);
+            } else {
+                businessSDK6.publishStopControl(resourceId);
+            }
         }
     },
     /**雨刷
@@ -4593,7 +4617,7 @@ var apiSDK = {
      var resp ={Ret=0/1}
      *
      */
-    publishStartYTWiperCtl: function(resourceId, resourceCh, callback) {
+    publishStartYTWiperCtl: function(resourceId, resourceCh, callback, channelEncoderSIPID, channel) {
         var resp = {}
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
             dataSDK5.wiperControl(this.userToken, resourceId, resourceCh, 1, function(obj) {
@@ -4601,11 +4625,15 @@ var apiSDK = {
                 callback(resp)
             });
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
-            businessSDK6.publishWiperControl(resourceId, 1);
+            if (resourceId.length <= 20) {
+                businessSDK6.publishNVRWiperControl(channelEncoderSIPID, 1, '', channel);
+            } else {
+                businessSDK6.publishWiperControl(resourceId, 1);
+            }
         }
     },
 
-    publishStopYTWiperCtl: function(resourceId, resourceCh, callback) {
+    publishStopYTWiperCtl: function(resourceId, resourceCh, callback, channelEncoderSIPID, channel) {
         var resp = {}
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
             dataSDK5.wiperControl(this.userToken, resourceId, resourceCh, 0, function(obj) {
@@ -4613,7 +4641,11 @@ var apiSDK = {
                 callback(resp)
             });
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
-            businessSDK6.publishStopControl(resourceId);
+            if (resourceId.length <= 20) {
+                businessSDK6.publishStopNVRControl(resourceId, channelEncoderSIPID, channel);
+            } else {
+                businessSDK6.publishStopControl(resourceId);
+            }
         }
     },
     /**
@@ -4622,7 +4654,7 @@ var apiSDK = {
      resourceId:设备id
      resourceCh:设备通道
      */
-    publishStartYTHeatCtl: function(resourceId, resourceCh, callback) {
+    publishStartYTHeatCtl: function(resourceId, resourceCh, callback, channelEncoderSIPID, channel) {
         var resp = {}
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
             dataSDK5.heatControl(this.userToken, resourceId, resourceCh, 1, function(obj) {
@@ -4630,11 +4662,15 @@ var apiSDK = {
                 callback(resp)
             });
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
-            businessSDK6.publishAddHeat(resourceId, 1);
+            if (resourceId.length <= 20) {
+                businessSDK6.publishNVRAddHeat(channelEncoderSIPID, 1, '', channel);
+            } else {
+                businessSDK6.publishAddHeat(resourceId, 1);
+            }
         }
     },
 
-    publishStopYTHeatCtl: function(resourceId, resourceCh, callback) {
+    publishStopYTHeatCtl: function(resourceId, resourceCh, callback, channelEncoderSIPID, channel) {
         var resp = {}
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
             dataSDK5.heatControl(this.userToken, resourceId, resourceCh, 0, function(obj) {
@@ -4642,7 +4678,11 @@ var apiSDK = {
                 callback(resp)
             });
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
-            businessSDK6.publishStopControl(resourceId);
+            if (resourceId.length <= 20) {
+                businessSDK6.publishStopNVRControl(resourceId, channelEncoderSIPID, channel);
+            } else {
+                businessSDK6.publishStopControl(resourceId);
+            }
         }
 
     },
@@ -4652,7 +4692,7 @@ var apiSDK = {
      * resourceId:设备id
      * resourceCh:设备通道
      */
-    publishStartYTNightCtl: function(resourceId, resourceCh, callback) {
+    publishStartYTNightCtl: function(resourceId, resourceCh, callback, channelEncoderSIPID, channel) {
         var resp = {}
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
             dataSDK5.heatControl(this.userToken, resourceId, resourceCh, 1, function(obj) {
@@ -4663,7 +4703,7 @@ var apiSDK = {
             return;
         }
     },
-    publishStopYTNightCtl: function(resourceId, resourceCh, callback) {
+    publishStopYTNightCtl: function(resourceId, resourceCh, callback, channelEncoderSIPID, channel) {
         var resp = {}
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
             dataSDK5.nightControl(this.userToken, resourceId, resourceCh, 0, function(obj) {
@@ -4680,7 +4720,7 @@ var apiSDK = {
      * resourceId:设备id
      * resourceCh:设备通道
      */
-    publishStartYTTakeOverCtl: function(resourceId, resourceCh) {
+    publishStartYTTakeOverCtl: function(resourceId, resourceCh, channelEncoderSIPID, channel) {
         var resp = {}
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
             businessSDK5.publishYTTakeover(this.userToken, resourceId, resourceCh, 1);
@@ -4689,7 +4729,7 @@ var apiSDK = {
         }
     },
 
-    publishStopYTTakeOverCtl: function(resourceId, resourceCh) {
+    publishStopYTTakeOverCtl: function(resourceId, resourceCh, channelEncoderSIPID, channel) {
         var resp = {}
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
             businessSDK5.publishYTTakeover(this.userToken, resourceId, resourceCh, 0);
@@ -4705,7 +4745,7 @@ var apiSDK = {
      * resourceCh:设备通道
      * value:从playSDK返回回来的值string.Format('%6d,%6d,%6d,%6d,%6d,%6d,%6d,%6d',[0,0,点播区域宽度,点播区域高度,画框起点X,画框起点Y,画框终点X-画框起点X,画框终点Y-画框起点Y])
      * */
-    publish3DControl: function(resourceId, resourceCh, value, callback) {
+    publish3DControl: function(resourceId, resourceCh, value, callback, channelEncoderSIPID, channel) {
         var resp = {}
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
             dataSDK5._3DControl(this.userToken, resourceId, resourceCh, value, function(obj) {
@@ -6739,6 +6779,30 @@ var apiSDK = {
         }
 
     },
+        // 设置指挥接替
+    setUserCommandCustom: function(commandItem, callback){
+            if (this.config.version === this.enumSDKVersion.SDKVersion5) {
+            } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
+                dataSDK6.setUserCommandCustom(this.userID, commandItem, function(obj) {
+                    if (obj && obj.responseCode == "0") {
+                        callback({ Ret: 0 })
+                    } else {
+                        callback({ Ret: 1 })
+                    }
+                });
+            }
+    },
+        // 读取指挥接替
+    getUserCommandCustom: function(callback){
+            if (this.config.version === this.enumSDKVersion.SDKVersion5) {
+            } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
+                dataSDK6.getUserCommandCustom(function(obj) {
+                    if (obj.responseCode == "0") {
+                        callback(obj.data)
+                    }
+                });
+            }
+    },
 
     /**
      * 查询设备列表,这个接口是用来更加名称来查询的接口
@@ -7452,11 +7516,15 @@ var apiSDK = {
      * resourceCh:设备通道
      * pointId:目标预置点id
      */
-    publishUpResPoint: function(resourceId, resourceCh, pointId, index) {
+    publishUpResPoint: function(resourceId, resourceCh, pointId, index,channel) {
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
             businessSDK5.publishCtrlSelectPoint(this.userToken, resourceId, resourceCh, pointId);
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
-            businessSDK6.publishUpResPoint(resourceId, pointId, index);
+            if (channel) {
+                businessSDK6.publishNVRUpResPoint(resourceId, pointId, index, channel.channelIndex, channel.channelID);
+            } else {
+                businessSDK6.publishUpResPoint(resourceId, pointId, index);
+            }
         }
     },
 
