@@ -5,7 +5,7 @@
             <!-- <el-tabs v-model="activeName"   @tab-click="handleClick"> -->
             <el-tabs v-model="activeName" > 
                  <el-tab-pane v-for="item in editableTabs" :label="item.title" :name="item.name" :key="item.name" style="height:100%">
-                      <span slot="label"><i class="tabtree-icon" :class="item.icon"></i> {{item.title}}</span>
+                      <span slot="label"   class="title-font"><i class="tabtree-icon" :class="item.icon"></i> {{item.title}}</span>
                  </el-tab-pane>
             </el-tabs>
              <!-- 设备资源树筛选弹出框 -->
@@ -106,7 +106,7 @@ export default {
             activeName:"department",
             editableTabs: [
                 {
-                    title: '',
+                    title: '部门',
                     icon:"icontree-department",
                     name:"department",
                     isIndeterminate:false,
@@ -1163,13 +1163,14 @@ export default {
         },
         //加载节点
         loadNodeSelectDevice(node, resolve){
-            if(node.data.nodeStatus == 'department'){
+            if(node.data.nodeStatus == 'department'||node.data.nodeStatus == 'company'){
                 //加载设备
                 this.apiSDK.subscribeDeviceStatus(node.data.id, this.$props.subscribeType.subscribeDevicesStatus);
                 resolve(node.data.children);
-            } else if (node.data.children) {
-                resolve(node.data.children);
-            }
+            } 
+            // else if (node.data.children) {
+            //     resolve(node.data.children);
+            // }
         },
          //单击事件
         handleNodeClick(data, node, tree){
@@ -1323,7 +1324,7 @@ export default {
     height: calc(100% + 17px);
 }
 .treeResBox{
-    height: 538px;
+    height: 536px;
     background: url(../../../../static/main/screen/resource_bg4.png) no-repeat top;
     background-size: 100% 100%;
 }
@@ -1388,6 +1389,10 @@ export default {
    background:#56a9ff;
 }
 
+.title-font{
+    font-size: 15px;
+    font-weight: normal;
+}
 
 /* ui tab样式11.16 */
 .treeResBox /deep/ .divSearchBox >.el-tabs>.el-tabs__header{
@@ -1406,7 +1411,7 @@ export default {
   color:#fff;
 }
 .setting .custom-dialog .treeResBox /deep/ .divSearchBox >.el-tabs>.el-tabs__header>.el-tabs__nav-wrap>.el-tabs__nav-scroll>.el-tabs__nav>.el-tabs__active-bar{
-  min-width:46px;
+  width:48px!important;
   height: 3px!important;
 }
 

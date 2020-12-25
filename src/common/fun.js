@@ -366,6 +366,7 @@ export default {
                     name: item.resourceName,
                     resourceType: item.resourceType,
                     deviceType: item.deviceType,
+                    status:item.status,
                     leaf: true,
                     nodeStatus: icon_,
                     resCh: item.resCh,
@@ -382,6 +383,7 @@ export default {
                     name: item.resourceName,
                     resourceType: 'channel',
                     deviceType:'channel',
+                    status:item.status,
                     leaf: true,
                     nodeStatus: icon_,
                     alarm: false,
@@ -906,6 +908,45 @@ export default {
 
         $vue.apiSDK.AddCommonUse(startPlayNode);
     },
+
+    //批量点播常用节点
+    startPlayRessCommon: function($vue, treeNodes) {
+        if ($vue.$store.getters.getMediaService != Enum.enumMediaService.Success) {
+            this.commonNotify($vue, 'register');
+            return;
+        }
+      
+        let channelsDevice = [];
+        var startPlayNode=[];
+       
+        treeNodes.forEach((item,index)=> {
+                // nvr多通道批量点播
+                if (item.resourceType == 'channel') {
+                    let obj = channelsDevice.find(it => it.deviceId === item.pid);
+                    if (obj) {
+                        let channel = obj.channels.find(i => i === item.id)
+                        if (!channel) {
+                            obj.channels.push(item.id);
+                        }
+                    } else {
+                        channelsDevice.push({deviceId: item.pid, channels: [item.id]})
+                    }
+
+                    let channels = [{channelID: item.id, index:index.toString()}];
+                    $vue.apiSDK.startPlayNVRDeviceByIndex(item.pid, channels, 'unicast');
+                } else {
+                    $vue.apiSDK.startPlayDevice(index.toString(), item.id, item.resCh,parseInt(item.resourceType), 1, item.name, 'unicast');
+                    startPlayNode.push({"deviceId":item.id})
+                }
+           
+        })
+         // nvr多通道批量点播
+         channelsDevice.length && channelsDevice.forEach(item => {
+            startPlayNode.push({"deviceId":item.deviceId,"channel":item.channels.join(',')})
+        })
+        $vue.apiSDK.AddCommonUse(startPlayNode);
+    },
+
 
 
     //批量呼叫

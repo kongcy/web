@@ -566,7 +566,7 @@
     scrollbar-highlight-color:rgba(170, 183, 194, 0.1);
     scrollbar-arrow-color: rgba(170, 183, 194, 0.1);
     scrollbar-face-color: rgba(170, 183, 194,0.1); */
-    overflow-x:hidden; 
+    /* overflow-x:hidden;  */
     margin-right: -23px !important;
 }
 

@@ -56,6 +56,7 @@ dbBusinessSDK.prototype = {
 	},
 	//关闭
 	closeSocket : function(){
+		this._enableReconnect = false
 		clearInterval(this._reConnectInterval);
 		this._reConnectInterval = null;
 		if(this._wsclient) this._wsclient.close();
@@ -171,6 +172,7 @@ dbBusinessSDK.prototype = {
 				}else if(funName == 'rtsp'){
 					eventType = 0;
 					status_code = 1
+					screenIndex = data.pos;
 					playInfo={
 						rtsp:data.url,
 						pos:data.pos,

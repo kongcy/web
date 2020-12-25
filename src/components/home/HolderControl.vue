@@ -224,7 +224,7 @@ export default {
           this.bottomData = [
             // { title: '保存'  , class: 'save' },
             { title: "新增预置点", class: "prepareAdd" },
-            { title: "预置点管理", class: "prepare" },
+            // { title: "预置点管理", class: "prepare" },
             { title: "巡航配置", class: "cruise" },
           ];
         } else if (this.apiSDK.config.platformVersion == 1) {
@@ -686,10 +686,11 @@ export default {
     // 编辑预置点
     updateOperate(data) {
       if (!this.encoderSIPID) {
-        this.$message({
-          message: "未绑定SIPID",
-          type: "warning",
-        });
+        //12.24屏蔽
+        // this.$message({
+        //   message: "未绑定SIPID",
+        //   type: "warning",
+        // });
         return;
       }
       let that = this;
@@ -740,10 +741,11 @@ export default {
     // 删除预置点
     delectOperate(data) {
       if (!this.encoderSIPID) {
-        this.$message({
-          message: "未绑定SIPID",
-          type: "warning",
-        });
+        //12.24屏蔽
+        // this.$message({
+        //   message: "未绑定SIPID",
+        //   type: "warning",
+        // });
         return;
       }
       let that = this;
@@ -775,10 +777,11 @@ export default {
     // 设置预置点
     setOperate(data) {
       if (!this.encoderSIPID) {
-        this.$message({
-          message: "未绑定SIPID",
-          type: "warning",
-        });
+        //12.24屏蔽
+        // this.$message({
+        //   message: "未绑定SIPID",
+        //   type: "warning",
+        // });
         return;
       }
       let that = this;
@@ -876,10 +879,11 @@ export default {
     addYTPoint() {
       let that = this;
       if (!this.encoderSIPID) {
-        this.$message({
-          message: "未绑定SIPID",
-          type: "warning",
-        });
+        //12.24屏蔽
+        // this.$message({
+        //   message: "未绑定SIPID",
+        //   type: "warning",
+        // });
         return;
       }
       this.$prompt("请输入预置点名称", "新增预置点", {

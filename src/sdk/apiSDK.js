@@ -223,7 +223,7 @@ var apiSDK = {
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
             dataSDK6.createUserTokenForWeb(loginName, loginpwd, "", "0", validCode, function(obj) {
                 var resp = {};
-                if (obj.responseCode == 1) {
+                if (obj.responseCode == 1||obj.responseCode == '0') {
                     resp.Ret = 0
                     resp.token = obj.data.tokenKey
                     resp.data = {};
@@ -783,12 +783,12 @@ var apiSDK = {
      * 
      * var resp =[{channelId:"",channelName:"",isShare:true/false}]
      * */
-    getCommonUse: function(num,callback) {
+    getCommonUse: function(num,resourceName,callback) {
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
            
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
             // this.userID,
-            strategeSDK6.getCommonUseList(this.userID,num,function(res) {
+            strategeSDK6.getCommonUseList(this.userID,num,resourceName,function(res) {
                 console.log('获取常用节点-----',res)
                 let resp = []
                // if (res.responseCode == 1) {
@@ -7838,7 +7838,22 @@ var apiSDK = {
             });
         }
     },
-
+    // 删除最后一个字符
+    deleteOsdStyle:function(resourceId, index, callback) {
+        if (this.config.version === this.enumSDKVersion.SDKVersion5) {
+            return;
+        } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
+            strategeSDK6.deleteOsdStyle(resourceId, index, function(obj) {
+                var resp = {};
+                if (obj.responseCode == 1) {
+                    resp.Ret = 0;
+                } else {
+                    resp.Ret = 1;
+                }
+                callback(resp);
+            });
+        }
+    },
     /**
      * 通过资源ID获取osd方案
 
@@ -15666,8 +15681,8 @@ var apiSDK = {
     },
     //全屏 回调
     fullAllScreenCallback(callback){
-        playerSDKNew.fullAllScreenCallback(isFull => {
-            callback(isFull)
+        playerSDKNew.fullAllScreenCallback((isFull,isAllFull) => {
+            callback(isFull,isAllFull)
         })
     },
     // 根据 HHID 查询用户信息（与下面 userLogin 返回一样）

@@ -420,10 +420,10 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 14px;
+    font-size: 12px;
 }
 .footer-pagination .num{
-    font-size: 16px;
+    font-size: 14px;
     color: #fff;
 }
 .footer-pagination .el-select{

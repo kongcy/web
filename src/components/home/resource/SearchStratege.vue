@@ -170,7 +170,6 @@ export default {
             // ================= mock data  结束============================================
             // 根据类型获取 列表 
             this.apiSDK.queryStrategyList(strategyType,res=> {
-                console.log('视频巡查 数据=====>',res)
                 if(res.rows && res.rows.length > 0){
                     res.rows.forEach(item => {
                         let lt = {
@@ -259,6 +258,8 @@ export default {
             //改变屏幕布局
             this.apiSDK.splitWidowForPlugin(this.lxData.windowLayout);
             this.apiSDK.publishSplitScreen(this.lxData.windowLayout);
+            //改变选中的底部分屏按钮 wxx 2020.12.23
+             this.$listeners.chageSplitScreen(this.lxData.windowLayout)
 
             let that = this;
             //用来判断 在线的设备数量 是否少于 轮循屏数量
@@ -379,7 +380,6 @@ export default {
         },
         //修改
         searchValuChangeFun(value){
-            console.log(value)
             this.searchV=value.checkedtab;
         },
          // 去重
@@ -426,7 +426,7 @@ export default {
                         <span class="node-name">{node.label}</span>
                     </span>);
             }else{
-                return (<span  class={"custom-tree-node " + data.nodeStatus}  title="aaaaaaaaaa">
+                return (<span  class={"custom-tree-node " + data.nodeStatus}>
                         <span class="node-icon-radio"></span>
                         <span class="node-icon"></span>
                         <span class="node-name">{node.label}</span>

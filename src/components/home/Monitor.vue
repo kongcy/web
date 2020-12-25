@@ -26,7 +26,7 @@
       </div>
       
       <div id="divResourceArea_Monitor" v-show="isShowResource" :style="resourceAreaStyle">
-        <resource-container ref="resourcecontainer" @StopAllHideHolder="HideHolder" />
+        <resource-container ref="resourcecontainer" @StopAllHideHolder="HideHolder" @chageSplitScreen="chageSplitScreenFun"/>
       </div>
      
     </div>
@@ -136,8 +136,8 @@ export default {
     window.addEventListener("resize", this.resize);
 
     //所有全屏 回调
-    this.apiSDK.fullAllScreenCallback(isFull => {
-      this.isAllFull = isFull
+    this.apiSDK.fullAllScreenCallback((isFull,isAllFull) => {
+      this.isAllFull = isAllFull
       this.$refs.imageShow.isFullScreen = isFull;
       this.resize();
     })
@@ -292,6 +292,11 @@ export default {
       // this.isShowResource=!this.isShowResource;
       this.resize();
     },
+    //根据分屏数量选中视频插件底部分屏按钮分类
+    chageSplitScreenFun(value){
+      this.$refs.imageBottomNav.activeScreenNum=value;
+    },
+   
   
   },
   destroyed: function() {

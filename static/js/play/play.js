@@ -8867,8 +8867,8 @@ $.fn.extend({
                 console.log(data.msg);
                 return;
             }
-			console.log('转码完成,准备播放!');
-			console.log(data)
+			console.log('6-转码完成,准备播放!  '+ new Date().formatDate('HH:mm:ss.SS')); 
+			console.log(JSON.stringify(data));
             var obj = data.obj; 
             var ishttps = "https:" == document.location.protocol ? true :false;
             var url = null;
@@ -8882,7 +8882,7 @@ $.fn.extend({
             if (topObj.isIEState) {
                 url = "rtmp://" + obj.wsIp + ":" + obj.wsPort + "/" + obj.theme;
                 var videoObject = {
-                    width:topObj.width,
+                    width:1000,
                     height:topObj.height,
                     playerID:topObj.ckId,
                     container:"#" + topObj.ckId,
@@ -8917,8 +8917,8 @@ $.fn.extend({
 						preserveDrawingBuffer:true,
 						onSourceEstablished:function(){
 							ckClose()
-							setTimeout(function(){
-								console.log('jsmpeg---开始解码播放!')
+							setTimeout(function(){ 
+								console.log('8-jsmpeg---开始解码播放!  '+ new Date().formatDate('HH:mm:ss.SS')); 
 								if(canvas){
 									canvas.style.display ='block'
 								}
@@ -8929,7 +8929,7 @@ $.fn.extend({
                 var jsmpeg = new JSMpeg.Player(url, options);
 				if(!this.isAudio&&canvas){
 					canvas.style.display ='none'
-					console.log('jsmpeg---解码准备!')
+					console.log('7-jsmpeg---解码准备!  '+ new Date().formatDate('HH:mm:ss.SS')); 
 				}
                 topObj.jsmpeg = jsmpeg;
                 topObj.jsmpeg.volume = 50;
@@ -8992,7 +8992,7 @@ $.fn.extend({
             topObj.openCallback = openCallback;
             topObj.url = option.url;
             wssConn.wsObj.wss.send(JSON.stringify(order));
-			console.log('发送转码请求');
+			console.log('5-发送转码请求  '+ new Date().formatDate('HH:mm:ss.SS'));
 			console.log(order);
 		}; 
 		topObj.switchPlay = function (){

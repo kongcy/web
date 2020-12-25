@@ -2,7 +2,7 @@
    <div class="setting">
          <el-dialog  :visible.sync="visible" title="系统设置" width="1084px" center class="custom-dialog" @close="closeDialog">
                  <el-tabs v-model="TabName" tab-position="left" style="height: 580px;"  @tab-click="handleClick">
-                        <el-tab-pane label="文件管理" name="fileTab">
+                        <!-- <el-tab-pane label="文件管理" name="fileTab">
                             <div class="main-content">
                                 <div class="text-size18">图片抓拍</div>
                                 <div class="filemanage">
@@ -11,7 +11,7 @@
                                     <el-button class="changePathbtn" type="text" >更改目录</el-button>
                                 </div>
                             </div>
-                        </el-tab-pane>
+                        </el-tab-pane> -->
                         <el-tab-pane label="字符叠加" name="OsdTab"> 
                              <div class="main-content_Osd">
                               <osd-manage-dialog ref="osdManageDialog" @sendValue="sendValueFun"/>
@@ -20,12 +20,12 @@
                  </el-tabs>
                 <div v-if="TabName=='fileTab'" class="footbtn"> 
                     <el-button class="canclebtn" @click="closeDialog" size="small">取 消</el-button>
-                    <el-button type="primary" size="small">保 存</el-button>
+                    <el-button type="primary" size="small">确 认</el-button>
                 </div>
                  <div v-if="TabName=='OsdTab'" class="footbtn"> 
-                     <el-button  type="primary" @click="applyOsFun" size="small" style="margin-right:150px;">应用字幕</el-button>
+                     <el-button  type="primary" @click="applyOsFun" size="small">应用字幕</el-button>
                     <el-button class="canclebtn" @click="closeDialog" size="small">取 消</el-button>
-                    <el-button type="primary" size="small" @click="saveOsd">保 存</el-button>
+                    <el-button type="primary" size="small" @click="saveOsd">确 认</el-button>
                 </div>
         </el-dialog>
 
@@ -50,7 +50,7 @@ export default {
             savetype:"auto",
             filePath:'',
             timer:null,
-            TabName:"fileTab",
+            TabName:"OsdTab",
             applyOsdForm: {
                 resName: '',
                 resId: '',
@@ -199,6 +199,7 @@ border:none;
     height: 100%;
     /* height: calc(100% - 50px); */
     background: url(../../../static/stratege/form-bg.png) no-repeat;
+    border: 2px solid #356BB0;
     background-size: 100% 100%;
     color:#B7C1D0;
     padding: 10px 20px;
@@ -206,11 +207,12 @@ border:none;
     overflow: auto;
 }
 .main-content_Osd{
-    padding: 1px;
+    padding: 0px;
 }
 .footbtn{
     margin-top: 10px;
-    padding: 0 200px
+    padding: 0 200px;
+    text-align:center;
 }
 .canclebtn{
     border-color: #6B7C92;

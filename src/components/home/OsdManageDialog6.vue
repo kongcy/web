@@ -42,7 +42,7 @@
                 </el-card>
                 <el-card class="box-card  osd-card setOsdCard">
                     <div slot="header">
-                        <span>字幕个数:<span class="osdNum">{{osdList.length}}</span>/8</span>
+                        <span>字幕个数: <span class="osdNum">{{osdList.length}}</span>/8</span>
                         <el-button type="text" class="remove-btn" title="删除字幕" style="float:right;margin:0 0px 0 0;vertical-align: bottom;" @click="deleteOsd"></el-button>
                         <el-button type="text" class="add-btn" title="新增字幕" style="float:right;margin:0 15px 0 0;vertical-align: bottom;" @click="addDefaultOsd(osdTypeValue)"></el-button>
                     </div>
@@ -86,7 +86,7 @@
                                 </el-option>
                             </el-select>
                         </div>
-                        <div class="form-item">
+                        <div class="form-item last-item">
                             <span>颜色</span>
                             <el-color-picker v-model="osdColorValue" color-format="rgb" @change="osdColorChange"></el-color-picker>
                         </div>
@@ -100,7 +100,7 @@
                     </div>
                     <div class="option-item" style="border-bottom: 0;">
                         <div class="form-item">
-                            <span>基准点</span>
+                            <span>基准位置</span>
                             <div class="base-point">
                                 <el-radio v-model="osdBasePointValue" v-for="item in osdBasePointRadios" :label="item.value" :key="item.key" @change="osdBasePointChange">{{item.label}}</el-radio>
                             </div>
@@ -146,7 +146,6 @@
                 {{applyOsdForm.resName}}
             </el-form-item>
             <el-form-item label="字幕样式22222：" prop="osdStyleId">
-                123
                 <el-select placeholder="请选择" class="card-select" v-model="applyOsdForm.applyIndex">
                     <el-option
                       v-for="item in osdStyleList"
@@ -190,100 +189,7 @@ export default {
             subscribeType: '',
             tabActiveName: 'deviceTree',
             activeName:"department",
-            editableTabs: [
-                {
-                    title: '部门',
-                    icon:"icontree-department",
-                    name:"department",
-                    isIndeterminate:false,
-                    checkAll:false,
-                    content:[
-                        {text:'克拉',id:'Dkl'},
-                        {text:'迪那',id:'Ddn'},
-                        {text:'英买',id:'Dym'},
-                        {text:'塔中',id:'Dtz'},
-                        {text:'哈得',id:'Dhd'},
-                        {text:'东河',id:'Ddh'},
-                        {text:'轮南',id:'Dln'},
-                        {text:'博大',id:'Dbd'},
-                        {text:'泽普',id:'Dzp'},
-                        {text:'运销',id:'Dyx'},
-                        {text:'塔石化',id:'Ddsh'},
-                        {text:'南疆利民',id:'Dnjlm'},
-                        {text:'基地',id:'Djd'},
-                    ]
-                },
-                // {
-                //     title: '类型',
-                //     icon:"icontree-types",
-                //     name:"types",
-                //     isIndeterminate:false,
-                //     checkAll:false,
-                //     content:[
-                //         {text:'生产',id:'Tsc'},
-                //         {text:'安防',id:'Taf'},
-                //         {text:'环保',id:'Thb'},
-                //         {text:'基地',id:'Tjd'},
-                //     ]
-                // },
-                // {
-                //     title: '场站',
-                //     icon:"icontree-depot",
-                //     name:"depot",
-                //     isIndeterminate:false,
-                //     checkAll:false,
-                //     content:[
-                //         {text:'克拉',id:'Ckl'},
-                //         {text:'迪那',id:'Cdn'},
-                //         {text:'英买',id:'Cym'},
-                //         {text:'塔中',id:'Ctz'},
-                //         {text:'哈得',id:'Chd'}
-                //     ]
-                // },
-                // {
-                //     title: '重点',
-                //     icon:"icontree-emphasis",
-                //     name:"emphasis",
-                //     isIndeterminate:false,
-                //     checkAll:false,
-                //     content:[
-                //     {text:'重点生产井',id:'Iscj'},
-                //     {text:'事故井',id:'Isgj'}
-                //     ]
-            
-                // },
-                //   {
-                //     title: '区域',
-                //     icon:"icontree-area",
-                //     name:"area",
-                //     isIndeterminate:false,
-                //     checkAll:false,
-                //     content:[
-                //         {text:'克拉',id:'Qkl'},
-                //         {text:'迪那',id:'Qdn'},
-                //         {text:'英买',id:'Qym'},
-                //         {text:'塔中',id:'Qtz'},
-                //         {text:'哈得',id:'Qhd'},
-                //         {text:'东河',id:'Qdh'},
-                //         {text:'轮南',id:'Qln'},
-                //         {text:'博大',id:'Qbd'},
-                //         {text:'泽普',id:'Qzp'},
-                //     ]
-                // },
-                // {
-                //     title: '事件',
-                //     icon:"icontree-events",
-                //     name:"events",
-                //     isIndeterminate:false,
-                //     checkAll:false,
-                //     content:[
-                //         {text:'区域入侵',id:'Eqyrq'},
-                //         {text:'安全帽预警',id:'Eaqmyj'}
-                //     ]
-            
-                // }
-            ],
-           
+          
             isVisible: false,
             curHighRes: {},
             osdList: [], //类型，内容，字体，字号，颜色，基准点，offsetX，offsetY：调接口用  //id，style：显示用
@@ -797,11 +703,13 @@ export default {
             let screenWidth = dragContent.offsetWidth;
             let screenHeight = dragContent.offsetHeight;
 
-            if(this.osdList.length == 0){
-                this.$message({message: '请在画布上设置字幕', type: 'warning'});
-                return;
-            }
-            let items = this.osdList.map((item, index) => {
+            // if(this.osdList.length == 0){
+            //     this.$message({message: '请在画布上设置字幕', type: 'warning'});
+            //     return;
+            // }
+            var items=[];
+            if(this.osdList.length>0){
+                items = this.osdList.map((item, index) => {
                 let ind = self.osdSizeOptions.findIndex(it => it.value == item.fontSize)
                 let fontSize = self.osdSizeOptions[ind].label
                 return {
@@ -818,6 +726,7 @@ export default {
                     y           : parseInt(item.y),
                 };
             })
+            }
 
             let resourceId = this.curHighRes.id;
             if(!resourceId){
@@ -845,14 +754,27 @@ export default {
             //     }
             //     resourceId = nodes[0].id
             // }
-
-            this.apiSDK.updateOsdStyle(resourceId, this.osdStyleId, screenWidth, screenHeight, items, res => {
-                if (res && res.Ret == 0) {
-                    this.$message({message: '保存成功', type: 'success'});
-                } else {
-                    this.$message({message: '保存失败', type: 'error'});
-                }
-            });
+            
+            if(items.length>0){
+                //画布上有字幕时调用接口
+                this.apiSDK.updateOsdStyle(resourceId, this.osdStyleId, screenWidth, screenHeight, items, res => {
+                    if (res && res.Ret == 0) {
+                        this.$message({message: '保存成功', type: 'success'});
+                    } else {
+                        this.$message({message: '保存失败', type: 'error'});
+                    }
+                });
+            }else{
+                //画布上没有字幕时调用接口 2020.12.25
+                this.apiSDK.deleteOsdStyle(resourceId, parseInt(this.osdStyleId),res => {
+                    if (res && res== 1) {
+                        this.$message({message: '保存成功', type: 'success'});
+                    } else {
+                        this.$message({message: '保存失败', type: 'error'});
+                    }
+                })
+            }
+           
         },
         // 获取树选择用户
         //type: true:获取勾选  false：获取高亮
@@ -1017,6 +939,10 @@ export default {
     height: auto;
 }
 
+.custom-dialog .osd-card.setOsdCard /deep/ .el-card__header{
+    padding:10px 15px;
+}
+
 .drag-content {
     position: relative;
     height: 300px;
@@ -1036,6 +962,7 @@ export default {
 }
 .osdNum{
     color:#5C98FF;
+    margin:0 0 0 5px
 }
 .card-select{
     margin-top: -5px;
@@ -1063,6 +990,14 @@ export default {
     align-items: center;
     margin-right: 15px;
 }
+.option-item .last-item {
+    margin-right: 0px;
+}
+.option-item .last-item /deep/ .el-color-picker__trigger{
+    padding-right:0px;
+}
+
+
 /deep/ .el-select>.el-input {
     background-color:transparent;
 }
@@ -1071,7 +1006,7 @@ export default {
     margin-right: 5px;
 }
 .option-item .form-item .base-point{
-    padding: 0 12px;
+    padding: 0px;
     line-height: 36px;
     width: 175px;
 }
@@ -1091,6 +1026,7 @@ export default {
 }
 .el-scrollbar.hiddenXScroll /deep/ .el-scrollbar__wrap{
     overflow-x: hidden;
+        margin-bottom: -5px!important;
 }
 
 /* redio样式 */

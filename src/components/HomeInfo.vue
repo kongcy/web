@@ -227,20 +227,12 @@ export default {
                         if(currentPlayScreens){
                           currentPlayScreens = JSON.parse(currentPlayScreens);
                             let curObj = currentPlayScreens.find(item => wgtpos == item.screenIndex);
-                            if (curObj) {
-                                this.apiSDK.sendForceIFrame(curObj.encoderSipID, curObj.resCh, curObj.resType, curObj.channel);
-                                let that = this;
-                                let timeIndex =  0;
-                                let playTime = setInterval(() => {
-                                    timeIndex++;
-                                    if( timeIndex < 3 ) {
-                                      that.apiSDK.sendForceIFrame(curObj.encoderSipID, curObj.resCh, curObj.resType, curObj.channel);
-                                      timeIndex === 2 && window.clearInterval(playTime);
-                                    }
-                                 }, 500);
-                                this.apiSDK.setVolumeStateForPlugin(wgtpos, false);
-                            }
+                        if (curObj) {
+                            this.apiSDK.sendForceIFrame(curObj.encoderSipID, curObj.resCh, curObj.resType, curObj.channel);
+                            this.apiSDK.setVolumeStateForPlugin(wgtpos, false);
                         }
+                         }
+                      
                     case 0: //点播失败
                         // this.apiSDK.stopPlayByIndex(wgtpos);
                         break;
@@ -316,12 +308,12 @@ export default {
           if(value.name=="Monitor"){
             hasIndex=this.editableTabs.findIndex((v)=>{return v.name=='MeetingIndex'});
             if(hasIndex>-1){
-              this.showremind("warning",'请关闭视频会商，再开启视频监控……')
+              this.showremind("warning",'请关闭视频会议，再开启视频监控……')
             }
           }else if(value.name=="MeetingIndex"){
             hasIndex=this.editableTabs.findIndex((v)=>{return v.name=='Monitor'});
              if(hasIndex>-1){
-              this.showremind("warning",'请关闭视频监控，再开启视频会商……')
+              this.showremind("warning",'请关闭视频监控，再开启视频会议……')
               // this.editableTabs.splice(hasIndex,1);
             }
           }
@@ -335,7 +327,7 @@ export default {
           xtxk.cache.set('activeName',this.activeName);
         }
       }else{
-        this.showremind("warning",'此模块开发中……')
+        // this.showremind("warning",'此模块开发中……')
       }
     
     },

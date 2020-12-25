@@ -46,13 +46,6 @@ export default {
       dataTime:new Date().formatDate('yyyy-MM-dd HH:mm:ss'),
       activeName: "PersonTree",
       tabs: [
-        // {
-        //   title: '控制中心',
-        //   imgurl:"../../../static/decoderGroup/view.png",
-        //   id: 'CZZX',
-        //   ref: 'personTree',
-        //   treeId: 'MainUsersStatus'
-        // },
         {
           title: '视频监控',
           imgurl:"static/home/monitor.png",
@@ -62,30 +55,19 @@ export default {
           ref: 'Monitor',
           closable: true,
           tourl:'',
-          introduce:"智慧监控，守护园区安全",
+          introduce:"",
         },
-        // {
-        //   title: '视频会商',
-        //   imgurl:"static/home/meeting.png",
-        //   titleurl:'static/home/meeting_title.png',
-        //   name:'MeetingIndex',
-        //   content: 'MeetingIndex',
-        //   ref: 'MeetingIndex',
-        //   closable: true,
-        //   tourl:'',
-        //   introduce:"打造多互动协作空间，远程交流如当面",
-        // },
-        // {
-        //   title: '视频会商',
-        //   imgurl:"static/home/meeting.png",
-        //   titleurl:'static/home/meeting_title.png',
-        //   name:'Meeting',
-        //   content: 'Meeting',
-        //   ref: 'meeting',
-        //   closable: true,
-        //   tourl:'',
-        //   introduce:"打造多互动协作空间，远程交流如当面",
-        // },
+        {
+          title: '视频会议',
+          imgurl:"static/home/meeting.png",
+          titleurl:'static/home/meeting_title.png',
+          name:'MeetingIndex',
+          content: 'MeetingIndex',
+          ref: 'MeetingIndex',
+          closable: true,
+          tourl:'',
+          introduce:"",
+        },
         // {
         //   title: '视频会议',
         //   imgurl:"static/home/meeting.png",
@@ -95,9 +77,8 @@ export default {
         //   ref: 'MeetingOutside',
         //   closable: true,
         //   tourl:'http://localhost:8080/',
-        //   introduce:"打造多互动协作空间，远程交流如当面",
+        //   introduce:"",
         // },
-        
          {
           title: '视频诊断',
           imgurl:"static/home/videoDiagnose.png",
@@ -107,7 +88,7 @@ export default {
           ref: 'diagnose',
           closable: true,
           tourl:'',
-          introduce:"打造多互动协作空间，远程交流如当面",
+          introduce:"",
         },
          {
           title: '视频分析',
@@ -118,7 +99,7 @@ export default {
           ref: 'waiting',
           closable: true,
           tourl:'',
-          introduce:"打造多互动协作空间，远程交流如当面",
+          introduce:"",
         },
        
        
@@ -132,7 +113,7 @@ export default {
           content: 'Monitor',
           ref: 'Monitor',
           closable: true,
-          introduce:"智慧监控，守护园区安全",
+          introduce:"",
         },
         {
           title: '地图调度',
@@ -141,7 +122,7 @@ export default {
           content: 'Meeting',
           ref: 'Meeting',
           closable: true,
-          introduce:"打造多互动协作空间，远程交流如当面",
+          introduce:"",
         },
         {
           title: '短信调度',
@@ -150,7 +131,7 @@ export default {
           content: 'Meeting',
           ref: 'Meeting',
           closable: true,
-          introduce:"打造多互动协作空间，远程交流如当面",
+          introduce:"",
         },
          {
           title: '轨迹回放',
@@ -159,7 +140,7 @@ export default {
           content: 'Meeting',
           ref: 'Meeting',
           closable: true,
-          introduce:"打造多互动协作空间，远程交流如当面",
+          introduce:"",
         },
         {
           title: '录音回放',
@@ -168,7 +149,7 @@ export default {
           content: 'Meeting',
           ref: 'Meeting',
           closable: true,
-          introduce:"打造多互动协作空间，远程交流如当面",
+          introduce:"",
         },
       ]
     

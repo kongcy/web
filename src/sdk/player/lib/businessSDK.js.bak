@@ -56,7 +56,6 @@ WebSocketSDK.prototype = {
 	},
 	//关闭
 	closeSocket : function(){
-		this._enableReconnect = false
 		clearInterval(this._reConnectInterval);
 		this._reConnectInterval = null;
 		if(this._wsclient) this._wsclient.close();

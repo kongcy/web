@@ -280,7 +280,7 @@ export default {
 }
 #divImageContent_Monitor {
   float: right;
-  padding: 10px;
+  padding: 10px 0 0 0;
   box-sizing: border-box;
   margin:0px;
   height: 100%;

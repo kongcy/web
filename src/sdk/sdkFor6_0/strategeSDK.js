@@ -203,10 +203,11 @@ export var strategeSDK6 = {
     },
 
     // ====================== 查询设备常用节点 ========================================
-    getCommonUseList(userId,num,callback){
+    getCommonUseList(userId,num,resourceName,callback){
         var data = {
             "userId":userId,
-            "moreNum": num
+            "moreNum": num,
+            "resourceName":resourceName
         };
         var url = "/res/queryPopularRes"
         strategeSDK6._doPost(url, JSON.stringify(data),callback);
@@ -345,6 +346,18 @@ export var strategeSDK6 = {
         //    "ywxtmc": '油田多媒体软件协同交互平台'
         }
         var url = "/third/userLogin?mode=1";
+        strategeSDK6._doPost(url,JSON.stringify(obj), callback);
+    },
+
+
+
+    // =================================  删除字幕 新加SDK   1225  =============================================
+    deleteOsdStyle(resourceId,index,callback){
+        var obj = {
+            "resourceId": resourceId,
+            "styleIndex": index,
+        };
+        var url = "/osdstyle/delete";
         strategeSDK6._doPost(url,JSON.stringify(obj), callback);
     }
 }; 

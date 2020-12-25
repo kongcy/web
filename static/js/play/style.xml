@@ -5,7 +5,7 @@
 		<backgroundColor>0x000000</backgroundColor><!--背景颜色-->
 		<backgroundImg></backgroundImg><!--背景图片-->
 		<alpha>0.5</alpha><!--背景透明度-->
-		<stretched>3</stretched><!--拉伸方式，0=原始大小，1=自动缩放，2=只有当元件的宽或高大于播放器宽高时才进行缩放，3=参考播放器宽高，4=宽度参考播放器宽、高度自动，5=高度参考播放器高、宽度自动-->
+		<stretched>1</stretched><!--拉伸方式，0=原始大小，1=自动缩放，2=只有当元件的宽或高大于播放器宽高时才进行缩放，3=参考播放器宽高，4=宽度参考播放器宽、高度自动，5=高度参考播放器高、宽度自动-->
 		<align>center</align><!--水平对齐方式，left,center,right-->
 		<vAlign>middle</vAlign><!--垂直对齐方式，top,middle,bottom-->
 		<spacingLeft>0</spacingLeft><!--左方预留间距-->

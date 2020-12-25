@@ -52,7 +52,7 @@ export default {
                ],
             btnName : [
 				{ title: '全部停止', class: 'stopAll' },
-               { title: '全屏', class: 'Allfullscreen' },
+               { title: '全屏放大', class: 'Allfullscreen' },
             //    { title: '暂停巡查', class: 'stopPatrol' },
               { title: '系统设置', class: 'setSystem' },
 			//    { title: '全部静音', class: 'closeVoice' },

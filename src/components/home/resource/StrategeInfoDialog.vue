@@ -53,9 +53,10 @@
                                 </div>
                             </div>
                             <div class="control-item">
-                                <span class="lable-stratege label-strategeType">巡查间隔(秒)</span>
+                                <span class="lable-stratege label-strategeType">巡查间隔(s/秒)</span>
                                 <div class="control-div time-select  strategeInfo-type">
                                     <el-select v-model="strategeTime" :popper-append-to-body="false">
+                                        <el-option label="10" value="10"><i v-if="strategeTime == '10'"></i><span>10</span></el-option>
                                         <el-option label="15" value="15"><i v-if="strategeTime == '15'"></i><span>15</span></el-option>
                                         <el-option label="20" value="20"><i v-if="strategeTime == '20'"></i><span>20</span></el-option>
                                         <el-option label="25" value="25"><i v-if="strategeTime == '25'"></i><span>25</span></el-option>
@@ -152,7 +153,7 @@
                     <div class="btn-footer">
                             <el-button class="no-background" @click="saveFn">另存为</el-button>
                             <el-button class="no-background" @click="delSelf">删除</el-button>
-                            <el-button type="primary" @click="updateStrategyFn" >提交</el-button>
+                            <el-button type="primary" @click="updateStrategyFn" >确定</el-button>
                     </div>
                 </div>
             </div>
@@ -193,6 +194,7 @@
                                 <span class="lable-stratege label-strategeType">巡查间隔(s/秒)</span>
                                 <div class="control-div time-select strategeInfo-type">
                                     <el-select v-model="strategeTime" :popper-append-to-body="false">
+                                         <el-option label="10" value="10"><i v-if="strategeTime == '10'"></i><span>10</span></el-option>
                                         <el-option label="15" value="15"><i v-if="strategeTime == '15'"></i><span>15</span></el-option>
                                         <el-option label="20" value="20"><i v-if="strategeTime == '20'"></i><span>20</span></el-option>
                                         <el-option label="25" value="25"><i v-if="strategeTime == '25'"></i><span>25</span></el-option>
@@ -221,7 +223,7 @@
                             <div class="control-item">
                                 <span class="lable-stratege label-strategeType">巡查窗口</span>
                                 
-                                <div class="control-div NormalLoop" style="margin-left: 23px;">
+                                <div class="control-div NormalLoop" >
                                     <el-select v-model="NormalLoop" multiple collapse-tags  :popper-append-to-body="false" >
                                         <el-option v-for="item in arrType" :key="item.value" :label="item.label" :value="item.value" ></el-option>
                                     </el-select>
@@ -296,7 +298,7 @@
             <!-- 内层弹出框---选择新建策略类型 -->
             <el-dialog
             width="460px"
-            title="选择新建方案类型"
+            title="方案类型"
             class="inner-dialog"
             :visible.sync="innerVisible"
             append-to-body
@@ -903,7 +905,7 @@ export default {
     display: inline-block;
 }
 .main-left-add{
-    width: 148px;
+    /* width: 148px; */
 }
 .left-head{
     width: 100%;
@@ -1031,7 +1033,8 @@ export default {
     height: 580px;
     width: 100%;
     background:url(../../../../static/stratege/form-bg.png) no-repeat;
-    background-size: 756px 580px;
+    background-size: 100% 100%;
+    border:2px solid #356BB0;
     overflow: hidden;
 }
 /* 输入表单 开始 */
@@ -1133,10 +1136,11 @@ export default {
 }
 /* 资源设备树 */
 .resource-tree,.ck-tree{
-    width: 346px;
+    width: 340px;
     height: 453px;
     display: inline-block;
     float: left;
+    margin:0 8px;
 }
 .resource-tree /deep/.el-tabs__active-bar{
     width: 70px!important;
@@ -1382,10 +1386,10 @@ export default {
 
 /* 添加的页面样式 ------------------------------------------------- */
 .r-box-add .r-main{
-    background:none;
+    /* background:none; */
 }
 .r-box-add .form-div{
-    padding: 0;
+    /* padding: 0; */
 }
 .main-left-add .left-add{
     width: 100%;

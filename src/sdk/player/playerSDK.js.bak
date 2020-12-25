@@ -56,10 +56,10 @@ var playerSDK = {
             for(var i = 0; i < businessScreens.length; i++){
                 let businessScreen = businessScreens[i];
                 if(businessScreen.type == 1){
-                    // this.businessSDKC.pausePlay(businessScreen.screenIndex)
+                    this.businessSDKC.pausePlay(businessScreen.screenIndex)
                 }
                 if(businessScreen.type == 2){
-                    // this.businessSDKC.resumePlay(businessScreen.screenIndex)
+                    this.businessSDKC.resumePlay(businessScreen.screenIndex)
                 }
                 if(businessScreen.type == 3){
                     if(isFull){
@@ -176,10 +176,9 @@ var playerSDK = {
 				this.playerStatus = 2;
 				this._executeCommand();
             }
-            else if(eventType == 0 && status_code == 1) { // 播放成功
-                // if(playResultCB) playResultCB(screenIndex)
-                console.log('4-StartPlayByResId-Result  '+ new Date().formatDate('HH:mm:ss.SS'));
-            }
+            // else if(eventType == 0 && status_code == 1) { // 播放成功
+            //     if(playResultCB) playResultCB(screenIndex)
+            // }
 
 			if(businessCB)
 				businessCB(eventType, status_code, screenIndex);
@@ -217,13 +216,10 @@ var playerSDK = {
 				this._executeCommand();
             }
             // 全免插件播放回调
-            else if(eventType == 0 && status_code == 1&& playInfo){// 点播成功  
-                console.log('4-StartPlayByResId-Result  '+ new Date().formatDate('HH:mm:ss.SS'));
-                console.log(playInfo);
+            else if(eventType == 0 && status_code == 1&& playInfo){// 点播成功
                 webglPlayer.startPlayJsmpeg(playInfo)
             } 
             if(businessCB){
-                console.log(sessionStorage.getItem('currentScreen'));
                  businessCB(eventType, status_code, screenIndex);
                 }
             });
@@ -283,10 +279,10 @@ var playerSDK = {
             for(var i = 0; i < businessScreens.length; i++){
                 let businessScreen = businessScreens[i];
                 if(businessScreen.type == 1){
-                    // this.businessSDKC.pausePlay(businessScreen.screenIndex)
+                    this.businessSDKC.pausePlay(businessScreen.screenIndex)
                 }
                 if(businessScreen.type == 2){
-                    // this.businessSDKC.resumePlay(businessScreen.screenIndex)
+                    this.businessSDKC.resumePlay(businessScreen.screenIndex)
                 }
                 if(businessScreen.type == 3){
                     if(isFull){
@@ -661,7 +657,6 @@ var playerSDK = {
         let _this = this;
         let sizeObj = _this._getDisplaySizeByScreenCount();
         _this.businessSDKC.startPlayByResId(parseInt(screenIndex), resSipId, sizeObj.width, sizeObj.height, mediaGroupID, channel, mediaType);
-        console.log('3-StartPlayByResId  '+ new Date().formatDate('HH:mm:ss.SS'));
     },
     // [[2020-03新增
     // 点播

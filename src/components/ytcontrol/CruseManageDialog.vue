@@ -934,7 +934,7 @@ export default {
     background-size:cover;
     vertical-align: middle;
     margin-top: 10px;
-    margin-right: 5px;
+    margin-right: 25px;
     visibility: hidden;
     cursor:pointer;
 }

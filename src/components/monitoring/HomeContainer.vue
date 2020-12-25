@@ -221,12 +221,12 @@ export default {
           if(value.name=="Monitor"){
             hasIndex=this.editableTabs.findIndex((v)=>{return v.name=='Meeting'});
             if(hasIndex>-1){
-              this.showremind("warning",'请关闭视频会商，再开启视频监控……')
+              this.showremind("warning",'请关闭视频会议，再开启视频监控……')
             }
           }else if(value.name=="Meeting"){
             hasIndex=this.editableTabs.findIndex((v)=>{return v.name=='Monitor'});
              if(hasIndex>-1){
-              this.showremind("warning",'请关闭视频监控，再开启视频会商……')
+              this.showremind("warning",'请关闭视频监控，再开启视频会议……')
               // this.editableTabs.splice(hasIndex,1);
             }
           }
@@ -240,7 +240,7 @@ export default {
           xtxk.cache.set('activeName',this.activeName);
         }
       }else{
-        this.showremind("warning",'此模块开发中……')
+        // this.showremind("warning",'此模块开发中……')
       }
     
     },

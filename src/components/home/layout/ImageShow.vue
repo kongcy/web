@@ -1,7 +1,9 @@
 <template>
-    <div class="imageContentBox">
+    <div class="imageContentBox" id="imageShowContainer">
         <!-- <div id="imageShowContainer" style="width:100%;height:100%"></div> -->
-        <div class="imageDiv" :id="id" style="width:100%;height:100%"></div>
+        <div class="imageDiv" :id="id" style="width:100%;height:100%">
+            
+        </div>
         <div class="cornerBox">
             <i class="icon-corner corner-top-left"></i>
             <i class="icon-corner corner-top-right"></i>
@@ -9,7 +11,7 @@
             <i class="icon-corner corner-bottom-right"></i>
         </div>
         <take-photo-dialog ref="takePhoto" />
-        <!-- <holder-control-dialog ref="holderControlDialog" /> -->
+        <holder-control-dialog ref="holderControlDialog" />
         
         <!-- 设置 -->
         <setting-dialog ref="settingDialog"/>
@@ -18,7 +20,7 @@
 
 <script>
 import TakePhotoDialog from '@/components/home/takePhotoDialog.vue'
-// import HolderControlDialog  from '@/components/ytcontrol/HolderControlDialog.vue'
+import HolderControlDialog  from '@/components/home/HolderControlDialog.vue'
 import Enum from "@/common/enum";
 import Fun from "@/common/fun";
 
@@ -28,7 +30,7 @@ export default {
     components: {
         TakePhotoDialog,
         settingDialog,
-        // HolderControlDialog
+        HolderControlDialog
 	},
     data(){
       return {
@@ -199,6 +201,7 @@ export default {
 
             this.apiSDK.setInformStartMediaByLocalCallback((obj) =>{
                 console.log("收到开启媒体(软解)" );
+                console.log(obj)
                 if(obj){
                     // that.apiSDK.startPlayForPlugin(obj.screenIndex, obj.videoRTPId || "", obj.audioRTPId || "",
                     //     obj.localVPort, obj.fIPS, obj.fCH, 0, obj.resId, obj.resCh, "", obj.resType);
@@ -408,10 +411,17 @@ export default {
                     this.apiSDK.getValidYTRight(this.currentPlayScreens[index].resId, this.currentPlayScreens[index].resCh, (obj)=>{
                         if( obj && obj.Ret == 0 ){
                             // 打开云台
-                            this.$parent.expendHolder();
-                            this.$parent.$refs.holderControl.showDialog(this.currentPlayScreens[index].resId, this.currentPlayScreens[index].resCh, this.currentPlayScreens[index].encoderSipID, this.currentPlayScreens[index].channel);   
-                            // this.$refs.holderControlDialog.showDialog(this.currentPlayScreens[index].resId, this.currentPlayScreens[index].resCh, this.currentPlayScreens[index].encoderSipID, this.currentPlayScreens[index].channel);   
-                        }else{
+                             if(this.isFullScreen){
+                                 console.log("弹框云台")
+                                //弹框云台
+                                this.$refs.holderControlDialog.showDialog(this.currentPlayScreens[index].resId, this.currentPlayScreens[index].resCh, this.currentPlayScreens[index].encoderSipID, this.currentPlayScreens[index].channel);   
+                             }else{
+                                  this.$parent.expendHolder();
+                                  console.log("右侧云台")
+                                //右侧云台
+                                this.$parent.$refs.holderControl.showDialog(this.currentPlayScreens[index].resId, this.currentPlayScreens[index].resCh, this.currentPlayScreens[index].encoderSipID, this.currentPlayScreens[index].channel);   
+                             }
+                          }else{
                             // 提示没有权限
                             this.showremind("提示", "没有云台控制的权限")
                         }

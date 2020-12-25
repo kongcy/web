@@ -32,13 +32,6 @@ export default {
       dataTime:new Date().formatDate('yyyy-MM-dd HH:mm:ss'),
       activeName: "PersonTree",
       tabs: [
-        // {
-        //   title: '控制中心',
-        //   imgurl:"../../../static/decoderGroup/view.png",
-        //   id: 'CZZX',
-        //   ref: 'personTree',
-        //   treeId: 'MainUsersStatus'
-        // },
         {
           title: '视频监控',
           imgurl:"static/home/monitor.png",
@@ -48,7 +41,7 @@ export default {
           ref: 'Monitor',
           closable: true,
           tourl:'',
-          introduce:"智慧监控，守护园区安全",
+          introduce:"",
         },
         // {
         //   title: '视频会商(外部)',
@@ -59,7 +52,7 @@ export default {
         //   ref: 'MeetingOutside',
         //   closable: true,
         //   tourl:'http://localhost:8080/',
-        //   introduce:"打造多互动协作空间，远程交流如当面",
+        //   introduce:"",
         // },
         
          {

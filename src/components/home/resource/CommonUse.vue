@@ -6,7 +6,7 @@
             <el-row :gutter="5" style="margin:0px">
                   <el-col :span="24">
                     <div class="search" >
-                        <el-input v-model="input_device" placeholder="请输入关键字" @keyup.enter.native="handleSearchByKey">
+                        <el-input v-model="resourceName" placeholder="请输入关键字" @keyup.enter.native="handleSearchByKey" @blur="handleSearchByKey">
                             <i slot="suffix" class="el-input__icon el-icon-search" @click="handleSearchByKey"></i>
                         </el-input>
                     </div>
@@ -84,7 +84,7 @@ export default {
                 time: null,//点击时间
             },
             treeType:"all",
-            input_device:'',
+            resourceName:'',
             statusValue:'all',
             levelValue: '',
 
@@ -140,25 +140,18 @@ export default {
         },
          //批量点播
         startPlays(){
-            var targetNodesP = [];
             var targetNodesD = [];
-
+            let n=JSON.parse(sessionStorage.getItem('currentScreen')).length; 
             var nodes = this.mergeResourceData();
-            for( var i=0;i<nodes.length;i++ ){
-                if( nodes[i].nodeStatus == "person_online" ){
-                targetNodesP.push(nodes[i]);
-                }
-                if( nodes[i].nodeStatus == "device_online" || nodes[i].nodeStatus == 'channel_online'){
-                targetNodesD.push(nodes[i]);
-                }
-            }
-            if( targetNodesP.length + targetNodesD.length == 0 ){
-                // var content = '请选择在线空闲的资源发起点播';
-                // this.$message({message: content, type: 'warning'})
+            targetNodesD= nodes.filter(item => {return item.nodeStatus!="company"&&item.status == '1'})
+            if(targetNodesD.length == 0 ){
+                var content = '请选择在线空闲的资源发起点播';
+                this.$message({message: content, type: 'warning'})
                 return;
             }
-          
-            Fun.startPlayRess(this, targetNodesP.concat(targetNodesD));
+            targetNodesD.splice(9-n)
+             Fun.startPlayRessCommon(this, targetNodesD);
+            
         },
         //全部停止
         stopAll(){
@@ -193,7 +186,7 @@ export default {
         handleChangeSerachWrap(){
             this.searchChange = !this.searchChange;
             if( this.searchChange == false ){
-                this.input_device = "";
+                this.resourceName = "";
                 this.statusValue = "all";
                 this.treeType = "all";
                 let self = this;
@@ -224,7 +217,8 @@ export default {
         //获取常用节点
         getTreeNode(){
             let self=this;
-             this.apiSDK.getCommonUse(this.moreNum,function(obj){
+            this.selectedNum=0;
+             this.apiSDK.getCommonUse(this.moreNum,this.resourceName ,function(obj){
                  console.log('常用资源',obj);
                   if (obj ) {
                     //设备组织
@@ -267,7 +261,6 @@ export default {
         changeStatus(){
             let self=this;
             let currentScreen=JSON.parse(sessionStorage.getItem('currentScreen'));
-            console.log("-------"+currentScreen);
             if(currentScreen&&currentScreen.length>0){
                 self.hasPlayD=true;
                 self.treeData[0].children.forEach(item=>{
@@ -378,7 +371,6 @@ export default {
         loadNodeMainDevice(node, resolve){
             if(node.data.nodeStatus == 'department'){
                 //加载设备
-                //this.apiSDK.getCommonUse(node.data.id, Enum.enumSubscribeType.main.subscribeDevicesStatus);
                 resolve(node.data.children);
             } else if (node.data.children) {
                 resolve(node.data.children);
@@ -437,20 +429,19 @@ export default {
             if( data.nodeStatus != 'department' ) {
               // node.checked = !node.checked;
             }
-            //
+           
             if( data.nodeStatus == 'department' ) {
                this.setDeviceAlarmStatusByClick(data)
             }
-            this.$parent.isTreeItemShow=false;
+            // this.$parent.isTreeItemShow=false;
         },
         //右键事件
         handleNodeRightClick(event, data, node, tree){
-            //console.log(node.data.nodeStatus)
-             event.stopPropagation();
+            event.stopPropagation();
             if(data.nodeStatus != 'department'){
                 this.$refs.rightMenu.showRightMenu(event, data);
             }
-            this.$parent.isTreeItemShow=false;
+            // this.$parent.isTreeItemShow=false;
         },
         //当复选框被点击的时候触发
         handleNodeCheck(data,node){
@@ -459,7 +450,6 @@ export default {
             let resInfos = [];
             let nvrDevice = [];
             node.checkedNodes.forEach(item => {
-                console.log('勾选数据-----', item);
                 // nvr多通道批量点播
                 if (item.resourceType == 'channel') {
                      ++n;
@@ -468,7 +458,7 @@ export default {
                 }
             })
             this.selectedNum=n;
-            this.$parent.isTreeItemShow=false;
+            // this.$parent.isTreeItemShow=false;
             this.automaticPlay && this.startPlays();
         },
         //树行样式
@@ -514,25 +504,7 @@ export default {
         //关键字搜索
         handleSearchByKey(){
             var self = this;
-            var organId = "";
-            if( this.treeType=="all" && !this.input_device ){
-                this.showremind('提示','请输入关键字');
-            }else if( this.treeType!="all" && !this.input_device ){
-                let subjectId = this.relationshipValue;
-                this.apiSDK.getOrganizationDevice(organId, Enum.enumSubscribeType.main.subscribeOrganizationDevice, subjectId, function(obj) {
-                    self.setReceiveInformAddDepartmentCallback(obj);
-                });
-            }else{
-                this.clearTree();
-                if(this.treeType=="all"){
-                    this.apiSDK.cancelSubscribeResourceStatus(Enum.enumSubscribeType.main.subscribeUserStatus,"device");
-                }
-                if(this.treeType=="status"){
-                    this.apiSDK.cancelSubscribeResourceStatus(Enum.enumSubscribeType.main.subscribeUsersStatusByStatus,"devicequery");
-                }
-                this.apiSDK.subscribeDeviceQuery("text", this.input_device, "", 0, Enum.enumSubscribeType.main.subscribeDevicesStatusByKey, organId)
-                this.treeType="text";                
-            }
+            this.getTreeNode();
         },
         //状态搜索
         handleSelectStatus(val){

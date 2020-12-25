@@ -34,7 +34,7 @@
                 <!-- <el-col :span="apiSDK.config.version === apiSDK.enumSDKVersion.SDKVersion6?10:20" v-if="apiSDK.config.version === apiSDK.enumSDKVersion.SDKVersion6 || (apiSDK.config.version === apiSDK.enumSDKVersion.SDKVersion5 && searchChange)"> -->
                     <el-col :span="24">
                     <div class="search" >
-                        <el-input v-model="input_device" placeholder="请输入关键字" @keyup.enter.native="handleSearchByKey">
+                        <el-input v-model="input_device" placeholder="请输入关键字" @keyup.enter.native="handleSearchByKey" @blur="handleSearchByKey">
                             <i slot="suffix" class="el-input__icon el-icon-search" @click="handleSearchByKey"></i>
                         </el-input>
                     </div>
@@ -84,6 +84,7 @@
                     :render-content="renderContent"
                     @node-click="handleNodeClick"
                     @node-contextmenu="handleNodeRightClick"
+                    :check-on-click-node='checkOnClickNode'
                     @check="handleNodeCheck"
                     @node-drag-start="nodeDragStart"
                     draggable
@@ -131,6 +132,7 @@ export default {
     data () {
         return {
             activeName:"department",
+            checkOnClickNode:false,
             editableTabs: [
                 {   
                     //先屏蔽调部门
@@ -225,79 +227,6 @@ export default {
             
                 // }
             ],
-            tablist:[{
-                tabname:"",
-                isIndeterminate:false,
-                checkAll:false,
-                content:[
-                {text:'克拉',id:'Dkl'},
-                {text:'迪那',id:'Ddn'},
-                {text:'英买',id:'Dym'},
-                {text:'塔中',id:'Dtz'},
-                {text:'哈得',id:'Dhd'},
-                {text:'东河',id:'Ddh'},
-                {text:'轮南',id:'Dln'},
-                {text:'博大',id:'Dbd'},
-                {text:'泽普',id:'Dzp'},
-                {text:'运销',id:'Dyx'},
-                {text:'塔石化',id:'Ddsh'},
-                {text:'南疆利民',id:'Dnjlm'},
-                {text:'基地',id:'Djd'},
-                ]
-            },{
-                tabname:"类型",
-                isIndeterminate:false,
-                checkAll:false,
-                content:[
-                {text:'生产',id:'Tsc'},
-                {text:'安防',id:'Taf'},
-                {text:'环保',id:'Thb'},
-                {text:'基地',id:'Tjd'},
-                ]
-            },{
-                tabname:"区域",
-                isIndeterminate:false,
-                checkAll:false,
-                content:[
-                {text:'克拉',id:'Qkl'},
-                {text:'迪那',id:'Qdn'},
-                {text:'英买',id:'Qym'},
-                {text:'塔中',id:'Qtz'},
-                {text:'哈得',id:'Qhd'},
-                {text:'东河',id:'Qdh'},
-                {text:'轮南',id:'Qln'},
-                {text:'博大',id:'Qbd'},
-                {text:'泽普',id:'Qzp'},
-                ]
-            },{
-                tabname:"场站",
-                isIndeterminate:false,
-                checkAll:false,
-                content:[
-                {text:'克拉',id:'Ckl'},
-                {text:'迪那',id:'Cdn'},
-                {text:'英买',id:'Cym'},
-                {text:'塔中',id:'Ctz'},
-                {text:'哈得',id:'Chd'}
-                ]
-            },{
-                tabname:"事件",
-                isIndeterminate:false,
-                checkAll:false,
-                content:[
-                {text:'区域入侵',id:'Eqyrq'},
-                {text:'安全帽预警',id:'Eaqmyj'}
-                ]
-            },{
-                tabname:"重点",
-                isIndeterminate:false,
-                checkAll:false,
-                content:[
-                {text:'重点生产井',id:'Iscj'},
-                {text:'事故井',id:'Isgj'}
-                ]
-            }],
-      
             hasPlayD:false,
             props: {
                 label: 'name',
@@ -370,8 +299,6 @@ export default {
         handleClick(tab, event){
             var list=this.editableTabs.filter(item=>item.name==tab.name)
             this.$refs.devicetreepopper.showpop(list[0]);
-            // var list=this.editableTabs.filter(item=>item.name==tab.name)
-            // this.$parent.$parent.$parent.searchValuChangeFun(list[0]);
         },
         //修改
         searchValuChangeFun(value){
@@ -409,8 +336,8 @@ export default {
                 }
             }
             if( targetNodesP.length + targetNodesD.length == 0 ){
-                // var content = '请选择在线空闲的资源发起点播';
-                // this.$message({message: content, type: 'warning'})
+                var content = '请选择在线空闲的资源发起点播';
+                this.$message({message: content, type: 'warning'})
                 return;
             }
             // let targetNodes=targetNodesP.concat(targetNodesD);
@@ -497,6 +424,7 @@ export default {
         },
         //资源回调
         setReceiveInformResourceStatusCallback(obj) {
+            // console.log('资源回调',obj);
             if (obj && obj.nodes) {
                 var list = obj.nodes;
                 if (obj.operate === "init") {
@@ -525,7 +453,7 @@ export default {
                 this.treeData = Fun._initDeviceTreeData(list);
             } 
 
-            //if (this.apiSDK.config.version === this.apiSDK.enumSDKVersion.SDKVersion5) {
+            // if (this.apiSDK.config.version === this.apiSDK.enumSDKVersion.SDKVersion5) {
                 let treeObj = this.$refs.main_device_tree;
                 let checkedArr = [];
                 checkedArr = treeObj.getCheckedNodes();
@@ -539,7 +467,7 @@ export default {
                     }
                 })
                 treeObj.setCheckedNodes(checkedArr); 
-           // }
+            // }
         },
         //add
         addResourceStatus(subscribeId, list) {
@@ -589,89 +517,6 @@ export default {
             this.timer=setInterval(()=>{
                 self.apiSDK.refreshOrganizationDevice(function(obj){
                     if(obj&&obj.rows){
-                        // let list={
-                        //     subscribeId:"MainOrganizationDevice",
-                        //     rows:[{
-                        //         departmentId: "7606971c-d277-4b24-99d6-b6527d928e93",
-                        //         departmentName: "兴图",
-                        //         parentId: "",
-                        //         userCnt: undefined,
-                        //         onLineCount:n,
-                        //         totalCount: n+1,
-                        //     },
-                        //     {
-                        //         departmentId: "5e4491a3-d0cc-43bb-a645-39f80138d073",
-                        //         departmentName:"平台产品部",
-                        //         parentId: "7606971c-d277-4b24-99d6-b6527d928e93",
-                        //         userCnt: undefined,
-                        //         onLineCount: "0",
-                        //         totalCount: "0",
-                        //     },
-                        //     {
-                        //         departmentId: "ba483661-70ba-4131-a3ae-a39de41c68c9",
-                        //         departmentName: "测试1",
-                        //         parentId: "5e4491a3-d0cc-43bb-a645-39f80138d073",
-                        //         userCnt: undefined,
-                        //         onLineCount: "16",
-                        //         totalCount: "34",
-                        //     },
-                        //     {
-                        //         departmentId: "c1bd259bc8e449b48cc3873b46f7ab29",
-                        //         departmentName: "测试专用",
-                        //         parentId: "5e47ec4a3c2f41328dd1affa5e7dd303",
-                        //         userCnt: undefined,
-                        //         onLineCount: "37",
-                        //         totalCount: "54",
-                        //     },
-                        //     {
-                        //         departmentId: "ff55ec4e6da74332b51e6a4dfcb8e2d4",
-                        //         departmentName: "test11",
-                        //         parentId: "ba483661-70ba-4131-a3ae-a39de41c68c9",
-                        //         userCnt: undefined,
-                        //         onLineCount: "1",
-                        //         totalCount: "36",
-                        //     },
-                        //     {
-                        //         departmentId: "390e0a0f5a30485abccb56abccd486bd",
-                        //         departmentName: "兴图新科",
-                        //         parentId: "",
-                        //         userCnt: undefined,
-                        //         onLineCount: "0",
-                        //         totalCount: "0",
-                        //     },
-                        //     {
-                        //         departmentId: "5e47ec4a3c2f41328dd1affa5e7dd303",
-                        //         departmentName: "测试部",
-                        //         parentId: "390e0a0f5a30485abccb56abccd486bd",
-                        //         userCnt: undefined,
-                        //         onLineCount: "0",
-                        //         totalCount: "0",
-                        //     },
-                        //     {
-                        //         departmentId: "e8700dcfa4a24b4cab759aaeb349a7c0",
-                        //         departmentName: "会议账号",
-                        //         parentId: "",
-                        //         userCnt: undefined,
-                        //         onLineCount: "0",
-                        //         totalCount: "0",
-                        //     },
-                        //     {
-                        //         departmentId: "848d5f1cfd384869bf5e8482bbf0d032",
-                        //         departmentName: "测试小组2",
-                        //         parentId: "e8700dcfa4a24b4cab759aaeb349a7c0",
-                        //         userCnt: undefined,
-                        //         onLineCount: "0",
-                        //         totalCount: "6",
-                        //     },
-                        //     {
-                        //         departmentId: "49a18a6af099469c95e34b67acaa4e6f",
-                        //         departmentName: "性能测试GB",
-                        //         parentId: "5e47ec4a3c2f41328dd1affa5e7dd303",
-                        //         userCnt: undefined,
-                        //         onLineCount: "0",
-                        //         totalCount: "1",
-                        //     }]
-                        // }
                          Fun._refreshResourceNum(self.$refs.main_device_tree, obj.rows);
                     }
                 })
@@ -695,7 +540,6 @@ export default {
         //加载节点
         loadNodeMainDevice(node, resolve){
             if(node.data.nodeStatus == 'department'){
-                //加载设备
                 this.apiSDK.subscribeDeviceStatus(node.data.id, Enum.enumSubscribeType.main.subscribeDevicesStatus);
                 resolve(node.data.children);
             } else if (node.data.children) {
@@ -751,10 +595,18 @@ export default {
             this.currentNode.time = new Date().getTime();
 
             this.$refs.rightMenu.closeRightMenu();
+            
             if( data.nodeStatus != 'department'&& data.nodeStatus != 'company') {
                node.checked = !node.checked;
+               //点击节点勾选，子集随之父节点
+               if(node.childNodes){
+                  node.childNodes.forEach(item=>{
+                      item.checked=node.checked;
+                  })
+               }
+               let checkedNodes=this.$refs.main_device_tree.getCheckedNodes(false,false)
+               this.getCheckNodesNum(checkedNodes)
             }
-            //
             if( data.nodeStatus == 'department'||data.nodeStatus == 'company' ) {
                if(data.nodeStatus == 'department'){
                     this.setDeviceAlarmStatusByClick(data)
@@ -762,9 +614,8 @@ export default {
             }
             this.$parent.isTreeItemShow=false;
         },
-        //右键事件
+      //右键事件
         handleNodeRightClick(event, data, node, tree){
-            //console.log(node.data.nodeStatus)
              event.stopPropagation();
             if(data.nodeStatus != 'department'){
                 this.$refs.rightMenu.showRightMenu(event, data);
@@ -774,11 +625,17 @@ export default {
         //当复选框被点击的时候触发
         handleNodeCheck(data,node){
             console.log("当复选框被点击的时候触发---")
-            // wxx 2020.11.26
+            let checkednodes=node.checkedNodes;
+            this.getCheckNodesNum(checkednodes);
+            this.$parent.isTreeItemShow=false;
+        },
+        //获取勾选设备数量
+        getCheckNodesNum(node){
+            // 2020.12.22修改
             let n=0;
             let resInfos = [];
             let nvrDevice = [];
-            node.checkedNodes.forEach(item => {
+            node.forEach(item => {
                 // nvr多通道批量点播
                 if (item.resourceType == 'channel') {
                     let obj = nvrDevice.find(it => it.nvrDeviceId === item.pid);
@@ -794,17 +651,18 @@ export default {
                     }
                    
                 } else if (item.children && item.children.length) {
-                    n+=item.children.length;
+                    if(item.nodeStatus!="department"&&item.nodeStatus!="company"){
+                          n+=item.children.length;
+                    }
                     let channels = item.children && item.children.map(item => item.id)
                     nvrDevice.push({nvrDeviceId: item.id, channels: channels})
                 } else {
-                    if(item.nodeStatus!="department"){
+                    if(item.nodeStatus!="department"&&item.nodeStatus!="company"){
                         ++n;
                     }
                 }
             })
-            this.selectedNum=n;
-            this.$parent.isTreeItemShow=false;
+           this.selectedNum=n;
         },
         //树行样式
         renderContent(h, { node, data, store }) {
@@ -1196,27 +1054,27 @@ export default {
 }
 .icon-play{
     display: inline-block;
-     width: 20px;
-    height: 13px;
+    width: 22px;
+    height: 22px;
     vertical-align: middle;
     background: url(../../../../static/main/res/icon-play.png) no-repeat center;
-        background-size: 21px
+        background-size: 22px
 }
 .icon-stopPlay{
     display: inline-block;
-    width: 20px;
-    height: 13px;
+     width: 22px;
+    height: 22px;
     vertical-align: middle;
     background: url(../../../../static/main/res/icon-stopPlay.png) no-repeat center;
-        background-size: 21px
+        background-size: 22px
 }
 .icon-stopPlay_bg{
      display: inline-block;
-    width: 20px;
-    height: 13px;
+     width: 22px;
+    height: 22px;
     vertical-align: middle;
     background: url(../../../../static/main/res/icon-stopPlay1.png) no-repeat center;
-        background-size: 21px
+        background-size: 22px
 }
 
 .el-tree /deep/ .el-tree-node.is-current.is-focusable > .el-tree-node__content{

@@ -1015,7 +1015,6 @@ var businessSDK = {
         };
         var serviceName = 'CoreControlService';
         businessSDK.publish(funName, params, serviceName);
-        console.log('1-publishStartPlayDevice '+ new Date().formatDate('HH:mm:ss.SS'))
     },
     // 停止点播设备
     publishStopPlayDevice: function(receiverID, receiverName) {
@@ -2356,7 +2355,6 @@ var businessSDK = {
         };
         var serviceName = "CoreControlService"
         businessSDK.publish(funName, params, serviceName);
-        console.log(`publishCaptureIFrame--${resourceID}  `+ new Date().formatDate('HH:mm:ss.SS'))
     },
 
     //异常下线
