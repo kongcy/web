@@ -146,7 +146,7 @@ var decoderPlayer = {
 	allFull                        :false,//全部插件全屏2020.12.15
 	_screens                       : null,
 	_containerDiv                  : null,
-	_maxScreenCount                : 9,//36,
+	_maxScreenCount                : 16,//36,
     _defaultSplitType              : SPLIT_TYPE_FOUR,
 	_currentSplitType              : null,
 	_currentSplitCount			   : 0,
@@ -174,9 +174,7 @@ var decoderPlayer = {
 	_afterPicQualityChangedCB	   : null,//画质调节变化的回调
 	//1119云调度拖动点播
 	_afterSelectedScreenDropCB     : null, //拖拽回调
-	_containerClassName            : "playerContainer",
-
-    _containerClassName            : "playerContainer",
+	_containerClassName            : "playerContainer", 
     /*子分屏ID前缀*/
     _childNormalIdName             : "playerChild_",
     _childCanvasIdName             : "canvasChild_",

@@ -1,7 +1,7 @@
 <template>
     <div class="imageContentBox">
         <!-- <div id="imageShowContainer" style="width:100%;height:100%"></div> -->
-        <div class="imageDiv" :id="id" style="width:100%;height:100%"  title="xxxxx"></div>
+        <div class="imageDiv" :id="id" style="width:100%;height:100%"></div>
         <div class="cornerBox">
             <i class="icon-corner corner-top-left"></i>
             <i class="icon-corner corner-top-right"></i>
@@ -90,12 +90,12 @@ export default {
         initMXTC: function(width, height,id){
             console.log('进来了-----', id);
             let self=this;
-            self.id=id;
+            self.id= id?id:self.id; 
             this.$nextTick(()=>{
-               const  cdom = document.getElementById(this.id);
-               console.log('player容器更新!')
+               const  cdom = document.getElementById(self.id);
+               console.log(`${self.id}player容器更新!` + cdom)
                 console.log('----------------------------------------------')
-                self.apiSDK.initLayout(id, width, height, self.onBtnEvent, self.onSessionEvent, self.onWgtSelected, self.onPlaybackEvent, self.onPlayResult, this.onSelectedDrop);
+                self.apiSDK.initLayout(self.id, width, height, self.onBtnEvent, self.onSessionEvent, self.onWgtSelected, self.onPlaybackEvent, self.onPlayResult, this.onSelectedDrop);
                 self.initMedia();
             }) 
             // this.$nextTick(function(){

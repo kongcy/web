@@ -46,7 +46,8 @@ const setConfigInstance = () => {
         playerType:0,
         mediaServerIp:'127.0.0.1', 
         mediaServerPort:'4443',
-        isNoPlujinCheck: res.data.isNoPlujinCheck
+        isNoPlujinCheck: res.data.isNoPlujinCheck,
+        enableSoftEncoder: res.data.enableSoftEncoder //启用/禁用软编
       });
   })
 }

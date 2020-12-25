@@ -9,6 +9,9 @@
         "serverUrl":"10.79.108.39:8999",
         "decodeResolution":"480P" 
     },
+    "player":{
+        "maxScreen": 36
+    },
     "api": {
         "_description1": "------------- api 相关配置",
         "_description2": "------------- openVone6.0",
@@ -24,7 +27,7 @@
         "diagnoseUrl": "https://172.16.3.111:8443/StatusMonitorWeb",
         "noPluginServerURL": "http://10.79.108.39:8999/user"
     },
-    
+    "enableSoftEncoder":false,
     "isNoPlujinCheck": true,
 
     "talimu" :{

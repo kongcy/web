@@ -117,9 +117,10 @@ function ckplayerConfig() {
 ! (function() {
 	var javascriptPath = '';
 	!function() {
-		var scriptList = document.scripts,
-		thisPath = scriptList[scriptList.length - 1].src;
-		javascriptPath = thisPath.substring(0, thisPath.lastIndexOf('/') + 1) + 'static/js/play/';
+		// var scriptList = document.scripts,
+		// thisPath = scriptList[scriptList.length - 1].src;
+		var thisPath = document.getElementById('playSDK').src
+		javascriptPath = thisPath.substring(0, thisPath.lastIndexOf('/') + 1);
 	} ();
 	var ckplayer = function(obj) {
 		/*
@@ -8705,7 +8706,7 @@ function isIE() {
 
 function wsConnect(host, clientId, times) {
     if (!times) {
-        times = 3;
+        times = 3000;
     }
     var topObj = {
         videos:{},
@@ -8836,7 +8837,8 @@ $.fn.extend({
             if (topObj.url == data.obj.url && !topObj._doClose) {
                 delete wssConn.videos[topObj.key];
                 // alert("打开视频[" + topObj.url + "]流失败，请查看控制台");
-                console.log(data.lines);
+				console.log(data.lines);
+				console.log(data.msg);
             }
             if (url == data.obj.url && !topObj.closeStatus && !topObj.firstVideo) {
                 topObj.closeStatus = true;
@@ -8861,11 +8863,13 @@ $.fn.extend({
                 topObj.openCallback(data.ok);
             }
             if (!data.ok) {
-                alert(data.msg);
+				this.close();
+                console.log(data.msg);
                 return;
             }
-            var obj = data.obj;
-            var canvas = document.getElementById(topObj.cid);
+			console.log('转码完成,准备播放!');
+			console.log(data)
+            var obj = data.obj; 
             var ishttps = "https:" == document.location.protocol ? true :false;
             var url = null;
             if (ishttps) {
@@ -8894,31 +8898,46 @@ $.fn.extend({
                     ckClose();
                 }
             } else {
-                var jsmpeg = new JSMpeg.Player(url, {
-					canvas:canvas,
-					// disableGl:true,
-					preserveDrawingBuffer:true,
-                    onSourceEstablished:function(){
-						ckClose()
-						setTimeout(function(){
-							console.log('jsmpeg---开始解码播放!')
-							if(canvas){
-								canvas.style.display ='block'
-							}
-						},500)
+				let options = {}
+				// 播放音频
+				if(this.isAudio){
+					console.log('音频解码!')
+					options ={
+						canvas:null,
+						autoplay:true,
+						video:false,
 					}
-				});
-				if(canvas){
+				}
+				else{
+					var canvas = document.getElementById(topObj.cid);
+					options= {
+						canvas:canvas,
+						// disableGl:true,
+						audio:false,
+						preserveDrawingBuffer:true,
+						onSourceEstablished:function(){
+							ckClose()
+							setTimeout(function(){
+								console.log('jsmpeg---开始解码播放!')
+								if(canvas){
+									canvas.style.display ='block'
+								}
+							},500)
+						}
+					}
+				}
+                var jsmpeg = new JSMpeg.Player(url, options);
+				if(!this.isAudio&&canvas){
 					canvas.style.display ='none'
 					console.log('jsmpeg---解码准备!')
 				}
                 topObj.jsmpeg = jsmpeg;
-                topObj.jsmpeg.volume = 0;
+                topObj.jsmpeg.volume = 50;
             }
         };
         topObj._close = function(data) {
             topObj._doClose = true;
-            if (topObj.firstVideo) {
+            // if (topObj.firstVideo) {
                 delete wssConn.videos[topObj.key];
                 if (topObj.isIEState && topObj.player) {
 					topObj.player.videoClear();
@@ -8929,11 +8948,11 @@ $.fn.extend({
 						topObj.jsmpeg = null
 				} 
 				initMain(); // 重新预初始化播放容器
-				console.log("关闭视频流成功");
+				console.log("停止解码,关闭播放器!");
 				if(topObj.closeCallback){
 					topObj.closeCallback(true)
 				}
-            }
+            // }
         };
         topObj.close = function(closeCallback) {
 			topObj.closeCallback = closeCallback
@@ -8946,11 +8965,11 @@ $.fn.extend({
                         theme:topObj.theme
                     }
                 };
-				wssConn.wsObj.wss.send(JSON.stringify(order));
-				this._close();
+				wssConn.wsObj.wss.send(JSON.stringify(order)); 
             } else {
                 topObj.closeStatus = true;
-            }
+			}
+			this._close();
         };
         topObj.play = function(option, openCallback) {
 			if(wssConn.wsObj.wss.readyState === 3){
@@ -8973,6 +8992,8 @@ $.fn.extend({
             topObj.openCallback = openCallback;
             topObj.url = option.url;
             wssConn.wsObj.wss.send(JSON.stringify(order));
+			console.log('发送转码请求');
+			console.log(order);
 		}; 
 		topObj.switchPlay = function (){
 			switchPlay()
@@ -9202,11 +9223,13 @@ $.fn.extend({
 	}
 	
         function initMain() {
-            if (!topObj.isIEState) {
-                initPlayerContainer();
-            } else {
-                initCkplayerContainer();
-            }
+			if(!topObj.isAudio){
+				if (!topObj.isIEState) {
+					initPlayerContainer();
+				} else {
+					initCkplayerContainer();
+				}
+			} 
 		}
 		initMain();
         return topObj;
