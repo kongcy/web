@@ -17,7 +17,7 @@ import LoginFailure from '@/components/login/loginFailure'
 
 import MonitoringLogin from '@/components/monitoring/PwdLogin'
 // import Monitor from '@/components/home/Monitor'
-import BaseContainerMonitor from '@/components/monitoring/BaseContainer'
+import BaseContainerMonitor from '@/components/monitoring/BaseContainer2'
 import HomeContainerMonitor from '@/components/monitoring/HomeContainer'
 
 Vue.use(Router)

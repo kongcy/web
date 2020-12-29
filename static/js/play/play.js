@@ -8898,10 +8898,10 @@ $.fn.extend({
 					options= {
 						canvas:canvas,
 						// disableGl:true,
-						disableWebAssembly:true,
+						disableWebAssembly:false,
 						audio:false,
 						preserveDrawingBuffer:true,
-						videoBufferSize:1024*1024,
+						videoBufferSize:512*1024,
 						onSourceEstablished:function(){ 
 							// setTimeout(function(){ 
 								console.log('8-jsmpeg---'+topObj.key+'开始解码播放!  '+ new Date().formatDate('HH:mm:ss.SS')); 

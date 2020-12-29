@@ -1305,9 +1305,11 @@ var decoderPlayer = {
     },
 	/*对外接口*********************************************************************/
     //初始化
-	init : function(divId, containerWidth, containerHeight, refreshDataType,playerType){
+	init : function(divId, containerWidth, containerHeight, refreshDataType,playerType,maxScreen){
 		console.log('webglPlayer--初始化');
 		decoderPlayer._playerType = playerType
+		decoderPlayer._maxScreenCount = maxScreen
+		console.log('最大分屏数:'+decoderPlayer._maxScreenCount);
 		// 清除已保存分屏信息
 		decoderPlayer._currentSplitType = null;
 		decoderPlayer._refreshDataType = refreshDataType;

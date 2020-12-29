@@ -27,9 +27,9 @@ var playerSDK = {
      * 初始化
      * @param {*} containerId
      */
-    initLayout(containerId, containerWidth, containerHeight, type, btnCB, businessCB, selectedCB, dropCB,playResultCB){
+    initLayout(containerId, containerWidth, containerHeight, type,maxScreen, btnCB, businessCB, selectedCB, dropCB,playResultCB){
         //界面
-        webglPlayer.init(containerId, containerWidth, containerHeight, this.refreshDataType,this.playerType)
+        webglPlayer.init(containerId, containerWidth, containerHeight, this.refreshDataType,this.playerType,maxScreen)
 
         //切换分屏回调
         webglPlayer.setAfterSplitScreenCallback(businessScreens => {
@@ -133,7 +133,7 @@ var playerSDK = {
     initMedia(type,businessCB,playerType,mediaServerConfig){
          // 半免插件初始化 
          this.playerType= playerType
-         const msIp = mediaServerConfig.mediaServerIp
+         const msIp =  mediaServerConfig.mediaServerIp
          const msPort=  mediaServerConfig.mediaServerPort
          if(!this.playerType){
               //socket 
@@ -229,9 +229,9 @@ var playerSDK = {
             });
     },
     // 废弃未用
-    init(containerId, containerWidth, containerHeight, type, btnCB, businessCB, selectedCB, playResultCB){
+    init(containerId, containerWidth, containerHeight, type,maxScreen, btnCB, businessCB, selectedCB, playResultCB){
         //界面
-        webglPlayer.init(containerId, containerWidth, containerHeight, this.refreshDataType)
+        webglPlayer.init(containerId, containerWidth, containerHeight, this.refreshDataType,this.playerType,maxScreen)
 
         //socket
         let protocol = window.location.protocol;

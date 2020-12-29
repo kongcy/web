@@ -36,7 +36,7 @@ export default {
                 resCh: undefined,
                 resourceType: 1
            },
-
+            depResources:null, // 部门资源
            // playType: null, // 点播类型 
             strategeData: null,
             Timer:null, //定时器
@@ -113,6 +113,7 @@ export default {
             let strategeId = xtxk.cache.get('AutomaticPlayStrategeId');
             let resourceId = xtxk.cache.get('AutomaticPlayResourceId');
             let NVRDeviceId = xtxk.cache.get('AutomaticPlayNVRDeviceId');
+            let depName = xtxk.cache.get('AutomaticPlayDepName');
             if( ip ){
             //    this.playType = 'ip';
                 this.getDeviceData(ip.ip);
@@ -132,6 +133,10 @@ export default {
                 // }, 2000)
                 //    this.startPlay();
             }
+            else if(depName){
+                
+                this.getDeviceByDepName(depName.depName);
+            }
             // this.initSocket();
         },
         initMXTC: function(width, height){
@@ -148,6 +153,28 @@ export default {
             this.initMedia();
             this.apiSDK.splitWidowForPlugin(1);
             this.apiSDK.publishSplitScreen(1);
+        },
+        // 通过部门名称获取点播信息
+        getDeviceByDepName(dn){ 
+            let that = this;
+            const USER = xtxk.cache.get("USER"); 
+            this.apiSDK.getResourceByUserDep(USER.userLoginID,dn, (res) => {
+                console.log('通过部门名称获取设备的信息', res );
+                if( res.data && res.data.length>0){
+                   if(!this.depResources){
+                       this.depResources = [];
+                   }
+                   res.data.forEach(el => {
+                       this.depResources.push({
+                            id: el.resourceId,
+                            name: el.resourceName,
+                            resCh: null,
+                            resourceType: 1,
+                            channels: el.channels   // 通过ip查询的多路
+                       });
+                   });  
+                }
+            });
         },
         // 通过ip请求点播的信息
         getDeviceData(ip){
@@ -198,6 +225,14 @@ export default {
                 // 通过ip查询 多个点播通道
                 this.apiSDK.stopAll();
                 this.multichannel();
+            }else if(this.depResources){ // 点播部门下设备
+                const maxPlayNum = 9;
+                this.depResources.some((el,i)=>{
+                    if(i===9){
+                        return true;
+                    }
+                    Fun.automaticPlay(this,el, -1, 'unicast');
+                })
             } else {
                 console.log('自动点播');
                 Fun.automaticPlay(this, this.currentNode, -1, 'unicast');
@@ -576,7 +611,7 @@ export default {
             //点击屏幕选中设备树资源节点
             if(this.curSelectedPos!=-1){ //选中屏幕
                 let screenArr = JSON.parse(sessionStorage.getItem('currentScreen')); //在播放状态的屏
-                if (screenArr.length != 0) {
+                if (screenArr&&screenArr.length != 0) {
                     let ckResource  = screenArr.find(item => item.screenIndex == this.curSelectedPos)
                     if(typeof(ckResource) != 'undefined'){
                         let ckResourceID = ckResource.resId

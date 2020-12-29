@@ -1,6 +1,6 @@
 <template>
   <div class="holder">
-    <el-dialog :visible.sync="isVisible" width="400px" v-dialogDrag 
+    <el-dialog  :visible.sync="isVisible" width="400px" v-dialogDrag 
       class="custom-dialog" :class="isNVRChannel?'dialogNVR':''" @closed="closedDialog"
       :close-on-click-modal="false" :modal="false">
       <span slot="title" :title="ytTitle" class="el-dialog__title">{{ytTitle}}</span>
@@ -1004,6 +1004,10 @@ export default {
 </style>
 
 <style scoped>
+.custom-dialog /deep/ .el-dialog {
+  background:none;
+  background-color: rgba(50,77,119,0.4);
+} 
 .custom-dialog /deep/ .el-dialog__body {
   padding: 10px 20px;
   height: 500px;
@@ -1024,8 +1028,8 @@ export default {
 .custom-dialog  .left {
   width: 360px;
   height: 490px;
-  background: url(../../../static/holderControl/bg.png);
-  background-size: 100% 100%;
+  /* background: url(../../../static/holderControl/bg.png);
+  background-size: 100% 100%; */
 	/* background-color: #f2f6f9; */
 	/* border: solid 1px rgba(154, 191, 231, 0.6); */
   float: left;
