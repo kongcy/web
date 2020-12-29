@@ -62,7 +62,7 @@ export default {
     },
     methods: {
         getUserAndPsw(){
-            let url = window.location.href.split('?')[1];
+            let url = decodeURIComponent(window.location.href.split('?')[1]);
             let hhid;
             localStorage.setItem('url', url);
             let vars = url.split('&'); // 去掉问号, 问号为第一个字符
@@ -74,8 +74,10 @@ export default {
                 else if( pair[0] === 'strategeId' ){ xtxk.cache.set('AutomaticPlayStrategeId', { strategeId: pair[1]})  }
                 else if( pair[0] === 'resourceId' ){ xtxk.cache.set('AutomaticPlayResourceId', { resourceId: pair[1]}) }
                 else if( pair[0] === 'NVRDeviceId' ){ xtxk.cache.set('AutomaticPlayNVRDeviceId', { NVRDeviceId: pair[1]}) }
+                else if( pair[0] === 'depName' ){ xtxk.cache.set('AutomaticPlayDepName', { depName: pair[1]}) } // 根据部门名称点播
                 else if( pair[0] === 'hhid' ){ hhid = pair[1]}
             }
+            
             let userName;
             let array;
             if( xtxk.cache.get('AutomaticPlayUsername') &&  xtxk.cache.get('AutomaticPlayUsername').userName ) {

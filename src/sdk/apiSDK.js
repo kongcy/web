@@ -9,6 +9,11 @@ import { playerSDK5 } from './sdkFor5_0/playSDK5';
 import { playerSDKNew } from './player/playerSDK';
 //查询策略 新加sdk 11.24
 import { strategeSDK6 } from './sdkFor6_0/strategeSDK.js';
+//新加小鱼sdk 12.29
+import { xiaoyuSDK } from './sdkFor6_0/xiaoyuSDK.js';
+//新加统一认证sdk 12.29
+import { uiaServiceSDK } from './sdkFor6_0/uiaServiceSDK.js';
+
 
 var apiSDK = {
     userID: "",
@@ -37,6 +42,11 @@ var apiSDK = {
             strategeSDK6.setURLPrefix(this.config.strategeURL);
             // 设置免插登录服务地址
             strategeSDK6.setNoPluginURLPrefix(this.config.noPluginServerURL);
+            // 设置小鱼SDK 地址
+            xiaoyuSDK.setURLPrefix(this.config.xiaoyuURL);
+             // 设置统一认证SDK 地址
+            uiaServiceSDK.setURLPrefix(this.config.uiaSeriveUrl);
+
         }
     },
 
@@ -223,7 +233,7 @@ var apiSDK = {
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
             dataSDK6.createUserTokenForWeb(loginName, loginpwd, "", "0", validCode, function(obj) {
                 var resp = {};
-                if (obj.responseCode == 1||obj.responseCode == '0') {
+                if (obj.responseCode == 1) {
                     resp.Ret = 0
                     resp.token = obj.data.tokenKey
                     resp.data = {};
@@ -8347,9 +8357,9 @@ var apiSDK = {
      */
     initLayout:function(parentID, width, height, btnCB, businessCB, selectedCB, playbackCB, playResultCB, dropCB){
          // 添加“type”:1 //新增参数 1为5.0方式，0为6.0点播方式
-         let type = 0;
+         let type = 0; 
                 
-         playerSDKNew.initLayout(parentID, width, height, type,
+         playerSDKNew.initLayout(parentID, width, height, type,this.config.maxScreen,
              //以下为兼容之前代码的回调处理
              function(screenIndex, btnKey, value) {
                  if (btnKey == 'Record_Slow' && playbackCB) playbackCB(screenIndex, 1, value);
@@ -8434,7 +8444,7 @@ var apiSDK = {
                 // 添加“type”:1 //新增参数 1为5.0方式，0为6.0点播方式
                 let type = 0;
                 
-                playerSDKNew.init(parentID, width, height, type,
+                playerSDKNew.init(parentID, width, height, type,this.config.maxScreen,
                     //以下为兼容之前代码的回调处理
                     function(screenIndex, btnKey, value) {
                         if (btnKey == 'Record_Slow' && playbackCB) playbackCB(screenIndex, 1, value);
@@ -15579,6 +15589,16 @@ var apiSDK = {
             });
         }
     },
+      // 根据用户、部门名称查询设备资源
+      getResourceByUserDep(userId,depName,callback){
+        if (this.config.version === this.enumSDKVersion.SDKVersion5) {
+
+        } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
+            strategeSDK6.getResourceByUserDep(userId,depName, obj => {
+                callback(obj);
+            });
+        }
+    },
 
     // 通过轮询id 获取轮询信息 
     // queryStrategyListById(strategeId, callback){
@@ -15596,7 +15616,7 @@ var apiSDK = {
         if (this.config.version === this.enumSDKVersion.SDKVersion5) {
 
         } else if (this.config.version === this.enumSDKVersion.SDKVersion6) {
-            strategeSDK6.newOpenMeeting(data ,obj => {
+            xiaoyuSDK.newOpenMeeting(data ,obj => {
                 callback(obj);
             });
         }
@@ -15755,13 +15775,13 @@ var apiSDK = {
     },
     // 根据 HHID 查询用户信息（与下面 userLogin 返回一样）
     queryUserInfo(data, callback){
-        strategeSDK6.queryUserInfo( data , obj => {
+        uiaServiceSDK.queryUserInfo( data , obj => {
             callback(obj);
         });
     },
     // 统一认证登录
     userLogin(data, callback){
-        strategeSDK6.userLogin( data , obj => {
+        uiaServiceSDK.userLogin( data , obj => {
             callback(obj);
         });
     }

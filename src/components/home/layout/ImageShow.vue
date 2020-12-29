@@ -414,7 +414,14 @@ export default {
                              if(this.isFullScreen){
                                  console.log("弹框云台")
                                 //弹框云台
-                                this.$refs.holderControlDialog.showDialog(this.currentPlayScreens[index].resId, this.currentPlayScreens[index].resCh, this.currentPlayScreens[index].encoderSipID, this.currentPlayScreens[index].channel);   
+                                // 将弹框放置在全屏元素中打开
+                                const fullEl =document.fullscreenElement;
+                                if(fullEl){
+                                    this.$refs.holderControlDialog.showDialog(this.currentPlayScreens[index].resId, this.currentPlayScreens[index].resCh, this.currentPlayScreens[index].encoderSipID, this.currentPlayScreens[index].channel); 
+                                    this.$nextTick(()=>{ 
+                                        fullEl.appendChild(this.$refs.holderControlDialog.$el);
+                                    })
+                                }
                              }else{
                                   this.$parent.expendHolder();
                                   console.log("右侧云台")

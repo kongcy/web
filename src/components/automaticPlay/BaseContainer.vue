@@ -44,6 +44,18 @@ export default {
 //       next(true);
 //     }
 //   },
+  beforeRouteEnter(to, from, next){
+    // 刷新跳转过来
+    const refreshFlag = xtxk.cache.get("refreshFlag");
+    const USER = xtxk.cache.get("USER");
+    if(refreshFlag&&!USER){ 
+      xtxk.cache.remove("refreshFlag");
+      const url = localStorage.getItem('url');
+      next(`../Login2?${url}`);
+    }else{
+      next();
+    }
+  },
   created() {
     // this.getUserAndPsw();
     const USER = xtxk.cache.get("USER");
@@ -408,6 +420,8 @@ export default {
     this.alarmMessageList = [];
     // 退出即时通讯服务
     this.imSDK && this.imSDK.connection.disConnection();
+    // 刷新页面标识
+    xtxk.cache.set('refreshFlag',true);
   }
 };
 </script>

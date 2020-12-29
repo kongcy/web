@@ -468,11 +468,12 @@ export default {
                 })
                 treeObj.setCheckedNodes(checkedArr);  
                   // 刷新选中数量
-                this.$nextTick(()=>{ 
-                    this.getCheckNodesNum(treeObj.getCheckedNodes());
-                    let udKeys = treeObj.getCheckedKeys()
-                    treeObj.updateKeyChildren(udKeys,checkedArr);
+                if(list&&list.length>0){
+                    this.$nextTick(()=>{ 
+                    this.getCheckNodesNum(treeObj.getCheckedNodes());  
                 })
+                }
+                
             // }
         },
         //add
@@ -646,7 +647,7 @@ export default {
                 }
                 else{ 
                      data.children.some(el=>{
-                        if(el.nodeStatus === 'device_online'||el.nodeStatus === 'device_offline'){
+                        if(el.nodeStatus !== 'department'){
                             isLoadChildren = false;
                             return true
                         } 
@@ -661,8 +662,7 @@ export default {
                         const ln = that.$refs.main_device_tree.getNode(n);
                         if(ln){ 
                             console.log('加载设备节点-'+ ln);
-                            ln.expanded = true;
-                            that.apiSDK.subscribeDeviceStatus(ln.data.id, Enum.enumSubscribeType.main.subscribeDevicesStatus);
+                            ln.expand();
                         }
                         })
                     }) 

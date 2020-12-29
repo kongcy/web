@@ -211,7 +211,7 @@ export var strategeSDK6 = {
         };
         var url = "/res/queryPopularRes"
         strategeSDK6._doPost(url, JSON.stringify(data),callback);
-    },
+    }, 
     // ====================== 添加设备常用节点 ========================================
     AddCommonUse(userId,nodes,callback){
         var data = {
@@ -221,7 +221,15 @@ export var strategeSDK6 = {
         var url = "/res/addPopularRes"
         strategeSDK6._doPost(url, JSON.stringify(data),callback);
     },
-    
+       // ====================== 根据用户、部门名称查询设备资源 ========================================
+       getResourceByUserDep(userId,depName,callback){
+        var data = {
+            "userAccount":userId,
+            "orgName":depName
+        };
+        var url = "/directory/findDeviceByUserAndOrg"
+        strategeSDK6._doPost(url, JSON.stringify(data),callback);
+    },
     // ======================  会议 模板 列表 新加SDK   1209   增删改查 ==========================================================
 
     // =================================   查询会议 模板 列表  =============================================
