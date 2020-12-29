@@ -72,6 +72,21 @@ export var xiaoyuSDK = {
             if (callback) callback(res.data);
         });
     },
+    _getDataString: function(mapObj, noToken) {
+        var result = "";
+        for (var [key, value] of mapObj) {
+            result += key + "=";
+            if (value == null) {
+                result += "";
+            } else if (typeof(value) == "Object" || typeof(value) == "Array" || typeof(value) == "Map") {
+                result += JSON.stringify(obj);
+            } else {
+                result += "" + value;
+            }
+            result += "&";
+        }
+        return result.substr(0, result.length - 1);
+    },
     // newOpenMeeting(meetingNo,xiaoYuNums) {
     //     var url = `/${meetingNo}/${xiaoYuNums}`;
     //     xiaoyuSDK._doPost(url, {}, callback);
@@ -82,8 +97,8 @@ export var xiaoyuSDK = {
         // mapObj.set("resId", data.resId);
         mapObj.set("joinMember", data.joinMember);
         mapObj.set("channelNum", data.channel);
-        var data = strategeSDK6._getDataString(mapObj);
+        var data = xiaoyuSDK._getDataString(mapObj);
         var url = "/xiaoyu/startMeeting";
-        strategeSDK6._doGet(url, data, callback);
+        xiaoyuSDK._doGet(url, data, callback);
     },
 }

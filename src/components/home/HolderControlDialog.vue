@@ -1,6 +1,6 @@
 <template>
   <div class="holder">
-    <el-dialog  :visible.sync="isVisible" width="400px" v-dialogDrag 
+    <el-dialog ref="holderDialog"  :visible.sync="isVisible" width="400px" v-dialogDrag 
       class="custom-dialog" :class="isNVRChannel?'dialogNVR':''" @closed="closedDialog"
       :close-on-click-modal="false" :modal="false">
       <span slot="title" :title="ytTitle" class="el-dialog__title">{{ytTitle}}</span>
@@ -191,7 +191,11 @@ export default {
         this.channel = channel;
         this.isNVRChannel = this.resourceId.length > 20 ? false : true;
         this.isVisible = true;
-
+        // this.$nextTick(()=>{
+        //       const {width,height}  =document.fullscreenElement.getBoundingClientRect();
+        //       const holderEl = this.$refs.holderDialog.$el.firstChild; 
+        //       const ch =holderEl.getBoundingClientRect(); 
+        // }) 
          //通过id获取树名
         let EquipementTab=this.$parent.$parent.$refs.resourcecontainer.$refs.equipementRes[0].activeName;
         

@@ -470,7 +470,19 @@ export default {
                 switch (status_code) {
                     case 1: //点播成功
                         let curObj = this.currentPlayScreens.find(item => wgtpos == item.screenIndex)
-                        if (curObj) this.apiSDK.sendForceIFrame(curObj.resId, curObj.resCh, curObj.resType);
+                         if (curObj) {
+                           this.apiSDK.sendForceIFrame(curObj.resId, curObj.resCh, curObj.resType);
+                                let that = this;
+                                let timeIndex =  0;
+                                let playTime = setInterval(() => {
+                                    timeIndex++;
+                                    if( timeIndex < 3 ) {
+                                      that.apiSDK.sendForceIFrame(curObj.resId, curObj.resCh, curObj.resType);
+                                      timeIndex === 2 && window.clearInterval(playTime);
+                                    }
+                                 }, 500);
+                            this.apiSDK.setVolumeStateForPlugin(wgtpos, false);
+                        }
                         break;
                     case 0: //点播失败
                         // this.apiSDK.stopPlayByIndex(wgtpos);
@@ -808,6 +820,9 @@ export default {
            console.log('开启会议--- 111', data );
            this.apiSDK.newOpenMeeting(data, obj => {
                console.log('点击会议返回', obj);
+               if(obj&&!obj.success){
+                   this.showremind('提示', obj.data);
+               }
            });
         }
     }

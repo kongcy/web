@@ -674,6 +674,9 @@ export default {
            console.log('开启会议--- 111', data );
            this.apiSDK.newOpenMeeting(data, obj => {
                console.log('点击会议返回', obj);
+               if(obj&&!obj.success){
+                   this.showremind('提示', obj.data);
+               }
            });
         }
     }
