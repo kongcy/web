@@ -236,7 +236,7 @@ var playerSDK = {
         //socket
         let protocol = window.location.protocol;
         let socketProtocol = protocol.indexOf('s') > -1 ? 'ws' : 'ws';
-        let url1 = socketProtocol + "://127.0.0.1:4443";
+        let url1 = socketProtocol + "://10.79.108.204:4443";
         this.businessSDKC = new WebSocketSDK(url1, () => {
             this.businessSDKC.initServer(type);
         });
@@ -244,7 +244,7 @@ var playerSDK = {
         var socketCount = 9;
         var port = 4444;
         for(var i=0; i < socketCount; i++){
-            let url2 = socketProtocol + "://127.0.0.1:" + (port + i);
+            let url2 = socketProtocol + "://10.79.108.204:" + (port + i);
             let newSocket = new WebSocketSDK(url2, null, this.refreshDataType==1?true:false);
             newSocket.setReceiveMediaDataCallback(res => {
                 if(this.refreshDataType == 1){
